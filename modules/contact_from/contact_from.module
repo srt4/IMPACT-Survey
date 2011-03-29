@@ -1,0 +1,18 @@
+<?php 
+// $Id$
+/**
+ * @file
+ *
+ * Modify the built in contact form so that the from field is a dropdown list.
+ *
+ */
+function contact_from_form_alter(&$form, $form_state, $form_id) {  
+  if($form_id == 'contact_site_form') {
+    $options = drupal_map_assoc(array('Library', 'Library Patron', 'Other'));
+    $form['name'] = array(
+      '#type' => 'select',
+      '#title' => 'I am a',
+      '#options' => $options,
+    );
+  }
+}

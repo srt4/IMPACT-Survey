@@ -1,0 +1,15 @@
+<?php 
+// $Id$
+/**
+ * @file
+ *
+ * Provides code for libraries to install on their websites.
+ *
+ */
+
+/**
+ * Implementatation of hook_menu().
+ */
+global $user;
+//dpm($user);
+//dpm($node);

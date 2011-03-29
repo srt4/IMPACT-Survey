@@ -1,0 +1,222 @@
+/**  Body  **/
+body {
+	background:#aaa;
+}
+#contentWrapper {
+	border-bottom:2px solid #7B309B;
+}
+blockquote {
+	border-bottom:4px solid #7B309B;
+	border-left:none;
+	font-size:1.2em;
+}
+.form-submit {
+	background-color:#7B309B;
+}
+li {
+	margin:5px 0;
+}
+ol > li {
+	list-style:decimal;
+}
+ul > li {
+	list-style:disc;
+}
+input, fieldset, textarea {
+  border: 1px solid #7B309B;
+}
+#center .tabs a {
+	color:#333;
+}
+
+/**  Blocks  **/
+.blockregion .block h2 {
+	background:none;
+}
+.blockregion .block .content {
+	min-height:0;
+}
+/**  Header  **/
+#siteName #siteTitle {
+	visibility:hidden;
+}
+#siteName #siteSlogan {
+	font-size:20px;
+	position:relative;
+	left:60px;
+	top:38px;
+}
+#siteName #siteSlogan strong {
+	text-decoration:underline;
+}
+#siteName #siteSlogan {
+	color:#7B309B;
+}
+#siteName img#logo {
+	margin:-20px 10px;
+}
+#headerWrapper {
+	background-image:none;
+	background-color: #F2FCDF;
+	height:160px;
+	margin:0 10px;
+	width:930px;
+}
+#topMenu {
+	position:relative;
+	top:15px;
+	right:32px;
+}
+.not-logged-in #siteName img#logo {
+	margin:0;
+}
+.not-logged-in #siteName #siteSlogan {
+	top:58px;
+}
+#topMenu li.last>a {
+	border-bottom:2px solid;
+	border-right:2px solid;
+	border-top:2px solid #eee;
+	border-left:2px solid #eee;
+	background-color:#809F45;
+	padding:0 5px;
+}
+/**  Menu  **/
+#primaryMenu ul.sf-menu {
+	background-color:#608C13;
+	width:81%;
+	padding:0 10%;
+}
+#primaryMenu ul.sf-menu li.first {
+	border-left: 1px solid #CCCCCC;
+}
+#primaryMenu ul.sf-menu li a {
+	padding-left:22px;
+	padding-right:22px;
+}	
+#primaryMenu ul.sf-menu li ul li a:hover, 
+#primaryMenu ul.sf-menu li ul li a.active  {
+	background-color:#608C13;
+}
+#primaryMenu ul.sf-menu li ul li a, 
+#primaryMenu ul.sf-menu li ul li a:link, 
+#primaryMenu ul.sf-menu li ul li a:visited {
+	padding:14px;
+}
+/**  Footer  **/
+#block-views-footer-footer > .content {
+	min-height:0;  /* need min-height to override style.css */
+	padding:15px 0;
+	background-color:#F2FCDF;
+	border-bottom:2px solid #7B309B;
+}
+#block-views-footer-footer table.views-view-grid {
+	width:960px;
+	text-align:center;
+}
+/**  Sidebar **/
+.region-sidebar-first #block-faq-faq_categories ul,
+.region-sidebar-first #block-menu-menu-my-impact ul.menu {
+	padding:0;
+}
+.region-sidebar-first #block-faq-faq_categories div.item-list > ul > li,
+.region-sidebar-first #block-menu-menu-my-impact ul.menu > li {
+	list-style:none;
+	width:150px;
+	margin:5px auto;
+	padding:5px;
+	border-bottom:2px solid;
+	border-right:2px solid;
+	border-top:2px solid #eee;
+	border-left:2px solid #eee;
+	background-color:#809F45;
+	text-align:center;
+}
+.region-sidebar-first #block-faq-faq_categories ul a,
+.region-sidebar-first #block-menu-menu-my-impact ul a {
+	color:white;
+	text-decoration:none;
+	font-weight:bold;
+}
+#sidebar_first .even h2 {
+	background: url("images/block-bg.png") no-repeat scroll left bottom transparent;
+}
+#block-menu-menu-my-impact h2 {
+	text-align:center;
+}
+/**  Home Page  **/
+#icon-table {
+	border-collapse:separate;
+	margin:20px auto;
+}
+#icon-table img {
+	height:30px;
+}
+#icon-table td.table-text {
+	padding:0 20px
+}
+#icon-table .table-img {
+	width:40px;
+	height:40px;
+	text-align:center;
+}
+#home-img {
+	width:700px;
+}
+/**  FAQ  **/
+#center .faq-qa a {
+	color: #333;
+	font-weight:bold;
+}
+#center .faq-question a {
+	color: #7B309B;
+	font-weight:bold;
+}
+/**  Advocacy Tools  **/
+#advocacy-list li {
+	list-style:url(/drupal/sites/impactsurvey.org/files/images/pdf-icon.png);
+}
+/**  Codebox  **/
+div.codebox {
+}
+.codebox table {
+	
+}
+#center .views-field-nid a {
+	color:white;
+}
+
+div.view-codebox-gallery td {
+	width:25%;
+	vertical-align:bottom;    
+	background-color: #888888;
+    border: 2px solid #F0F0F0;
+	padding:10px;
+}
+/**  Registration  **/
+#edit-profile-library-registration-field-library-reg-fname,
+#edit-profile-library-registration-field-library-reg-lname {
+	float:left;
+	margin-right:20px;
+}
+#edit-profile-library-registration-field-library-reg-position {
+	clear:both;
+}
+/**  Set Password  **/
+.page-user-edit div.tabs,
+#edit-contact,
+.page-user-edit div.form-item-name,
+.page-user-edit div.form-item-mail {
+	visibility:hidden;
+	height:0;
+	margin:0;
+	padding:0;
+}
+
+/**  My IMPACT **/
+#completed-form {
+	color:green; margin:0px 0 30px 0;
+}
+#incomplete-form {
+	color:red; margin:0px 0 30px 0;
+}

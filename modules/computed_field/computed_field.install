@@ -1,0 +1,51 @@
+<?php
+// $Id: computed_field.install,v 1.3.2.2 2010/10/12 23:56:39 moonshine Exp $
+
+/**
+ * @file
+ * Install, update and uninstall functions for the computed field module.
+ */
+
+/**
+ * Implements of hook_field_schema().
+ */
+function computed_field_field_schema($field) {
+  if ($field['type'] == 'computed') {
+    $settings = $field['settings'];
+    if ($settings['store']) {
+      $columns = array('value' => array());
+      if ($settings['database']['data_type'] == 'longtext') {
+        $columns['value']['type'] = 'text';
+        $columns['value']['size'] = 'big';
+      }
+      else {
+        $columns['value']['type'] = isset($settings['database']['data_type']) ? $settings['database']['data_type'] : 'varchar';
+      }
+      // text and longtext should not have a length, so we ignore it
+      if (!($settings['database']['data_type'] == 'text' || $settings['database']['data_type'] == 'longtext')) {
+        $columns['value']['length'] = isset($settings['database']['data_length']) ? $settings['database']['data_length'] : 32;
+      }
+      $columns['value']['not NULL'] = isset($settings['database']['data_not_NULL']) ? $settings['database']['data_not_NULL'] : TRUE;
+      $columns['value']['sortable'] = isset($settings['database']['data_sortable']) ? $settings['database']['data_sortable'] : FALSE;
+      if ($settings['database']['data_default'] != '')  {
+        $columns['value']['default'] = $settings['database']['data_default'];
+      }
+      
+      if ($settings['database']['data_index'])  {
+         $indexes = array('value' => array('value'));
+      }
+    }
+  }
+  if (isset($columns) && isset($indexes)) {
+    return array(
+      'columns' => $columns,
+      'indexes' => $indexes,
+    );
+  }
+  elseif (isset($columns)) {
+    return array(
+      'columns' => $columns,
+    );
+  }
+  else return;
+}

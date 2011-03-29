@@ -1,0 +1,116 @@
+<?php 
+// $Id$
+/**
+ * @file
+ *
+ * modifies the profile2 registration form in order to add dependent dropdown for name/fscskey
+ *
+ */
+function impact_registration_form_profile2_edit_library_registration_form_alter(&$form, &$form_state) {
+  $form['profile_library_registration']['field_library_reg_state']['und']['#options'] = _impact_registration_library_states();
+  $form['profile_library_registration']['field_library_reg_state']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
+  $form['profile_library_registration']['field_library_reg_state']['und']['#ajax'] = array(
+      'callback' => 'impact_registration_state_change_callback',
+      'wrapper' => 'name-select',
+    );
+  
+  $selected = isset($form_state['values']['profile_library_registration']['field_library_reg_state']['und'][0]['value']) ? $form_state['values']['profile_library_registration']['field_library_reg_state']['und'][0]['value'] : '';
+    
+  $form['profile_library_registration']['field_library_reg_system']['und']['#options'] = _impact_registration_library_names($selected);
+  $form['profile_library_registration']['field_library_reg_system']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
+  $form['profile_library_registration']['field_library_reg_system']['und']['#prefix'] = "<div id='name-select'>";
+  $form['profile_library_registration']['field_library_reg_system']['und']['#suffix'] = "</div>";
+
+  $form['profile_library_registration']['field_library_reg_extension']['und'][0]['value']['#size'] = 10;
+  $form['#submit'][] = 'impact_registration_form_profile2_edit_library_registration_form_submit';
+	$form['#validate'][] = 'impact_registration_user_register_validate';
+}
+// 1 = after registration
+function impact_registration_form_profile2_edit_library_registration_form_submit(&$form, &$form_state) {
+  $form_state['redirect'] = array(
+    'myimpact', 
+    array('query'=>array('status' => 1))
+  );
+}
+// use library_lookup table in the database to collect available states
+function _impact_registration_library_states() {
+  $query = "SELECT DISTINCT library_state FROM {library_lookup} ";
+  $result = db_query($query);
+  $states = array();
+  $i = 0;
+  foreach ($result as $state) {
+    $states[$i] = $state -> library_state;
+    $i++;
+  }
+  array_unshift($states, 'Select your state');
+  return drupal_map_assoc($states);
+}
+/**
+ * Helper function to populate the second dropdown. This would normally be
+ * pulling data from the database.
+ *
+ * @param key. This will determine which set of options is returned.
+ *
+ * @return array of options
+ */
+function _impact_registration_library_names($key = '') {
+    if($key != '') {
+      $query = "SELECT fscs_key, library_name  FROM {library_lookup} WHERE library_state = '$key' 
+        ORDER BY library_name";
+      $result = db_query($query);
+      $result_keyed = $result->fetchAllKeyed();
+      array_unshift($result_keyed, 'Select your system\'s name');
+  	  return $result_keyed;
+    }
+    else {
+      return array('fscskey' => 'Select your Library\'s State');
+    }
+}
+/**
+ * Selects just the second dropdown to be returned for re-rendering
+ *
+ * @return renderable array (the second dropdown)
+ */
+function impact_registration_state_change_callback(&$form, $form_state) {
+    return $form['profile_library_registration']['field_library_reg_system']['und'];
+}
+
+
+/**
+ * Submit function for the user account and profile editing form.
+ */
+
+//  redirect after password change
+function impact_registration_form_user_profile_form_alter(&$form, &$form_state) {
+	//$form['#submit'][] = 'impact_registration_user_profile_form_submit';
+}
+// 3 = change password
+function impact_registration_user_profile_form_submit($form, &$form_state) {
+  //$form_state['redirect'] = array(
+  //  'myimpact', 
+  //  array('query'=>array('status' => 3))
+  //);
+}
+// redirect login block (use log in tab while registering new account)
+function impact_registration_form_user_login_alter(&$form, &$form_state) {
+	$form['#action'] = '';
+	$form['#submit'][] = 'impact_registration_login_redirect';
+}// redirect sidebar login
+function impact_registration_form_user_login_block_alter(&$form, &$form_state) {
+	$form['#action'] = '';
+	$form['#submit'][] = 'impact_registration_login_redirect';
+}
+// redirect to myimpact (no status)
+// copied user_login_submit from user.module and changed redirect
+function impact_registration_login_redirect($form, &$form_state) {
+  $form_state['redirect'] = 'myimpact';
+}
+// send warning if system is already registered
+function impact_registration_user_register_validate(&$form, &$form_state) {
+$fscs = $form_state['values']['profile_library_registration']['field_library_reg_system']['und'][0]['value'];
+
+$query = "SELECT field_library_reg_system_value FROM {field_data_field_library_reg_system } WHERE field_library_reg_system_value = '$fscs'";
+$result = db_query($query);
+if($result -> rowCount() > 0)
+	form_set_error('field_library_reg_system', 'This library is already registered, if this is an error, please <a href="/contact">contact us immediately.</a>');
+}

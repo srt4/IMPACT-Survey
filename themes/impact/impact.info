@@ -1,0 +1,28 @@
+; $Id$ 
+name = IMPACT
+description = Modified version of Kanji
+core = 7.x
+engine = phptemplate
+stylesheets[all][] = style.css
+stylesheets[all][] = local.css
+stylesheets[print][] = print.css
+stylesheets[all][] = sf/css/superfish.css
+stylesheets[all][] = sf/css/theme.css
+stylesheets[all][] = impact.css
+stylesheets[all][] = center.css
+scripts[] = sf/js/superfish.js
+
+regions[highlighted] = Highlighted
+regions[search_box] = Search box
+regions[sidebar_first] = sidebar first
+regions[sidebar_second] = sidebar second
+regions[header_top] = header top
+regions[header] = header
+regions[preface_top] = preface top
+regions[content_top] = content top
+regions[content] = content
+regions[content_bottom] = content bottom
+regions[postscript_bottom] = postscript bottom
+regions[footer_message] = Footer message
+regions[footer_bottom] = footer bottom
+

@@ -1,0 +1,16 @@
+<?php // $Id$
+
+/**
+* Implements hook_trigger_info().
+*
+* Defines all the triggers that this module implements triggers for.
+*/
+function impact_fielding_dates_trigger_info() {
+	return array(
+		'impact_fielding_dates' => array (
+			'impact_fielding_dates_presave' => array (
+				'label' => t('After saving or changing the Fielding Dates Form'),
+			),
+		),
+	);
+}

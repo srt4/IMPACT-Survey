@@ -1,0 +1,318 @@
+/* $Id: colors.css,v 1.1.2.15 2011/01/13 09:03:00 jmburnz Exp $ */
+/**
+ * Pixture Reloaded Colors
+ */
+/* Main Wrappers */
+body {
+  color: #555555;
+  background: #f2f7ec url(bg-wall.png) repeat-x left top;
+}
+div#page {
+  background: #feffff url(header-tile.png) repeat-x left top;
+}
+
+/* HTML elements */
+fieldset legend,
+.form-item label {
+  color: #666666;
+}
+blockquote {
+  background: #e1ecd1;
+}
+
+/* Lists */
+.item-list ul li {
+  list-style-image: url(bullet-round.png);
+}
+.links {
+  color: #666666;
+}
+/* Menus */
+li.leaf {
+  list-style-image: url(bullet-round.png);
+}
+li.collapsed {
+  list-style-image: url(bullet-sm-arrow-right.png);
+}
+li.expanded {
+  list-style-image: url(bullet-sm-arrow-down.png);
+}
+
+/* Links */
+a:link,
+a:visited,
+a:active,
+a.active {
+  color: #3c7c41;
+}
+a:hover,
+a:focus {
+  color: #54a85b;
+}
+
+/* Tables */
+tr.odd {
+  background: #f2f7ec;
+}
+tr.even {
+  background: #ffffff;
+}
+
+/* Header */
+#header {
+  background: url(header.png) no-repeat top left;
+}
+#site-slogan,
+#site-name a,
+.region-header #block-user-login label,
+.nav li a:link,
+.nav li a:hover,
+.nav li a:focus,
+.nav li a:visited,
+.nav li a:active,
+.nav li a.active,
+.nav li a:visited:hover {
+  color: #ffffff;
+}
+#menu-bar,
+#primary-menu-bar {
+  background: url(menu-tile.png) repeat-x 0 0;
+}
+.region-header .form-text,
+.region-header .form-submit {
+  border-color: #3c7c41;
+}
+
+/* Footer */
+#footer {
+  background: #0e3d0b; /* fallback for browsers that don't support CSS gradients */
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0e3d0b), to(#6beb37));
+  background-image: -moz-linear-gradient(-90deg, #0e3d0b, #6beb37);
+}
+#footer,
+#footer a {
+  color: #ffffff;
+}
+#footer #block-node-recent {
+  color: #444444;
+}
+#footer #block-node-recent a {
+  color: #3c7c41;
+}
+
+/* Sidebar */
+.sidebar {
+  background: #feffff;
+}
+
+/* Blocks */
+.block-inner {
+  background: #e1ecd2;
+}
+.block-title {
+  color: #ffffff;
+  background: #a0c370;
+}
+.block .article,
+.block .article-sticky {
+  background: #ffffff;
+}
+/* Strip backgrounds */
+#header-region .block-inner,
+#block-system-main .block-inner,
+#footer .block-inner,
+#footer .block .block-title {
+  background: none;
+}
+
+/* Poll */
+.poll .bar {
+  background-color: #ececec;
+  border: solid 1px #a5a5a5;
+}
+.poll .bar .foreground {
+  background: #3c7c41 url(bg-lbar.png) repeat-x center left;
+}
+
+/* Articles */
+#main-content .article {
+  background: #ffffff;
+}
+.article h2 {
+  border-bottom: solid 1px #e1ecd2;
+}
+.article h2 a:hover {
+  color: #477b4d;
+}
+.article-sticky h2 {
+  border-bottom: solid 1px #ffffff;
+}
+.article-submitted {
+  color: #666666;
+}
+#main-content .article-teaser {
+  border: 1px solid #e1ecd2;
+}
+#main-content .article-teaser.article-sticky {
+  background: #e1ecd2;
+}
+
+/* Comments */
+.comment {
+  background: #ffffff;
+}
+.comment-submitted {
+  color: #666666;
+}
+#comments .odd {
+  background: #e1ecd2;
+}
+
+/* Aggregator */
+#aggregator .feed-source {
+  background-color: #ececec;
+  border: 1px solid #c8c8c8;
+}
+
+/* Forum */
+#forum td.container {
+  background: #dadada;
+}
+#forum thead, 
+#forum tbody {
+  border: none;
+}
+
+/* Profile */
+#profile .profile {
+  border: 1px solid #a5a5a5;
+}
+
+/* Administer */
+div.admin-panel {
+  background: #f2f7ec;
+}
+div.admin-panel h3 {
+  background: #a0c370;
+  color: #ffffff;
+}
+
+/* Pager */
+div.item-list ul.pager li {
+  border: 1px solid #e1ecd2;
+}
+div.item-list ul.pager li:hover,
+div.item-list ul.pager li:focus {
+  border: 1px solid #a0c370;
+  color: #3c7c41;
+}
+div.item-list ul.pager li.pager-current {
+  border: 1px solid #a0c370;
+}
+
+/* Local task tabs */
+ul.primary li a {
+  background: #ffffff;
+  border: solid 1px #e1ecd2;
+}
+ul.primary li a:hover {
+  background: #ffffff;
+  border: solid 1px #a0c370;
+}
+ul.primary li a.active,
+ul.primary li.active a {
+  border: solid 1px #a0c370;
+  background: #e1ecd2;
+  color: #000000;
+}
+ul.primary li a.active:hover,
+ul.primary li a.active:focus {
+  border: solid 1px #a0c370;
+  background: #e1ecd2;
+  color: #000000;
+}
+
+/* Superfish Skin */
+.sf-menu.sf-style-default li,
+.sf-navbar.sf-style-default {
+  background: transparent;
+}
+.sf-menu.sf-style-default li li {
+  background: #0e3d0b;
+}
+.sf-menu.sf-style-default li li li {
+  background: #0e3d0b;
+}
+.sf-menu.sf-style-default li:hover,
+.sf-menu.sf-style-default li.sfHover,
+.sf-menu.sf-style-default li.active a,
+.sf-menu.sf-style-default a:focus,
+.sf-menu.sf-style-default a:hover,
+.sf-menu.sf-style-default a:active,
+.sf-navbar.sf-style-default li li {
+  background: #a0c370;
+}
+.sf-navbar.sf-style-default li ul li ul {
+  background-color: transparent;
+}
+/* .sf-horizontal */
+.sf-menu.sf-horizontal a {
+  border: 0 !important;
+  color: #ffffff !important;
+}
+/* .sf-navbar */
+.sf-navbar.sf-style-default li ul {
+  background-color: transparent !important;
+  width: 100%;
+}
+.sf-navbar > li > ul > li {
+  border-bottom: 1px solid #3c7c41;
+}
+/* .sf-vertical */
+.sf-menu.sf-vertical a {
+  border: 0 !important;
+  color: #3c7c41;
+}
+.sf-menu.sf-vertical a:hover,
+.sf-menu.sf-vertical a:focus,
+.sf-menu.sf-vertical ul a,
+.sf-menu.sf-vertical ul ul a,
+.sf-menu.sf-vertical ul ul ul a,
+.sf-menu.sf-vertical ul ul ul ul a {
+  color: #ffffff !important;
+}
+
+/* Calendar styles */
+.calendar-calendar div.date-nav {
+  background-color: transparent;
+  color: #3c7c41;
+}
+.calendar-calendar div.date-nav a,
+.calendar-calendar div.date-nav h3 {
+  color: #3c7c41;
+}
+.calendar-calendar td {
+  color: #000000;
+}
+.calendar-calendar th {
+  background-color: #e1ecd1;
+  color: #3c7c41;
+  border: 1px solid #e1ecd1;
+}
+.calendar-calendar th.days {
+  background-color: #ffffff;
+  color: #3c7c41;
+}
+.calendar-calendar tr td.today,
+.calendar-calendar tr.odd td.today,
+.calendar-calendar tr.even td.today {
+  background-color: #e1ecd1;
+}
+.calendar-calendar td.calendar-agenda-hour,
+.calendar-calendar td.calendar-agenda-items,
+.calendar-calendar td.calendar-agenda-hour {
+  border-color: #e1ecd1;
+}
+.view-content .calendar-calendar ul.inline li {
+  border: 1px solid #e1ecd1;
+}

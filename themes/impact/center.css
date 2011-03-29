@@ -1,0 +1,43 @@
+/* $Id$ */
+#center h1 {
+    color: #608C13;
+    font-size: 2em;
+    font-weight: bold
+}
+
+#center h2 {
+    color: #7B309B;
+    font-size: 1.67em
+}
+
+#center h3 {
+    color: #809F45;
+    font-size: 1.33em;
+    font-weight: bold
+}
+
+#center h4 {
+    color: #AA33DE;
+    font-size: 1.167em;
+    font-style: italic
+}
+
+#center h5 {
+    color: #47680E;
+    font-size: 1em;
+    font-weight: bold;
+    font-style: italic
+}
+
+#center h6 {
+    color: #4B1065;
+    font-size: .8em
+}
+
+#center a {
+    color: #00B0F0
+}
+
+#center p {
+    font-size: 1em
+}

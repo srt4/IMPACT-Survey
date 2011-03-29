@@ -1,0 +1,5 @@
+; $Id$
+name = contact_from
+description = "Modify the built in contact form so that the from field is a dropdown list."
+core = 7.x
+package = IMPACT

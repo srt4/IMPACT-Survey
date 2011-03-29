@@ -1,0 +1,5 @@
+; $Id$
+name = Intake Form
+description = "After registering, libraries must take the impact form to provide us more information."
+core = 7.x
+package = IMPACT

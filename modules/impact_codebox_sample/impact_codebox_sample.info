@@ -1,0 +1,5 @@
+; $Id$
+name = IMPACT Codebox
+description = "Provide popup boxes and banners with a survey link included."
+core = 7.x
+package = IMPACT
