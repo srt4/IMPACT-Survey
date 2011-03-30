@@ -11,12 +11,14 @@ $outlets = db_select('square_feet', 's')
 
 <?php
 $sum = 0;
+$submit = 0;
 $table = "<table><tr><th>Library Outlet</th><th>Square Feet</th></tr>";
 foreach ($outlets as $outlet) {
 	$table .= "<tr>";
 	$table .= "<td>$outlet->lib_name</td>";
 	if ($outlet->sq_feet == -1) {
 		$table .= "<td><input type='text'/></td>";
+		$submit = 1;
 	} else if ($outlet->sq_feet == -3){
 		$table .= "<td>NA</td>";
 	} else {
@@ -28,4 +30,9 @@ foreach ($outlets as $outlet) {
 $table .= "</table>";
 ?>
 sum:
-<?php echo $sum; echo $table;?>
+<?php 
+	echo $sum; echo $table;
+	if($submit) {
+		echo "<input type='submit'>";
+	}
+?>

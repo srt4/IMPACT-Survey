@@ -1,10 +1,4 @@
-<?php
-print_r($user);
-
-
-
-
-// $Id$?>
+<?php // $Id$?>
   <div id="header">
     <?php if($page['header_top']): ?>
       <div id="headerTop" class="blockregion">
@@ -120,40 +114,7 @@ print_r($user);
             if (!user_is_logged_in() && $status != 1): ?>
             	<p>Please log in to access your profile.</p>
             <?php elseif (user_is_logged_in()): ?>
-            	<?php 
-                //Name
-                $uid = $user->uid;
-                $query="select ";
-                
-                $sql="select field_library_first_name_value as value from {field_data_field_library_first_name} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
-                $firstname=db_query($sql,array('uid'=>$uid))->fetchField();
-                
-                $sql="select field_library_last_name_value as value from {field_data_field_library_last_name} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
-                $lastname=db_query($sql,array('uid'=>$uid))->fetchField();
-
-                $sql="select field_library_job_title_value as value from {field_data_field_library_job_title} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
-                $jobtitle=db_query($sql,array('uid'=>$uid))->fetchField();
-
-                $sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
-                $phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
-
-                print "<b>$system_name</b>";
-                print "Username: ".$user->name.'<br>';
-                print "Registered User:  ".$firstname." ".$lastname.'<br>';
-                print $jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>';
-                print $user->mail;
-
-                print "<div style='color:purple;' >Next Step</div>";
-              ?>
-
-
-
-
-
-
-
-
-                <?php print $myimpact; ?>
+            	<?php print $myimpact; ?>
             <?php endif; ?>
             <div class="feedicons">
               <?php echo $feed_icons ?>

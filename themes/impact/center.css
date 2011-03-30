@@ -17,7 +17,7 @@
 }
 
 #center h4 {
-    color: #AA33DE;
+    color: #4b1065;
     font-size: 1.167em;
     font-style: italic
 }
@@ -35,7 +35,8 @@
 }
 
 #center a {
-    color: #00B0F0
+    color: #00B0F0;
+    text-decoration:underline;
 }
 
 #center p {

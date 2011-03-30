@@ -127,7 +127,7 @@ Click to copy <object id='clipboard'
 	<param name='bgcolor' value='#ffffff' />
 	<param name='wmode' value='transparent' />
 	<param name='flashvars' value='callback=f1' />
-	<!--Below is the positon of SWF--> <embed src='clipboard.swf'
+	<!--Below is the positon of SWF--> <embed src='http://impactsurvey.org/drupal/sites/impactsurvey.org/themes/impact/templates/clipboard.swf'
 		flashvars='callback=f1' quality='high' bgcolor='#ffffff' width='16'
 		height='16' wmode='transparent' name='clipboard' align='middle'
 		allowscriptaccess='always' allowfullscreen='false'
