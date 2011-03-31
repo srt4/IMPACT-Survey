@@ -1,10 +1,5 @@
-<?php
-print_r($user);
-
-
-
-
 // $Id$?>
+<?php
   <div id="header">
     <?php if($page['header_top']): ?>
       <div id="headerTop" class="blockregion">
