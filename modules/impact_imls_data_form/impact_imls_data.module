@@ -1,0 +1,21 @@
+<?php // $Id
+/*
+ * Implements hook_menu().
+ */
+
+function impact_imls_data_menu() {
+  // This is the minimum information you can provide for a menu item. This menu
+  // item will be created in the default menu.
+  $items['imls_data/square_feet'] = array(
+    'title' => 'Page Example',
+    'page callback' => 'imls_description',
+    'access callback' => TRUE,
+    'expanded' => TRUE,
+  );
+  return $items;
+}
+
+
+function imls_description() {
+  return array('#markup' => t('The page_example provides two pages, "simple" and "arguments". The <a href="@simple_link">simple page</a> just returns a renderable array for display. The <a href="@arguments_link">arguments page</a> takes two arguments and displays them, as in @arguments_link', array('@simple_link' => url('examples/page_example/simple', array('absolute' => TRUE)), '@arguments_link' => url('examples/page_example/arguments/23/56', array('absolute' => TRUE)))));
+}
