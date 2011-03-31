@@ -47,7 +47,7 @@
       // added by Yan for IMPACT profile page 3-3-10
       if ($_GET['q'] == 'node/51') {
           $variables['theme_hook_suggestions'][] = "page__myimpact";
-          $output = '';
+          /*$output = '';
           if ($_GET['status'] == 1 && !$variables['logged_in']) {
               $output = '<h3>Thank you for your application</h3>Your account is currently pending approval by the site administrator.
 In the meantime, a welcome message with further instructions has been sent to your e-mail address.<br><a href="/">Home</a>';
@@ -90,7 +90,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
               }
           }
           $variables['myimpact'] = $output;
-      }
+     */ }
       
       
       //3-21
