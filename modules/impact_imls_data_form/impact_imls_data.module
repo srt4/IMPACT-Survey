@@ -12,10 +12,25 @@ function impact_imls_data_menu() {
     'access callback' => TRUE,
     'expanded' => TRUE,
   );
+  $items['imls_data/square_feet/submit'] = array(
+    'page callback' => 'submit_square_feet',
+    'access callback' => TRUE,
+    //'type' => MENU_CALLBACK,
+  );
   return $items;
 }
 
 
-function imls_description() {
-  return array('#markup' => t('The page_example provides two pages, "simple" and "arguments". The <a href="@simple_link">simple page</a> just returns a renderable array for display. The <a href="@arguments_link">arguments page</a> takes two arguments and displays them, as in @arguments_link', array('@simple_link' => url('examples/page_example/simple', array('absolute' => TRUE)), '@arguments_link' => url('examples/page_example/arguments/23/56', array('absolute' => TRUE)))));
+function submit_square_feet() {
+  foreach($_POST as $outlet_id => $sq_feet) {
+    if($sq_feet > 0) {
+      db_update('square_feet')
+          ->fields(array(
+            'sq_feet' => $sq_feet,
+          ))
+          ->condition('id', $outlet_id)
+          ->execute();
+    }
+  }
+  return array('#markup' => '<p>' . t('Your library area has been updated.') . '</p>');
 }
