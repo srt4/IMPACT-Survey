@@ -120,40 +120,80 @@ print_r($user);
             if (!user_is_logged_in() && $status != 1): ?>
             	<p>Please log in to access your profile.</p>
             <?php elseif (user_is_logged_in()): ?>
-            	<?php 
-                //Name
+            	            	<?php 
+
                 $uid = $user->uid;
-                $query="select ";
-                
+
+                //website
+                $sql="select field_library_system_website_value as value from {field_data_field_library_system_website} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $website=db_query($sql,array('uid'=>$uid))->fetchField();
+
+                //Name
                 $sql="select field_library_first_name_value as value from {field_data_field_library_first_name} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $firstname=db_query($sql,array('uid'=>$uid))->fetchField();
-                
+
                 $sql="select field_library_last_name_value as value from {field_data_field_library_last_name} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $lastname=db_query($sql,array('uid'=>$uid))->fetchField();
 
+                //Job title
                 $sql="select field_library_job_title_value as value from {field_data_field_library_job_title} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $jobtitle=db_query($sql,array('uid'=>$uid))->fetchField();
 
+                //Phone number
                 $sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
 
-                print "<b>$system_name</b>";
-                print "Username: ".$user->name.'<br>';
-                print "Registered User:  ".$firstname." ".$lastname.'<br>';
-                print $jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>';
-                print $user->mail;
+                //Output
+                $output = "<h3>$system_name</h3><em>$website</em>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>".$jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail."<h4>Next Step</h4>";
 
-                print "<div style='color:purple;' >Next Step</div>";
+                print $output;
+                //"Next Step" logic
+                //get the forms filled out
+                $sql="select type from {profile} where uid=:uid order by type";
+                $results=db_query($sql,array('uid'=>$uid));
+
+                $i=0;
+                foreach($results as $type){
+                    $user_filled[$i]=$type->type;
+                    $i++;
+                }
+
+                $flag=0;
+                foreach($user_filled as $r){
+                    if ($r=="intake_form") $flag='1';
+                }
+
+                if ($flag=='1'){
+                foreach($user_filled as $r){
+                   
+                   if ($r=="survey_fielding") $flag='2';
+                }
+                }
+
+                if ($flag=='2'){
+                foreach($user_filled as $r){
+                     if ($r=="imls_data") $flag='3';
+                }
+                }  
+
+                switch($flag){
+                    case 0: 
+                        print "1. Complete the <a href=./profile-intake_form>Library Information Form</a>";
+                        break;
+                    case 1:
+                        print "2. Select <a href=./profile-survey_fielding>Library Fielding Dates</a>";
+                        break;
+                    case 2:
+                        print "3. <a href=./profile-imls_data>Verify IMLS Data</a>";
+                        break;
+                    case 3:
+                        print "4. <a href=./codebox>Link to the Web Survey</a>";
+                        break; 
+                }
+                //print $flag;
               ?>
-
-
-
-
-
-
-
-
-                <?php print $myimpact; ?>
+            	
+                <?php //print $myimpact; ?>
             <?php endif; ?>
             <div class="feedicons">
               <?php echo $feed_icons ?>
