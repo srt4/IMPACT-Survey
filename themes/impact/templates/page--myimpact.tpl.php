@@ -141,9 +141,11 @@
                 $output = "<h3>$system_name</h3><em>$website</em>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>".$jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail."<h4>Next Step</h4>";
 
                 print $output;
-                //"Next Step" logic
+                
+                //"Next Step" 
+                
                 //get the forms filled out
-                $sql="select type from {profile} where uid=:uid order by type";
+                $sql="select type from {profile} where uid=:uid";
                 $results=db_query($sql,array('uid'=>$uid));
 
                 $i=0;
@@ -152,37 +154,52 @@
                     $i++;
                 }
 
-                $flag=0;
+                //check IMLS
+                $flag=0;            
                 foreach($user_filled as $r){
-                    if ($r=="intake_form") $flag='1';
+                     if ($r=="imls_data") $flag='1';
+                }
+                
+                //check Information Form
+                if($flag=='1'){
+                foreach($user_filled as $r){
+                    if ($r=="intake_form") $flag='2';
+                }
                 }
 
-                if ($flag=='1'){
-                foreach($user_filled as $r){
-                   
-                   if ($r=="survey_fielding") $flag='2';
-                }
-                }
-
+                //chek Dates
                 if ($flag=='2'){
                 foreach($user_filled as $r){
-                     if ($r=="imls_data") $flag='3';
+                   if ($r=="survey_fielding") $flag='3';
+                }              
+                
+           	    //get dates
+           	    $sql="select field_fielding_date_value2 from {profile} as p,{field_data_field_fielding_date} as f where p.uid=:uid and p.type='survey_fielding' and f.entity_id=p.pid";
+                $date=db_query($sql,array('uid'=>$uid))->fetchField();
+                $date=strtotime($date);
+                
+                //check whether the date is expired.
+                if($date<time()){
+                	$flag=4;
                 }
-                }  
-
+                }
+                
                 switch($flag){
                     case 0: 
-                        print "1. Complete the <a href=./profile-intake_form>Library Information Form</a>";
+                        print "1. Complete the <a href=./profile-imls_data>Library IMLS Data</a>";
                         break;
                     case 1:
-                        print "2. Select <a href=./profile-survey_fielding>Library Fielding Dates</a>";
+                        print "2. Select <a href=./profile-intake_form>Information Form</a>";
                         break;
                     case 2:
-                        print "3. <a href=./profile-imls_data>Verify IMLS Data</a>";
+                        print "3. <a href=./profile-survey_fielding>Verify Library Fielding Dates</a>";
                         break;
                     case 3:
                         print "4. <a href=./codebox>Link to the Web Survey</a>";
                         break; 
+                    case 4:
+                        print "Your report is done, view it <a href=./reports>here</a>";
+                        break;            
                 }
                 //print $flag;
               ?>
