@@ -1,10 +1,4 @@
-<?php
-print_r($user);
-
-
-
-
-// $Id$?>
+<?php //test $Id$ ?>
   <div id="header">
     <?php if($page['header_top']): ?>
       <div id="headerTop" class="blockregion">
@@ -120,40 +114,97 @@ print_r($user);
             if (!user_is_logged_in() && $status != 1): ?>
             	<p>Please log in to access your profile.</p>
             <?php elseif (user_is_logged_in()): ?>
-            	<?php 
-                //Name
+            	            	<?php 
+
                 $uid = $user->uid;
-                $query="select ";
-                
+
+                //website
+                $sql="select field_library_system_website_value as value from {field_data_field_library_system_website} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $website=db_query($sql,array('uid'=>$uid))->fetchField();
+
+                //Name
                 $sql="select field_library_first_name_value as value from {field_data_field_library_first_name} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $firstname=db_query($sql,array('uid'=>$uid))->fetchField();
-                
+
                 $sql="select field_library_last_name_value as value from {field_data_field_library_last_name} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $lastname=db_query($sql,array('uid'=>$uid))->fetchField();
 
+                //Job title
                 $sql="select field_library_job_title_value as value from {field_data_field_library_job_title} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $jobtitle=db_query($sql,array('uid'=>$uid))->fetchField();
 
+                //Phone number
                 $sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
 
-                print "<b>$system_name</b>";
-                print "Username: ".$user->name.'<br>';
-                print "Registered User:  ".$firstname." ".$lastname.'<br>';
-                print $jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>';
-                print $user->mail;
+                //Output
+                $output = "<h3>$system_name</h3><em>$website</em>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>".$jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail."<h4>Next Step</h4>";
 
-                print "<div style='color:purple;' >Next Step</div>";
+                print $output;
+                
+                //"Next Step" 
+                
+                //get the forms filled out
+                $sql="select type from {profile} where uid=:uid";
+                $results=db_query($sql,array('uid'=>$uid));
+
+                $i=0;
+                foreach($results as $type){
+                    $user_filled[$i]=$type->type;
+                    $i++;
+                }
+
+                //check IMLS
+                $flag=0;            
+                foreach($user_filled as $r){
+                     if ($r=="imls_data") $flag='1';
+                }
+                
+                //check Information Form
+                if($flag=='1'){
+                foreach($user_filled as $r){
+                    if ($r=="intake_form") $flag='2';
+                }
+                }
+
+                //chek Dates
+                if ($flag=='2'){
+                foreach($user_filled as $r){
+                   if ($r=="survey_fielding") $flag='3';
+                }              
+                
+           	    //get dates
+           	    $sql="select field_fielding_date_value2 from {profile} as p,{field_data_field_fielding_date} as f where p.uid=:uid and p.type='survey_fielding' and f.entity_id=p.pid";
+                $date=db_query($sql,array('uid'=>$uid))->fetchField();
+                $date=strtotime($date);
+                
+                //check whether the date is expired.
+                if($date<time()){
+                	$flag=4;
+                }
+                }
+                
+                switch($flag){
+                    case 0: 
+                        print "1. Complete the <a href=./profile-imls_data>Library IMLS Data</a>";
+                        break;
+                    case 1:
+                        print "2. Select <a href=./profile-intake_form>Information Form</a>";
+                        break;
+                    case 2:
+                        print "3. <a href=./profile-survey_fielding>Verify Library Fielding Dates</a>";
+                        break;
+                    case 3:
+                        print "4. <a href=./codebox>Link to the Web Survey</a>";
+                        break; 
+                    case 4:
+                        print "Your report is done, view it <a href=./reports>here</a>";
+                        break;            
+                }
+                //print $flag;
               ?>
-
-
-
-
-
-
-
-
-                <?php print $myimpact; ?>
+            	
+                <?php //print $myimpact; ?>
             <?php endif; ?>
             <div class="feedicons">
               <?php echo $feed_icons ?>
