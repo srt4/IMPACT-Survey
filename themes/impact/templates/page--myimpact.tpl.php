@@ -1,4 +1,4 @@
-<?php // $Id$ ?>
+<?php //test $Id$ ?>
   <div id="header">
     <?php if($page['header_top']): ?>
       <div id="headerTop" class="blockregion">
