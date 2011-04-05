@@ -35,8 +35,7 @@
           array_unshift($secondary_menu, $welcome);
           
           
-          print theme('links__system_secondary_menu', array('links' => $secondary_menu, 'attributes' => array('id' => 'secondary-menu', 'class' => array('links', 'inline', 'clearfix'))));?>
-			<?php print $field_date;?>       
+          print theme('links__system_secondary_menu', array('links' => $secondary_menu, 'attributes' => array('id' => 'secondary-menu', 'class' => array('links', 'inline', 'clearfix'))));?>    
           </div>
       <?php endif; ?>
             
@@ -62,7 +61,13 @@
           <?php endif; ?>
         </div><!-- /siteInfo -->
       </div> <!-- /siteName-->
-        
+         
+         
+         <!--  fielding date -->
+         <div id='date' style="float: right;margin: -4px 45px 0 0;">
+           <?php  print $field_date;?>  
+         </div> 
+         
       <?php if($page['header']): ?>
         <div id="header-region" class="blockregion">
           <?php print render($page['header']); ?>
