@@ -167,12 +167,16 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 $sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
 
-                //Output
-                $output = "<h3>$system_name</h3>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>".$jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail."<h4>Next Step</h4>";
+               //Output
+                $output = "<h3>$system_name</h3><em>$website</em>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>".$jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail;
 
                 print $output;
                 
+                //Survey URL: 
+                print "<br><Br>Survey URL:"."http://www.uwsrd.org/impact/index.asp?LibID=[current-user:profile-library-registration:field-library-reg-system]"; 
+                            
                 //"Next Step" 
+                print "<Br><h4>Next Step</h4>";
                 
                 //get the forms filled out
                 $sql="select type from {profile} where uid=:uid";
