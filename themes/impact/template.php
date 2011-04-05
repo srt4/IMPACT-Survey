@@ -69,6 +69,12 @@
 }
     //output   add many spaces; if we use CSS to control, please delete these spaces
     $variables['field_date']='<br>Fielding Dates:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<br>'.$field_date.'&nbsp&nbsp&nbsp&nbsp';
+    
+    
+      //do not diplay the fielding date if it is empty
+    if ($date1=='' && $date2==0) $variables['field_date']='';
+    
+    
     // end 4-5
   }
   
