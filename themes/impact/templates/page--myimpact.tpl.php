@@ -110,11 +110,23 @@
               <ul class="action-links"><?php //print render($action_links); ?></ul>
             <?php endif; ?>
             <h2>My IMPACT</h2>
-            <?php $status = isset($_GET['status']) ? $_GET['status'] : '';
+            <?php $status = isset($_GET['status']) ? $_GET['status'] : '';?>
+            
+            <?php 
+            //redirect to this content after creating an account
+            if(!user_is_logged_in() && $status = 1){
+            print '<h3>Thank you for your application</h3>Your account is currently pending approval by the site administrator.
+In the meantime, a welcome message with further instructions has been sent to your e-mail address.<br><a href="/">Home</a>';
+            }
+            ?>
+        
+            <?php 
+            // check whether the user has the access
             if (!user_is_logged_in() && $status != 1): ?>
-            	<p>Please log in to access your profile.</p>
+            	<p>Please log in to access your profile.</p>	
             <?php elseif (user_is_logged_in()): ?>
-            	            	<?php 
+             
+            <?php 
 
                 $uid = $user->uid;
 
