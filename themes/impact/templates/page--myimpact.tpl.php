@@ -135,7 +135,7 @@
             
             <?php 
             //redirect to this content after creating an account
-            if(!user_is_logged_in() && $status = 1){
+            if(!user_is_logged_in() && $status == 1){
             print '<h3>Thank you for your application</h3>Your account is currently pending approval by the site administrator.
 In the meantime, a welcome message with further instructions has been sent to your e-mail address.<br><a href="/">Home</a>';
             }
