@@ -151,10 +151,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
 
                 $uid = $user->uid;
 
-                //website
-                $sql="select field_library_system_website_value as value from {field_data_field_library_system_website} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
-                $website=db_query($sql,array('uid'=>$uid))->fetchField();
-
+            
                 //Name
                 $sql="select field_library_first_name_value as value from {field_data_field_library_first_name} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $firstname=db_query($sql,array('uid'=>$uid))->fetchField();
@@ -171,7 +168,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 $phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
 
                 //Output
-                $output = "<h3>$system_name</h3><em>$website</em>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>".$jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail."<h4>Next Step</h4>";
+                $output = "<h3>$system_name</h3>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>".$jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail."<h4>Next Step</h4>";
 
                 print $output;
                 
