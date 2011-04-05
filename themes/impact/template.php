@@ -66,15 +66,15 @@
 
 
     $field_date=date('m/d/y', $date1).' - '.date('m/d/y', $date2);
-}
-    //output   add many spaces; if we use CSS to control, please delete these spaces
-    $variables['field_date']='<br>Fielding Dates:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<br>'.$field_date.'&nbsp&nbsp&nbsp&nbsp';
-    
+
+    //output   
+    $variables['field_date']="<br><span style='float: right;'>Fielding Dates:</span><br>".$field_date;
     
    //do not diplay the fielding date if it is empty
     if(isset($date1,$date2)){
     if ($date2=='' && $date1=='') $variables['field_date']='';
     }
+   }
     
     // end 4-5
   }
