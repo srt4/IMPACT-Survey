@@ -168,7 +168,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 $phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
 
                //Output
-                $output = "<h3>$system_name</h3><em>$website</em>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>".$jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail;
+                $output = "<h3>$system_name</h3>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>".$jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail;
 
                 print $output;
                 
