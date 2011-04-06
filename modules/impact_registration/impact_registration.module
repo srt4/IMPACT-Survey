@@ -7,6 +7,10 @@
  *
  */
 function impact_registration_form_profile2_edit_library_registration_form_alter(&$form, &$form_state) {
+  // Change email description.
+  $form['account']['mail']['#description'] = 'A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used for important information from us or if you wish to receive a new password.';
+  
+  // Add ajax to fields
   $form['profile_library_registration']['field_library_reg_state']['und']['#options'] = _impact_registration_library_states();
   //$form['profile_library_registration']['field_library_reg_state']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
   $form['profile_library_registration']['field_library_reg_state']['und']['#ajax'] = array(
@@ -29,7 +33,7 @@ function impact_registration_form_profile2_edit_library_registration_form_alter(
   /*
     $selected_system = isset($form_state['values']['profile_library_registration']['field_library_reg_system']['und'][0]['value']) 
     ? $form_state['values']['profile_library_registration']['field_library_reg_system']['und'][0]['value'] 
-    : 'derp';
+    : '';
   */  
     
   // Pre populate alternative system name
@@ -79,6 +83,7 @@ function impact_registration_form_profile2_edit_library_registration_form_alter(
 	  '#after_build' => array (0 => 'field_form_element_after_build'),
 	  '#weight' => 5,
 	);
+	dpm($form);
 }
 // 1 = after registration
 function impact_registration_form_profile2_edit_library_registration_form_submit(&$form, &$form_state) {
@@ -114,11 +119,11 @@ function _impact_registration_library_names($key = '') {
         ORDER BY library_name";
       $result = db_query($query);
       $result_keyed = $result->fetchAllKeyed();
-      array_unshift($result_keyed, 'Select your system\'s name');
+      array_unshift($result_keyed, 'Select your system');
   	  return $result_keyed;
     }
     else {
-      return array('fscskey' => 'Select your Library\'s State');
+      return array('fscskey' => ' -- ');
     }
 }
 /**
