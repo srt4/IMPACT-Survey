@@ -76,7 +76,8 @@ function impact_registration_form_profile2_edit_library_registration_form_alter(
 	  	'empty_option' => 'option_select',
 	  	'filter_xss' => FALSE,
 	  ),
-	  '#after_build' => array (0 => 'field_form_element_after_build')
+	  '#after_build' => array (0 => 'field_form_element_after_build'),
+	  '#weight' => 5,
 	);
 }
 // 1 = after registration
