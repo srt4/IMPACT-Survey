@@ -43,6 +43,41 @@ function impact_registration_form_profile2_edit_library_registration_form_alter(
   $form['profile_library_registration']['field_library_reg_extension']['und'][0]['value']['#size'] = 10;
   $form['#submit'][] = 'impact_registration_form_profile2_edit_library_registration_form_submit';
 	$form['#validate'][] = 'impact_registration_user_register_validate';
+	
+	// Proof of librarianship question
+	$form['profile_library_registration']['proof_of_librarianship'] = array (
+		'#entity_type' => 'profile2',
+	 	'#bundle' => 'library_registration',
+	  '#field_name' => 'field_library_reg_proof',
+	 	'#language' => 'und',
+	  '#field_parents' => array (0 => 'profile_library_registration'),
+	  '#columns' => array (0 => 'value'),
+	  '#title' => 'As a library, which of the following do you regularly interact with?', 
+	  '#description' => 'Proof of librarianship.', 
+	  '#required' => 1,
+	  '#delta' => 0,
+	  '#type' => 'select',
+	  '#default_value' => array (), 
+	  '#multiple' => FALSE,
+	  '#options' => array ( 
+	  	'_none' => '- Select a value -', 
+	  	'IPF' => 'IPF',
+	 		'IKR' => 'IKR',
+			'ILS' => 'ILS', 
+			'IDP' => 'IDP', 
+	  ), 
+	  '#value_key' => 'value',
+	  '#element_validate' => array (
+	    0 => 'impact_registration_proof_validate',
+	  ),
+	  '#properties' => array ( 
+	  	'strip_tags' => 1, 
+	  	'optgroups' => 1,
+	  	'empty_option' => 'option_select',
+	  	'filter_xss' => FALSE,
+	  ),
+	  '#after_build' => array (0 => 'field_form_element_after_build')
+	);
 }
 // 1 = after registration
 function impact_registration_form_profile2_edit_library_registration_form_submit(&$form, &$form_state) {
@@ -143,4 +178,15 @@ $query = "SELECT field_library_reg_system_value FROM {field_data_field_library_r
 $result = db_query($query);
 if($result -> rowCount() > 0)
 	form_set_error('field_library_reg_system', 'This library is already registered, if this is an error, please <a href="/contact">contact us immediately.</a>');
+}
+// Check answer to proof of librarianship question
+function impact_registration_proof_validate($element, $form_state) {
+  if ($element['#required'] && $element['#value'] == '_none') {
+    form_error($element, t('Proof of librarianship is required, please answer the question.'));
+  } 
+  else {
+    if ($element['#value'] != 'ILS') {
+        form_error($element, t('Are you really a librarian?'));
+    }
+  }
 }
