@@ -70,7 +70,7 @@
          
          <!--  fielding date -->
          <div id='date' style="float: right;margin: -106px 45px 0 0;">
-           <?php print $field_date;?>
+           <?php if(isset($filed_date)) print $field_date;?>
          </div> 
          
       <?php if($page['header']): ?>
