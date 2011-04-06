@@ -9,19 +9,34 @@
     <div id="headerWrapper">
       <?php if (!empty($secondary_menu)): ?>
         <div id="topMenu">
-          <?php 
+       <?php 
+             $uid = $user->uid;
           // add system name as link to profile at top of page
+       
+             //get the alternative name from field_data_field_library_name_pref
+   				$sql="select field_library_name_pref_value as value from {field_data_field_library_name_pref} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+   				$result=db_query($sql, array('uid'=>$uid));
+				$alt_name = '';
+   				foreach($result as $r){
+        			$alt_name=$r->value;
+   				}
+   
+   		if($alt_name==''){
           $fscs = 	token_replace("[current-user:profile-library-registration:field-library-reg-system]");
           $query = "SELECT library_name FROM {library_lookup} WHERE fscs_key = '$fscs'";
           $system_name = db_query($query)->fetchField();
+   		}
+   		else $system_name=$alt_name;
+   		
           $welcome = array( 
           		'href' => 'user',
           		'title' => "Welcome $system_name",
           );
           array_unshift($secondary_menu, $welcome);
           
-          print theme('links__system_secondary_menu', array('links' => $secondary_menu, 'attributes' => array('id' => 'secondary-menu', 'class' => array('links', 'inline', 'clearfix'))));?>
-        </div>
+          
+          print theme('links__system_secondary_menu', array('links' => $secondary_menu, 'attributes' => array('id' => 'secondary-menu', 'class' => array('links', 'inline', 'clearfix'))));?>    
+          </div>
       <?php endif; ?>
             
       <div id="searchBox">
@@ -46,7 +61,13 @@
           <?php endif; ?>
         </div><!-- /siteInfo -->
       </div> <!-- /siteName-->
-        
+         
+         
+         <!--  fielding date -->
+         <div id='date' style="float: right;margin: -4px 45px 0 0;">
+           <?php  print $field_date;?>  
+         </div> 
+         
       <?php if($page['header']): ?>
         <div id="header-region" class="blockregion">
           <?php print render($page['header']); ?>
@@ -110,18 +131,27 @@
               <ul class="action-links"><?php //print render($action_links); ?></ul>
             <?php endif; ?>
             <h2>My IMPACT</h2>
-            <?php $status = isset($_GET['status']) ? $_GET['status'] : '';
+            <?php $status = isset($_GET['status']) ? $_GET['status'] : '';?>
+            
+            <?php 
+            //redirect to this content after creating an account
+            if(!user_is_logged_in() && $status == 1){
+            print '<h3>Thank you for your application</h3>Your account is currently pending approval by the site administrator.
+In the meantime, a welcome message with further instructions has been sent to your e-mail address.<br><a href="/">Home</a>';
+            }
+            ?>
+        
+            <?php 
+            // check whether the user has the access
             if (!user_is_logged_in() && $status != 1): ?>
-            	<p>Please log in to access your profile.</p>
+            	<p>Please log in to access your profile.</p>	
             <?php elseif (user_is_logged_in()): ?>
-            	            	<?php 
+             
+            <?php 
 
                 $uid = $user->uid;
 
-                //website
-                $sql="select field_library_system_website_value as value from {field_data_field_library_system_website} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
-                $website=db_query($sql,array('uid'=>$uid))->fetchField();
-
+            
                 //Name
                 $sql="select field_library_first_name_value as value from {field_data_field_library_first_name} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $firstname=db_query($sql,array('uid'=>$uid))->fetchField();
@@ -137,12 +167,16 @@
                 $sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
 
-                //Output
-                $output = "<h3>$system_name</h3><em>$website</em>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>".$jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail."<h4>Next Step</h4>";
+               //Output
+                $output = "<h3>$system_name</h3>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>".$jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail;
 
                 print $output;
                 
+                //Survey URL: 
+                print "<br><Br>Survey URL:"."http://www.uwsrd.org/impact/index.asp?LibID=[current-user:profile-library-registration:field-library-reg-system]"; 
+                            
                 //"Next Step" 
+                print "<Br><h4>Next Step</h4>";
                 
                 //get the forms filled out
                 $sql="select type from {profile} where uid=:uid";
