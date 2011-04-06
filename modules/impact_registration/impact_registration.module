@@ -8,19 +8,38 @@
  */
 function impact_registration_form_profile2_edit_library_registration_form_alter(&$form, &$form_state) {
   $form['profile_library_registration']['field_library_reg_state']['und']['#options'] = _impact_registration_library_states();
-  $form['profile_library_registration']['field_library_reg_state']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
+  //$form['profile_library_registration']['field_library_reg_state']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
   $form['profile_library_registration']['field_library_reg_state']['und']['#ajax'] = array(
       'callback' => 'impact_registration_state_change_callback',
       'wrapper' => 'name-select',
     );
-  
   $selected = isset($form_state['values']['profile_library_registration']['field_library_reg_state']['und'][0]['value']) ? $form_state['values']['profile_library_registration']['field_library_reg_state']['und'][0]['value'] : '';
     
   $form['profile_library_registration']['field_library_reg_system']['und']['#options'] = _impact_registration_library_names($selected);
-  $form['profile_library_registration']['field_library_reg_system']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
+  //$form['profile_library_registration']['field_library_reg_system']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
   $form['profile_library_registration']['field_library_reg_system']['und']['#prefix'] = "<div id='name-select'>";
   $form['profile_library_registration']['field_library_reg_system']['und']['#suffix'] = "</div>";
-
+  $form['profile_library_registration']['field_library_reg_system']['und']['#ajax'] = array(
+      'callback' => 'impact_registration_system_change_callback',
+      'wrapper' => 'preferred-name',
+      'method' => 'replace',
+    );
+    
+  // Get selected system
+  /*
+    $selected_system = isset($form_state['values']['profile_library_registration']['field_library_reg_system']['und'][0]['value']) 
+    ? $form_state['values']['profile_library_registration']['field_library_reg_system']['und'][0]['value'] 
+    : 'derp';
+  */  
+    
+  // Pre populate alternative system name
+  //$form['profile_library_registration']['field_library_name_pref']['und'][0]['value']['#default_value'] = $selected_system;
+  //$form['profile_library_registration']['field_library_name_pref']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
+  $form['profile_library_registration']['field_library_name_pref']['und'][0]['value']['#prefix'] = "<div id='preferred-name'>";
+  $form['profile_library_registration']['field_library_name_pref']['und'][0]['value']['#suffix'] = "</div>";
+  
+  
+  
   $form['profile_library_registration']['field_library_reg_extension']['und'][0]['value']['#size'] = 10;
   $form['#submit'][] = 'impact_registration_form_profile2_edit_library_registration_form_submit';
 	$form['#validate'][] = 'impact_registration_user_register_validate';
@@ -73,6 +92,17 @@ function _impact_registration_library_names($key = '') {
  */
 function impact_registration_state_change_callback(&$form, $form_state) {
     return $form['profile_library_registration']['field_library_reg_system']['und'];
+    
+}
+function impact_registration_system_change_callback(&$form, &$form_state) {
+  // This method uses a database call to retrieve the system name, given the fscs key.
+  // There is probably a better way to store this information when it is first called to populate the select list.
+  $fscs = $form_state['values']['profile_library_registration']['field_library_reg_system']['und'][0]['value'];
+  $query = "SELECT library_name FROM {library_lookup} WHERE fscs_key = '$fscs'";
+  $library_system = db_query($query)->fetchField();
+  $preferred_name = ucwords(strtolower(trim($library_system)));
+  $form['profile_library_registration']['field_library_name_pref']['und'][0]['value']['#value'] = $preferred_name;
+  return $form['profile_library_registration']['field_library_name_pref']['und'][0];
 }
 
 
