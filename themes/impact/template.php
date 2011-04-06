@@ -47,9 +47,10 @@
 //Welcome Bar Date
   $uid=$variables['user']->uid;
   
-    $field_date='';
+  
    if($variables['logged_in']){
-
+  	$field_date='';
+  	$variables['field_date']='';
    //get the fielding dates from field_data_field_fielding_date
    $sql="SELECT field_fielding_date_value AS from_date, 
    field_fielding_date_value2 AS to_date 
@@ -64,14 +65,14 @@
         $date2=strtotime($r->to_date);
    }
 
-
-    $field_date=date('m/d/y', $date1).' - '.date('m/d/y', $date2);
+   if(isset($date1,$date2)){
+    $field_date= date('m/d/y', $date1).' - '.date('m/d/y', $date2);
 
     //output   
     $variables['field_date']="<br><span style='float: right;'>Fielding Dates:</span><br>".$field_date;
     
    //do not diplay the fielding date if it is empty
-    if(isset($date1,$date2)){
+    
     if ($date2=='' && $date1=='') $variables['field_date']='';
     }
    }
