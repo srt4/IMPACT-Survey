@@ -37,9 +37,12 @@
           
           print theme('links__system_secondary_menu', array('links' => $secondary_menu, 'attributes' => array('id' => 'secondary-menu', 'class' => array('links', 'inline', 'clearfix'))));?>    
           </div>
+          
+         
       <?php endif; ?>
             
       <div id="searchBox">
+          
       </div>
       
       
@@ -55,17 +58,19 @@
               <a href="<?php print $front_page ?>" title="<?php print t('Home'); ?>"><?php print $site_name; ?></a>
             </h1>
           <?php endif; ?>
-          
+       
           <?php if (!empty($site_slogan)): ?>
             <div id="siteSlogan"><?php print $site_slogan; ?></div>
           <?php endif; ?>
+          
         </div><!-- /siteInfo -->
+             
       </div> <!-- /siteName-->
          
          
          <!--  fielding date -->
-         <div id='date' style="float: right;margin: -4px 45px 0 0;">
-           <?php  print $field_date;?>  
+         <div id='date' style="float: right;margin: -106px 45px 0 0;">
+           <?php print $field_date;?>
          </div> 
          
       <?php if($page['header']): ?>
@@ -173,7 +178,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 print $output;
                 
                 //Survey URL: 
-                print "<br><Br>Survey URL:"."http://www.uwsrd.org/impact/index.asp?LibID=[current-user:profile-library-registration:field-library-reg-system]"; 
+                print "<br><Br>Survey URL:"."http://www.uwsrd.org/impact/index.asp?LibID=".token_replace("[current-user:profile-library-registration:field-library-reg-system]"); 
                             
                 //"Next Step" 
                 print "<Br><h4>Next Step</h4>";
