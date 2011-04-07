@@ -474,7 +474,7 @@ function faq_page($tid = 0, $faq_display = '', $category_display = '') {
       ->condition('n.type', 'faq')
       ->condition('n.status', 1)
       ->condition(db_or()->condition("$weight_alias.tid", 0)->isNull("$weight_alias.tid"))
-      ->orderBy('weight', 'DESC')
+      ->orderBy('weight', 'ASC')
       ->orderBy('n.sticky', 'DESC');
 
     if ($default_sorting == 'DESC') {
@@ -623,7 +623,7 @@ function _display_faq_by_category($faq_display, $category_display, $term, $displ
     ->condition('n.type', 'faq')
     ->condition('n.status', 1)
     ->condition("{$ti_alias}.tid", $term->tid)
-    ->orderBy('weight', 'DESC')
+    ->orderBy('weight', 'ASC')
     ->orderBy('n.sticky', 'DESC')
     ->addTag('node_access');
 
