@@ -486,7 +486,7 @@ function faq_page($tid = 0, $faq_display = '', $category_display = '') {
       $query->orderBy('n.created');
     }
 
-    $query->addExpression('if((w.weight IS NULL), :default_weight, w.weight)', 'weight', array(':default_weight' => $default_weight));
+    $query->addExpression('if((w.weight IS NULL), CAST(:default_weight as SIGNED), w.weight)', 'weight', array(':default_weight' => $default_weight));
 
 
     // Only need the nid column.
@@ -636,7 +636,7 @@ function _display_faq_by_category($faq_display, $category_display, $term, $displ
     $query->orderBy('n.created');
   }
 
-  $query->addExpression('if((w.weight IS NULL), :default_weight, w.weight)', 'weight', array(':default_weight' => $default_weight));
+    $query->addExpression('if((w.weight IS NULL), CAST(:default_weight as SIGNED), w.weight)', 'weight', array(':default_weight' => $default_weight));
 
   // We only want the first column, which is nid, so that we can load all
   // related nodes.
@@ -1114,7 +1114,7 @@ function faq_get_faq_list() {
     $query->orderBy('n.created');
   }
 
-  $query->addExpression('if((w.weight IS NULL), :default_weight, w.weight)', 'weight', array(':default_weight' => $default_weight));
+  $query->addExpression('if((w.weight IS NULL), CAST(:default_weight as SIGNED), w.weight)', 'weight', array(':default_weight' => $default_weight));
   $query->orderBy('weight');
 
   // We only want the first column, which is nid, so that we can load all
@@ -1412,7 +1412,7 @@ function faq_get_child_categories_faqs($term, $theme_function, $default_weight, 
         $query->orderBy('n.created');
       }
 
-      $query->addExpression('if((w.weight IS NULL), :default_weight, w.weight)', 'weight', array(':default_weight' => $default_weight));
+      $query->addExpression('if((w.weight IS NULL), CAST(:default_weight as SIGNED), w.weight)', 'weight', array(':default_weight' => $default_weight));
       $query->orderBy('weight');
 
       // We only want the first column, which is nid, so that we can load all
