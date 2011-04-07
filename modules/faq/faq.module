@@ -546,7 +546,7 @@ function faq_page($tid = 0, $faq_display = '', $category_display = '') {
     $items = array();
     $vocab_items = array();
     foreach ($vocabularies as $vid => $vobj) {
-      if ($vocab_omit[$vid] != 0) {
+      if (isset($vocab_omit[$vid]) && $vocab_omit[$vid] != 0) {
         continue;
       }
 
