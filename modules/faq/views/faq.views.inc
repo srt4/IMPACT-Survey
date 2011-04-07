@@ -1,5 +1,4 @@
 <?php
-// $Id: faq.views.inc,v 1.1.2.2.2.1 2010/10/06 22:32:03 crell Exp $
 
 /**
  * Implements hook_views_data().

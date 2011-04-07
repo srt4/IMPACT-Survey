@@ -1,5 +1,4 @@
 <?php
-// $Id: faq.module,v 1.1.4.52.2.140.2.8 2011/01/11 22:04:09 snpower Exp $
 
 /**
  * @file
@@ -486,13 +485,8 @@ function faq_page($tid = 0, $faq_display = '', $category_display = '') {
       $default_weight = 1000000;
       $query->orderBy('n.created');
     }
-	
-    //  Fix order of questions so that it obey's weight.
-    //  http://drupal.org/node/993262
-    //  Old line:  $query->addExpression('if((w.weight IS NULL), :default_weight, w.weight)', 'weight', array(':default_weight' => $default_weight));
-    //  Change line 490 in faq.module to this to have it always use the default weight...
-    
-    $query->addExpression('if((1>0), :default_weight, w.weight)', 'weight', array(':default_weight' => $default_weight));
+
+    $query->addExpression('if((w.weight IS NULL), :default_weight, w.weight)', 'weight', array(':default_weight' => $default_weight));
 
 
     // Only need the nid column.
@@ -552,7 +546,7 @@ function faq_page($tid = 0, $faq_display = '', $category_display = '') {
     $items = array();
     $vocab_items = array();
     foreach ($vocabularies as $vid => $vobj) {
-      if (isset($vocab_omit[$vid]) && $vocab_omit[$vid] != 0) {
+      if ($vocab_omit[$vid] != 0) {
         continue;
       }
 

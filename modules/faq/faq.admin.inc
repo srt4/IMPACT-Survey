@@ -1,5 +1,4 @@
 <?php
-// $Id: faq.admin.inc,v 1.1.2.26.2.6 2011/01/11 22:04:09 snpower Exp $
 
 /**
  * @file
