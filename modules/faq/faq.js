@@ -1,4 +1,3 @@
-/* $Id: faq.js,v 1.1.2.6.2.26.2.1 2011/01/09 22:23:58 snpower Exp $ */
 
 (function ($) {
   function teaser_handler(event) {

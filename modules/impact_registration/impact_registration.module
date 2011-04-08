@@ -56,8 +56,8 @@ function impact_registration_form_profile2_edit_library_registration_form_alter(
 	 	'#language' => 'und',
 	  '#field_parents' => array (0 => 'profile_library_registration'),
 	  '#columns' => array (0 => 'value'),
-	  '#title' => 'As a library, which of the following do you regularly interact with?', 
-	  '#description' => 'Proof of librarianship.', 
+	  '#title' => 'As a library professional, which of the following do you regularly interact with?', 
+	  '#description' => 'Challenge question.', 
 	  '#required' => 1,
 	  '#delta' => 0,
 	  '#type' => 'select',
@@ -81,9 +81,9 @@ function impact_registration_form_profile2_edit_library_registration_form_alter(
 	  	'filter_xss' => FALSE,
 	  ),
 	  '#after_build' => array (0 => 'field_form_element_after_build'),
-	  '#weight' => 5,
+	  '#weight' => 10,
 	);
-	dpm($form);
+	$form['profile_library_registration']['field_library_reg_auth']['#weight'] = 11;
 }
 // 1 = after registration
 function impact_registration_form_profile2_edit_library_registration_form_submit(&$form, &$form_state) {
@@ -188,11 +188,11 @@ if($result -> rowCount() > 0)
 // Check answer to proof of librarianship question
 function impact_registration_proof_validate($element, $form_state) {
   if ($element['#required'] && $element['#value'] == '_none') {
-    form_error($element, t('Proof of librarianship is required, please answer the question.'));
+    form_error($element, t('Please answer the challenge question.'));
   } 
   else {
     if ($element['#value'] != 'ILS') {
-        form_error($element, t('Are you really a librarian?'));
+        form_error($element, t('Do you really work at a library?'));
     }
   }
 }

@@ -1,5 +1,4 @@
 <?php
-// $Id: faq.admin.inc,v 1.1.2.26.2.6 2011/01/11 22:04:09 snpower Exp $
 
 /**
  * @file
@@ -408,12 +407,12 @@ function faq_order_settings_form($form, $form_state, $category = NULL) {
       ->condition('n.type', 'faq')
       ->condition('n.status', 1);
 
-    $query->addExpression('if((w.weight IS NULL), :default_weight, w.weight)', 'weight', array(':default_weight' => $default_weight));
+    $query->addExpression('if((w.weight IS NULL), CAST(:default_weight as SIGNED), w.weight)', 'weight', array(':default_weight' => $default_weight));
 
     if (empty($category)) {
       $category = 0;
       $w_alias = $query->leftJoin('faq_weights', 'w', 'n.nid = %alias.nid AND %alias.tid = :category', array(':category' => $category));
-      $query->orderBy('weight', 'DESC')
+      $query->orderBy('weight', 'ASC')
         ->orderBy('n.sticky', 'DESC')
         ->orderBy('n.created', $default_sorting == 'DESC' ? 'DESC' : 'ASC');
     }
@@ -422,7 +421,7 @@ function faq_order_settings_form($form, $form_state, $category = NULL) {
       $ti_alias = $query->innerJoin('taxonomy_index', 'ti', '(n.nid = %alias.nid)');
       $w_alias = $query->leftJoin('faq_weights', 'w', 'n.nid = %alias.nid AND %alias.tid = :category', array(':category' => $category));
       $query->condition('ti.tid', $category);
-      $query->orderBy('weight', 'DESC')
+      $query->orderBy('weight', 'ASC')
         ->orderBy('n.sticky', 'DESC')
         ->orderBy('n.created', $default_sorting == 'DESC' ? 'DESC' : 'ASC');
     }

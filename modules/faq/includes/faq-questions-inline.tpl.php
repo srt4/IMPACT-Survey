@@ -1,5 +1,4 @@
 <?php
-// $Id: faq-questions-inline.tpl.php,v 1.1.2.5 2008/12/21 18:58:26 snpower Exp $
 
 /**
  * @file
