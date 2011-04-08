@@ -44,6 +44,13 @@
           $variables['theme_hook_suggestions'][] = "page__myimpact";
           }
       
+          
+          //go to codebox template
+          if ($_GET['q'] == 'node/8') {
+          $variables['theme_hook_suggestions'][] = "page__codebox";
+          }
+      
+          
 //Welcome Bar Date
   $uid=$variables['user']->uid;
   
