@@ -1,8 +1,8 @@
 <?php // $Id$
 //print_r($title);
+?>  
 
-?>
-  <div id="header">
+<div id="header">
     <?php if($page['header_top']): ?>
       <div id="headerTop" class="blockregion">
         <?php print render($page['header_top']); ?>
@@ -12,20 +12,35 @@
     <div id="headerWrapper">
       <?php if (!empty($secondary_menu)): ?>
         <div id="topMenu">
-          <?php 
+         <?php 
+             $uid = $user->uid;
           // add system name as link to profile at top of page
+       
+             //get the alternative name from field_data_field_library_name_pref
+   				$sql="select field_library_name_pref_value as value from {field_data_field_library_name_pref} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+   				$result=db_query($sql, array('uid'=>$uid));
+				$alt_name = '';
+   				foreach($result as $r){
+        			$alt_name=$r->value;
+   				}
+   
+   		if($alt_name==''){
           $fscs = 	token_replace("[current-user:profile-library-registration:field-library-reg-system]");
-          $query = "SELECT library_name FROM {library_lookup} WHERE fscskey = '$fscs'";
+          $query = "SELECT library_name FROM {library_lookup} WHERE fscs_key = '$fscs'";
           $system_name = db_query($query)->fetchField();
+   		}
+   		else $system_name=$alt_name;
+   		
           $welcome = array( 
-          		'href' => 'myimpact',
+          		'href' => 'user',
           		'title' => "Welcome $system_name",
           );
           array_unshift($secondary_menu, $welcome);
           
-          print theme('links__system_secondary_menu', array('links' => $secondary_menu, 'attributes' => array('id' => 'secondary-menu', 'class' => array('links', 'inline', 'clearfix'))));
-          ?>
-        </div>
+          
+          print theme('links__system_secondary_menu', array('links' => $secondary_menu, 'attributes' => array('id' => 'secondary-menu', 'class' => array('links', 'inline', 'clearfix'))));?>    
+          </div>
+          
       <?php endif; ?>
             
       <div id="searchBox">
@@ -71,6 +86,16 @@
           <div id="menuRight"></div>
         <?php endif; ?> 
         
+    
+        <?php 
+        //if the status=1, the page will display the demo, which is a popup window
+        if(isset($_GET['status']) && $_GET['status']=='1'):?>
+<link rel="stylesheet" type="text/css" href="sites/default/files/overlay/interstitial.css" />
+<script type="text/javascript" src="sites/default/files/overlay/interstitial.js"></script>
+<?php $_GET['status']='11';?>
+<?php endif;?>
+
+
         <?php if($page['preface_top']): ?>
           <div id="preface_top" class="blockregion">
             <?php print render($page['preface_top']); ?>
@@ -145,7 +170,11 @@
     </div><!-- /Inner -->
     
   </div><!-- /container -->
-  
+
+   
+
+
+
   <div id="footer">
     <div class="footer-text"><!-- Theme designed by <a href="http://www.carettedonny.be" title="Donny Carette">Donny Carette</a> -->
       <?php if($page['footer_message']): ?>
@@ -159,4 +188,6 @@
       </div>
     <?php endif; ?> 
   </div><!-- /footer -->
+  
+
   

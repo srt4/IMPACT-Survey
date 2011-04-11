@@ -3,13 +3,13 @@
 
 var interstitialBox={
 //1) list of files on server to randomly pick from and display
-displayfiles: ['/drupal/sites/impactsurvey.org/files/overlay/impact.html'],
+displayfiles: ['sites/default/files/overlay/impact.php'],
 
 //2) display freqency: ["frequency_type", "frequency_value"]
-displayfrequency: ["cookie", "session"],
+displayfrequency: ["chance", "1"],
 
 //3) HTML for the header bar portion of the interstitial box
-defineheader: '<div class="headerbar"><a href="#" onClick="javascript:interstitialBox.closeit(); return false"><img src="/drupal/sites/impactsurvey.org/files/overlay/closeit.gif" style="border: 0" title="Close Box"/></a></div>',
+defineheader: '<div class="headerbar"><a href="codebox" ><img src="sites/default/files/overlay/closeit.gif" style="border: 0" title="Close Box"/></a></div>',
 
 //4) cookie setting: ["cookie_name", "cookie_path"]
 cookiesetting: ["stitialcookie", "path=/"],
@@ -98,11 +98,13 @@ this.timervar=setTimeout("interstitialBox.closeit()", this.autohidetimer*1000)
 
 
 closeit:function(){
+	window.location='codebox'
 this.interVeil.style.display="none"
 this.interContainer.style.display="none"
 if (this.disablescrollbars && window.XMLHttpRequest) //if disablescrollbars enabled and modern browsers- IE7, Firefox, Safari, Opera 8+ etc
 this.standardbody.style.overflow="auto"
 if (typeof this.timervar!="undefined") clearTimeout(this.timervar)
+
 },
 
 getscrollbarwidth:function(){
@@ -156,6 +158,11 @@ document.cookie = name+"="+value+"; "+interstitialBox.cookiesetting[1]
 }
 
 
+
+
+
+//alert('hello');
+
 var stitialvars=new Object() //temporary object to reference/ shorthand certain interstitialBox properties
 stitialvars.freqtype=interstitialBox.displayfrequency[0] //"chance" or "cookie"
 stitialvars.cookieduration=interstitialBox.displayfrequency[1] //"session" or int (integer specifying number of days)
@@ -181,3 +188,5 @@ interstitialBox.launch=true
 
 if (interstitialBox.launch)
 interstitialBox.initialize()
+
+
