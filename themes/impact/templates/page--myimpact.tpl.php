@@ -158,14 +158,14 @@ In the meantime, a welcome message with further instructions has been sent to yo
 
             
                 //Name
-                $sql="select field_library_first_name_value as value from {field_data_field_library_reg_fname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_fname_value as value from {field_data_field_library_reg_fname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $firstname=db_query($sql,array('uid'=>$uid))->fetchField();
 
-                $sql="select field_library_last_name_value as value from {field_data_field_library_reg_lname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_lname_value as value from {field_data_field_library_reg_lname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $lastname=db_query($sql,array('uid'=>$uid))->fetchField();
 
                 //Job title
-                $sql="select field_library_job_title_value as value from {field_data_field_library_job_title} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_position_value as value from {field_data_field_library_reg_position} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $jobtitle=db_query($sql,array('uid'=>$uid))->fetchField();
 
                 //Phone number
