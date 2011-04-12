@@ -8,10 +8,7 @@
       } else {
           $variables['primary_nav'] = false;
       }
-      
-      
-      //put them in the template
-      
+            
       //if view is not edited, direct to edit
       if (isset($variables['page']['content']['system_main']['profile2']['']['empty'])) {
           drupal_goto($_GET['q'] . '/edit');
@@ -19,10 +16,7 @@
       
       //check if edit part are using profile2
       $tell = explode('-', $_GET['q']);
-      
-      
-      
-      
+     
       //delete the tabs of profile2 and edit the "Edit" title
       if ($tell[0] == 'profile') {
           $variables['tabs'] = '';
@@ -35,7 +29,12 @@
               foreach ($result_l as $l) {
                   $label = $l->label;
               }
+              
+              if($type=="intake_form") $label.="<br><font size='2px' color='blue'>Please provide the following information about your library system.</font>";
+              if($type=="imls_data") $label.="<br><font size='2px' color='blue'>These fields are pre-populated from the <u>IMLS Public Library Dataset</u>. Please verify that they are correct and submit this form.</font>";
+              
               $variables['title'] = 'Edit ' . $label;
+              
           }
       }
       
@@ -43,50 +42,46 @@
       if ($_GET['q'] == 'node/51') {
           $variables['theme_hook_suggestions'][] = "page__myimpact";
           }
-      
-          
-          //go to codebox template
+           
+     //go to codebox template
           if ($_GET['q'] == 'node/8') {
           $variables['theme_hook_suggestions'][] = "page__codebox";
           }
       
-          
-//Welcome Bar Date
-  $uid=$variables['user']->uid;
+     //Welcome Bar Date
+  		$uid=$variables['user']->uid;
   
   
-   if($variables['logged_in']){
-  	$field_date='';
-  	$variables['field_date']='';
-   //get the fielding dates from field_data_field_fielding_date
-   $sql="SELECT field_fielding_date_value AS from_date, 
-   field_fielding_date_value2 AS to_date 
-   FROM {field_data_field_fielding_date} AS a, 
-   {profile} AS b WHERE a.entity_id=b.pid AND b.uid=:uid";
-   $result=db_query($sql, array('uid'=>$uid));
+	   if($variables['logged_in']){
+	  	$field_date='';
+	  	$variables['field_date']='';
+	   //get the fielding dates from field_data_field_fielding_date
+	   $sql="SELECT field_fielding_date_value AS from_date, 
+	   field_fielding_date_value2 AS to_date 
+	   FROM {field_data_field_fielding_date} AS a, 
+	   {profile} AS b WHERE a.entity_id=b.pid AND b.uid=:uid";
+	   $result=db_query($sql, array('uid'=>$uid));
+	
+	   $date1 = '';
+	   $date2 = '';
+	   foreach($result as $r){
+	        $date1=strtotime($r->from_date);
+	        $date2=strtotime($r->to_date);
+	   }
 
-   $date1 = '';
-   $date2 = '';
-   foreach($result as $r){
-        $date1=strtotime($r->from_date);
-        $date2=strtotime($r->to_date);
-   }
-
-   if(isset($date1,$date2)){
-    $field_date= date('m/d/y', $date1).' - '.date('m/d/y', $date2);
-
-    //output   
-    $variables['field_date']="<br><span style='float: right;'>Fielding Dates:</span><br>".$field_date;
-    
-   //do not diplay the fielding date if it is empty
-    
-    if ($date2=='' && $date1=='') $variables['field_date']='';
-    }
-   }
-    
-    // end 4-5
-  }
-  
+	   if(isset($date1,$date2)){
+	    $field_date= date('m/d/y', $date1).' - '.date('m/d/y', $date2);
+	
+	    //output   
+	    $variables['field_date']="<br><span style='float: right;'>Fielding Dates:</span><br>".$field_date;
+	    
+	   //do not diplay the fielding date if it is empty
+	    if ($date2=='' && $date1=='') $variables['field_date']='';
+	    }
+	   }
+	    
+	  }
+	  
   
   function impact_breadcrumb(&$variables)
   {
