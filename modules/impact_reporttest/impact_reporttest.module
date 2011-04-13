@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * @file
+ * This module is attempting to show some simple charts
+ */
+ 
+/**
+ * Implementing hook_node_info() to give info about the module
+ */ 
+ 
+ function impact_reporttest_node_info() {
+ 	return array (
+ 		'impact_reporttest' => array (
+ 				'name' => t('IMPACT Report Test'),
+ 				'base' => 'impact_reporttest',
+ 				'description' => 'Just testing the module',
+ 				'has_title' => TRUE,
+ 				'title_label' => t('Report test'),
+ 				help => t('Some help'),
+ 				),
+ 		);
+ }
+
+ 	// hook_form()
+ 	function impact_reporttest_form($node, $form_state) {
+ 		return node_content_form($node, $form_state);
+ 	}
+ 	
+ 	// this runs when the node is loaded
+ 	function impact_reporttest_load($nodes) {
+ 		$fscs =  token_replace('[current-user:profile-library-registration:field-library-reg-system]');
+ 		$query_system = "SELECT * FROM {library_lookup} WHERE fscs_key = '$fscs'";
+		$result_system = db_query($query_system)->fetchObject();
+		    $system = $result_system->library_name;
+ 		
+ 		foreach($nodes as $node) {
+ 			$node->sponsor = $system;
+ 			$node->fscs = $fscs;
+ 			
+ 		}
+ 		return $node;
+ 	}
+ 	
+ 	// hook_view()
+ 	function impact_reporttest_view($node, $view_mode) {
+ 		if ($view_mode == 'full') {
+ 			$node->content['sponsor'] = array (
+ 					'#markup' => theme ('sponsor', array('sponsor' => $node->sponsor,
+ 														 'sponsor_id'=>$node->nid,
+ 														 'fscs'=>$node->fscs)),
+ 					'#weight' => 100,
+ 			);
+ 		}
+ 		return $node;
+ 	}
+ 	
+ 	function impact_reporttest_theme() {
+ 		return array( 'sponsor' => array('variables' => array('sponsor' => NULL, 
+ 										'sponsor_id' => NULL),
+ 										'template' => 'report',
+ 										'fscs' => NULL,
+ 					),
+ 		);
+ 	
+ 	
+ 		
+ 	}

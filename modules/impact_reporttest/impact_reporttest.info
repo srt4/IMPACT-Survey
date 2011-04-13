@@ -1,0 +1,6 @@
+name = Job Post 
+description = A job posting content type 
+package = Pro Drupal Development 
+core = 7.x 
+files[] = job_post.module
+package = IMPACT
