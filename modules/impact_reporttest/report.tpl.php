@@ -151,77 +151,6 @@ echo ("<ul><li>" . $gen_internet["1,2"]->countPercent ." did so once a week or m
 echo ("<li>" . $gen_internet["3"]->countPercent . " did so about 1-3 times a month;</li>");
 echo ("<li>" . $gen_internet["4,5"]->countPercent . " did so less than once a month.</li></ul>");
 
-/*
-$sql = 'select (SELECT count(*) AS "no" FROM {Sheet1} WHERE GEN_visit = 2 AND LIB_fscskey = :fscs) as no, (SELECT count(*) AS "no" FROM {Sheet1} WHERE GEN_visitfr IN (1, 2) AND LIB_fscskey = :fscs) as yes';
-
-$res = db_query($sql, array(':fscs' => $fscs));
-
-foreach($res as $row) {
-	$respond_visit_past_12 = $row->no;
-	$respond_visit_yes = $row->yes;
-}
-$sql = 'SELECT COUNT(GEN_visit = 2) AS total FROM {Sheet1} WHERE LIB_fscskey = :fscs';
-$res = db_query($sql, array(':fscs' => $fscs));
-
-foreach($res as $row) {
-	$total_respondants = $row->total;
-}
-echo ("All but " . $respond_visit_past_12 . " respondents had visited the library in the past 12 months. Of those who did, ");
- 
-echo ("<ul><li>" .  $respond_visit_yes . " (" . round($respond_visit_yes / $total_respondants * 100, 0) . "%) visited the library once a week or more frequently.</li>");
-
-$sql = 'SELECT count(*) AS number FROM {Sheet1} WHERE GEN_visitfr IN (3) AND LIB_fscskey = :fscs';
-
-$res = db_query($sql, array(':fscs' => $fscs));
-
-foreach($res as $row) {
-	$visit_once_month = $row->number;
-}
-
-echo ("<li>" . $visit_once_month . " (" . round($visit_once_month / $total_respondants * 100, 0) . "%) visited the library about 1-3 times a month.</li>");
-
-$sql = 'SELECT count(*) AS number FROM {Sheet1} WHERE GEN_visitfr IN (4,5) AND LIB_fscskey = :fscs';
-
-$res = db_query($sql, array(':fscs' => $fscs));
-
-foreach($res as $row) {
-	$visit_less = $row->number;
-}
-
-echo ("<li>" . $visit_less . " (" . round($visit_less / $total_respondants * 100, 0) . "%) visited the library less than once a month.</li> </ul>");
-
-
-$header = array('Respondents who have access to a computer', 'FSCS ID');
-$rows = array();
-$sql = 'SELECT count(*) AS "gen_access_yes", LIB_fscskey AS "FSCS" FROM {Sheet1} WHERE GEN_access = 1 AND LIB_fscskey = :fscs';
-$res = db_query($sql, array(':fscs' => $fscs));
-
-	echo ("<table border=0 style='font-size:18px'>");
-	echo ("<tr><td>" . $header[0] . "</td>");
-	$gen_yes;
-foreach($res as $row) {
-	echo ("");
-	echo ("<td> &nbsp; &nbsp; &nbsp;" . $row->gen_access_yes . "</td>" );
-	$gen_yes = $row->gen_access_yes;
-}
-echo ("</tr></table>");
-
-$header = array('Respondents who don\'t have access to a computer', 'FSCS ID');
-$rows = array();
-$sql = 'SELECT count(*) AS "gen_access_no", LIB_fscskey AS "FSCS" FROM {Sheet1} WHERE GEN_access = 2 AND LIB_fscskey = :fscs';
-$res = db_query($sql, array(':fscs' => $fscs));
-
-echo ("<table border=0 style='font-size:18px'>");
-echo ("<tr><td>" . $header[0] . "</td>");
-$gen_no;
-
-foreach($res as $row) {
-	echo ("");
-	echo ("<td> &nbsp; &nbsp; &nbsp;" . $row->gen_access_no . "</td>" );
-	$gen_no = $row->gen_access_no;
-}
-echo ("</tr></table>");
- 
 $chart = 
 	array(
 	'#chart_id' => 'access_pc',
@@ -234,6 +163,4 @@ $chart['#data']['yes'] = $tot/$gen_yes * 10;
 $chart['#data']['no'] = $tot/$gen_no * 10;
 $chart['#labels'] = array( "Has no access", "Has access" );
 echo theme('chart', array('chart'=>$chart));
- 
- */
 ?>   
