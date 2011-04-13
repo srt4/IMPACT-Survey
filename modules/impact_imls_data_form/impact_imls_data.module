@@ -1,0 +1,36 @@
+<?php // $Id
+/*
+ * Implements hook_menu().
+ */
+
+function impact_imls_data_menu() {
+  // This is the minimum information you can provide for a menu item. This menu
+  // item will be created in the default menu.
+  $items['imls_data/square_feet'] = array(
+    'title' => 'Page Example',
+    'page callback' => 'imls_description',
+    'access callback' => TRUE,
+    'expanded' => TRUE,
+  );
+  $items['imls_data/square_feet/submit'] = array(
+    'page callback' => 'submit_square_feet',
+    'access callback' => TRUE,
+    //'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+
+function submit_square_feet() {
+  foreach($_POST as $outlet_id => $sq_feet) {
+    if($sq_feet > 0) {
+      db_update('square_feet')
+          ->fields(array(
+            'sq_feet' => $sq_feet,
+          ))
+          ->condition('id', $outlet_id)
+          ->execute();
+    }
+  }
+  return array('#markup' => '<p>' . t('Your library area has been updated.') . '</p>');
+}

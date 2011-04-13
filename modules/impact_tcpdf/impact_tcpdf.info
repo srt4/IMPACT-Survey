@@ -1,0 +1,5 @@
+; $Id$
+name = IMPACT Tcpdf
+description = "Implement Tcpdf functionality for IMPACT inside Drupal"
+core = 7.x
+package = IMPACT
