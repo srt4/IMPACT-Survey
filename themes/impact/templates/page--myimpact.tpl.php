@@ -29,7 +29,7 @@
    		else $system_name=$alt_name;
    		
           $welcome = array( 
-          		'href' => 'user',
+          		'href' => 'myimpact',
           		'title' => "Welcome $system_name",
           );
           array_unshift($secondary_menu, $welcome);
