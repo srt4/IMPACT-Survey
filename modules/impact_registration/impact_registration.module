@@ -39,8 +39,8 @@ function impact_registration_form_profile2_edit_library_registration_form_alter(
   // Pre populate alternative system name
   //$form['profile_library_registration']['field_library_name_pref']['und'][0]['value']['#default_value'] = $selected_system;
   //$form['profile_library_registration']['field_library_name_pref']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
-  $form['profile_library_registration']['field_library_name_pref']['und'][0]['value']['#prefix'] = "<div id='preferred-name'>";
-  $form['profile_library_registration']['field_library_name_pref']['und'][0]['value']['#suffix'] = "</div>";
+  $form['profile_library_registration']['field_library_reg_pref']['und'][0]['value']['#prefix'] = "<div id='preferred-name'>";
+  $form['profile_library_registration']['field_library_reg_pref']['und'][0]['value']['#suffix'] = "</div>";
   
   
   
@@ -142,8 +142,8 @@ function impact_registration_system_change_callback(&$form, &$form_state) {
   $query = "SELECT library_name FROM {library_lookup} WHERE fscs_key = '$fscs'";
   $library_system = db_query($query)->fetchField();
   $preferred_name = ucwords(strtolower(trim($library_system)));
-  $form['profile_library_registration']['field_library_name_pref']['und'][0]['value']['#value'] = $preferred_name;
-  return $form['profile_library_registration']['field_library_name_pref']['und'][0];
+  $form['profile_library_registration']['field_library_reg_pref']['und'][0]['value']['#value'] = $preferred_name;
+  return $form['profile_library_registration']['field_library_reg_pref']['und'][0];
 }
 
 
