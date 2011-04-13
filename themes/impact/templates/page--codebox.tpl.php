@@ -65,6 +65,11 @@
           <?php endif; ?>
         </div><!-- /siteInfo -->
       </div> <!-- /siteName-->
+      
+                <!--  fielding date -->
+         <div id='date' style="float: right;margin: -106px 45px 0 0;">
+           <?php if(isset($field_date)) print $field_date;?>
+         </div> 
         
       <?php if($page['header']): ?>
         <div id="header-region" class="blockregion">
