@@ -19,13 +19,14 @@ function impact_registration_form_profile2_edit_library_registration_form_alter(
     );
   $selected = isset($form_state['values']['profile_library_registration']['field_library_reg_state']['und'][0]['value']) ? $form_state['values']['profile_library_registration']['field_library_reg_state']['und'][0]['value'] : '';
     
+  $form['profile_library_registration']['field_library_reg_system']['#weight'] = 1;
   $form['profile_library_registration']['field_library_reg_system']['und']['#options'] = _impact_registration_library_names($selected);
   //$form['profile_library_registration']['field_library_reg_system']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
   $form['profile_library_registration']['field_library_reg_system']['und']['#prefix'] = "<div id='name-select'>";
   $form['profile_library_registration']['field_library_reg_system']['und']['#suffix'] = "</div>";
   $form['profile_library_registration']['field_library_reg_system']['und']['#ajax'] = array(
       'callback' => 'impact_registration_system_change_callback',
-      'wrapper' => 'preferred-name',
+      'wrapper' => 'name-and-website',
       'method' => 'replace',
     );
     
@@ -35,12 +36,20 @@ function impact_registration_form_profile2_edit_library_registration_form_alter(
     ? $form_state['values']['profile_library_registration']['field_library_reg_system']['und'][0]['value'] 
     : '';
   */  
+    $form['profile_library_registration']['name_and_website_group']['#weight'] = 2;
+    $form['profile_library_registration']['name_and_website_group']['#prefix'] = "<div id='name-and-website'>";
+    $form['profile_library_registration']['name_and_website_group']['#suffix'] = "</div>";
+    $form['profile_library_registration']['name_and_website_group'][] = $form['profile_library_registration']['field_library_reg_pref'];
+    $form['profile_library_registration']['name_and_website_group'][] = $form['profile_library_registration']['field_library_reg_website'];
+    unset($form['profile_library_registration']['field_library_reg_pref']);
+    unset($form['profile_library_registration']['field_library_reg_website']);
+    
     
   // Pre populate alternative system name
   //$form['profile_library_registration']['field_library_name_pref']['und'][0]['value']['#default_value'] = $selected_system;
   //$form['profile_library_registration']['field_library_name_pref']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
-  $form['profile_library_registration']['field_library_reg_pref']['und'][0]['value']['#prefix'] = "<div id='preferred-name'>";
-  $form['profile_library_registration']['field_library_reg_pref']['und'][0]['value']['#suffix'] = "</div>";
+  //$form['profile_library_registration']['field_library_reg_pref']['#prefix'] = "<div id='name-and-website'>";
+  
   
   
   
@@ -139,11 +148,14 @@ function impact_registration_system_change_callback(&$form, &$form_state) {
   // This method uses a database call to retrieve the system name, given the fscs key.
   // There is probably a better way to store this information when it is first called to populate the select list.
   $fscs = $form_state['values']['profile_library_registration']['field_library_reg_system']['und'][0]['value'];
-  $query = "SELECT library_name FROM {library_lookup} WHERE fscs_key = '$fscs'";
+  $query = "SELECT library_name, web_address FROM {library_lookup} WHERE fscs_key = '$fscs'";
   $library_system = db_query($query)->fetchField();
   $preferred_name = ucwords(strtolower(trim($library_system)));
-  $form['profile_library_registration']['field_library_reg_pref']['und'][0]['value']['#value'] = $preferred_name;
-  return $form['profile_library_registration']['field_library_reg_pref']['und'][0];
+  $system_website = db_query($query)->fetchField(1);
+  $system_website = strtolower(trim($system_website));
+  $form['profile_library_registration']['name_and_website_group'][0]['und'][0]['value']['#value'] = $preferred_name;
+  $form['profile_library_registration']['name_and_website_group'][1]['und'][0]['value']['#value'] = $system_website;
+  return $form['profile_library_registration']['name_and_website_group'];
 }
 
 
