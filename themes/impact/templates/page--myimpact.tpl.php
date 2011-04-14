@@ -1,4 +1,4 @@
-<?php //test $Id$ ?>
+<?php //test $Id$?>
   <div id="header">
     <?php if($page['header_top']): ?>
       <div id="headerTop" class="blockregion">
@@ -156,7 +156,6 @@ In the meantime, a welcome message with further instructions has been sent to yo
 
                 $uid = $user->uid;
 
-            
                 //Name
                 $sql="select field_library_reg_fname_value as value from {field_data_field_library_reg_fname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $firstname=db_query($sql,array('uid'=>$uid))->fetchField();
@@ -172,14 +171,20 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 $sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
 
+
+                                
                //Output
-                $output = "<h3>$system_name</h3>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>".$jobtitle."  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail;
+                $output = "<h3>$system_name</h3>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>Position:".$jobtitle."<br>  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-(strlen($phonenum)-6)).'<br>'.$user->mail;
 
                 print $output;
                 
                 //Survey URL: 
                 print "<br><Br>Survey URL:"."http://www.uwsrd.org/impact/index.asp?LibID=".token_replace("[current-user:profile-library-registration:field-library-reg-system]"); 
-                            
+
+                
+                //Edit URL
+                print "<br><br><a href='myimpact/edit'><input type='button' value='Edit'></input></a>";
+                
                 //"Next Step" 
                 print "<Br><h4>Next Step</h4>";
                 
