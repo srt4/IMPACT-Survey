@@ -100,18 +100,15 @@ function impact_registration_form_profile2_edit_library_registration_form_alter(
 	  '#weight' => 10,
 	);
 	$form['profile_library_registration']['field_library_reg_auth']['#weight'] = 11;
-  //dpm($form_state['values']['profile_library_registration']['name_and_website_group']);
+  //dpm($form);
 }
 // 1 = after registration
 function impact_registration_name_and_website(&$form, &$form_state) {
   $form_state['values']['profile_library_registration']['field_library_reg_pref']['und'][0]['value'] = $form_state['values']['profile_library_registration']['name_and_website_group'][0]['und'][0]['value'];
   $form_state['values']['profile_library_registration']['field_library_reg_website']['und'][0]['value'] = $form_state['values']['profile_library_registration']['name_and_website_group'][1]['und'][0]['value'];
 }
-function impact_registration_redirect(&$form, $form_state) {
-  $form_state['redirect'] = array(
-    'myimpact', 
-    array('query'=>array('status' => 1))
-  );
+function impact_registration_redirect(&$form, &$form_state) {
+  $form_state['redirect'] = array('myimpact', array('query'=>array('status' => 1)));
 }
 // use library_lookup table in the database to collect available states
 function _impact_registration_library_states() {
