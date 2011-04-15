@@ -95,8 +95,8 @@
         <?php 
         //if the status=1, the page will display the demo, which is a popup window
         if(isset($_GET['status']) && $_GET['status']=='1'):?>
-<link rel="stylesheet" type="text/css" href="sites/default/files/overlay/interstitial.css" />
-<script type="text/javascript" src="sites/default/files/overlay/interstitial.js"></script>
+<link rel="stylesheet" type="text/css" href="sites/impactsurvey.org/files/overlay/interstitial.css" />
+<script type="text/javascript" src="sites/impactsurvey.org/files/overlay/interstitial.js"></script>
 <?php $_GET['status']='11';?>
 <?php endif;?>
 
