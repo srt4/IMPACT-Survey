@@ -1,0 +1,187 @@
+<?php
+function square_feet_menu() {
+  $items['square-feet'] = array(
+    'title' => 'Calculate total square feet',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('square_feet_form'),
+    'access arguments' => array('access content'),
+    'description' => t('Calculate square feet'),
+    //'type' => MENU_CALLBACK,
+  );
+  $items['square-feet/edit-all'] = array(
+    'title' => 'Edit square feet',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('square_feet_change_all_form'),
+    'access arguments' => array('access content'),
+    'description' => t('Calculate square feet'),
+    //'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+function square_feet_form($form_state) {
+  $fscs = 'NY0004';
+  $query = 'SELECT id, lib_name, sq_feet FROM {dr_square_feet} WHERE fscs_key = :fscs';
+  $result = db_query($query, array(":fscs" => $fscs));
+  $total_sq_feet = 0;
+  $missing_data = 0;
+
+  $form['square_feet'] = array(
+    '#title' => 'Square Feet',
+  //'#validate' => array('square_feet_entry_validate'),
+    '#submit' => array('square_feet_form_submit'),
+  );
+
+  // $form['square_feet']['total'] is weight = 0, so this gets weight = 1
+  $form['square_feet']['table'] = array(
+  	'#tree' => TRUE,
+	'#weight' => 1,
+    	'#prefix' => '<table>',
+    	'#suffix' => '</table>',
+  );
+  // Put edited fields under 'entries' so they can be referenced
+  $form['square_feet']['table']['entries'] = array(
+    '#weight' => 2,
+  );
+  // Set weight to entries' so that sub elements maintain order
+  $form['square_feet']['table']['static'] = array(
+    '#weight' => 2,
+  );
+
+  $weight = 2;
+  foreach ($result as $record) {
+    $weight++;
+    if($record->sq_feet < 0) {
+      $missing_data ++;
+      $form['square_feet']['table']['entries'][$record->id] = array(
+      '#type' => 'textfield',
+      '#default_value' => $record->sq_feet,
+      '#element_validate' => array('square_feet_entry_validate'),
+      '#prefix' => "<tr><td>$record->lib_name</td><td>",
+      '#suffix' => '</td></tr>',
+      '#weight' => $weight,
+      '#size' => 8,
+      );
+    }else{
+      $total_sq_feet += $record->sq_feet;
+      $form['square_feet']['table']['static'][$record->id] = array(
+        //'#title' => $record->lib_name,
+        '#type' => 'item',
+        '#markup' => $record->sq_feet . ' sq ft',
+        '#prefix' => "<tr><td>$record->lib_name</td><td>",
+        '#suffix' => '</td></tr>',
+      	'#weight' => $weight,
+      );
+    }
+  }
+
+  if($missing_data > 1)
+    $missing = "Missing $missing_data entries.";
+  else if($missing_data == 1)
+    $missing = "Missing 1 entry.";
+  else
+    $missing = $total_sq_feet . ' sq ft';
+  
+    $form['square_feet']['total'] = array (
+    '#title' => 'Total:',
+    '#type' => 'item',
+    '#markup' => $missing,
+    '#weight' => 0,
+  );
+  	$form['square_feet']['change'] = array (
+  		'#type' => 'item',
+  		'#prefix' => '<a href="/square-feet/change-all">',
+  		'#markup' => "<input type='button' value= 'Edit all'/>",
+  		'#suffix' => '</a>',
+      	'#weight' => 9998, 
+  		//'#button_type' = 'button',
+  	);
+
+  if($missing == 0) {
+    $form['square_feet']['submit'] = array (
+      '#type' => 'submit',
+      '#value' => 'Save changes',
+      '#weight' => 9999,
+    );
+  }
+  dpm($form);
+  return $form;
+}
+
+// Render all fields as text entries
+function square_feet_change_all_form($form_state) {
+  $fscs = 'NY0004';
+  $query = 'SELECT id, lib_name, sq_feet FROM {dr_square_feet} WHERE fscs_key = :fscs';
+  $result = db_query($query, array(":fscs" => $fscs));
+  $total_sq_feet = 0;
+
+  $form['square_feet'] = array(
+    '#title' => 'Square Feet',
+  //'#validate' => array('square_feet_entry_validate'),
+    '#submit' => array('square_feet_change_all_form_submit'),
+  );
+
+  // $form['square_feet']['total'] is weight = 0, so this gets weight = 1
+  $form['square_feet']['table'] = array(
+  	'#tree' => TRUE,
+	'#weight' => 1,
+    	'#prefix' => '<table>',
+    	'#suffix' => '</table>',
+  );
+  $weight = 1;
+  foreach ($result as $record) {
+    $weight++;
+      $form['square_feet']['table'][$record->id] = array(
+      '#type' => 'textfield',
+      '#default_value' => $record->sq_feet,
+      '#element_validate' => array('square_feet_entry_validate'),
+      '#prefix' => "<tr><td>$record->lib_name</td><td>",
+      '#suffix' => '</td></tr>',
+      '#weight' => $weight,
+      '#size' => 8,
+      );
+  }
+  
+    $form['square_feet']['total'] = array (
+    '#title' => 'Total:',
+    '#type' => 'item',
+    '#markup' => $total_sq_feet . ' sq ft',
+    '#weight' => 0,
+  );
+
+    $form['square_feet']['submit'] = array (
+      '#type' => 'submit',
+      '#value' => 'Save changes',
+      '#weight' => 9999,
+    );
+  return $form;
+}
+function square_feet_entry_validate($element, &$form_state) {
+  //dpm($element);
+  if($element['#value'] < 1)
+  form_error($element, t('Please enter the size of this branch.'));
+}
+function square_feet_form_submit($form, &$form_state) {
+  foreach($form_state['values']['table']['entries'] as $entry=>$value) {
+    $update = db_update('dr_square_feet')
+    ->fields(array(
+        'sq_feet' => $value,
+    ))
+    ->condition('id', $entry)
+    ->execute();
+  }
+  drupal_set_message('Your entries have been saved');
+}
+function square_feet_change_all_form_submit($form, &$form_state) {
+  foreach($form_state['values']['table'] as $entry=>$value) {
+    if($value != $form['square_feet']['table'][$entry]['#default_value']) {
+    $update = db_update('dr_square_feet')
+    ->fields(array(
+        'sq_feet' => $value,
+    ))
+    ->condition('id', $entry)
+    ->execute();
+   }
+  }
+  drupal_set_message('Your entries have been saved');
+  $form_state['redirect'] = 'square-feet';
+}
