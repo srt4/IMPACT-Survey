@@ -3,12 +3,29 @@
   $uid = $user->uid;
   $output='';
   
-if(isset($_POST['UserName'], $_POST['fname'], $_POST['lname'], $_POST['position'], $_POST['phoneNum'], $_POST['email'])){
+  //print ($_POST['record']);
+  $flag=0;
+  //print_r($_POST);
+  if(!empty($_POST)) {
+  
+  $records=explode('/',$_POST['record']);
+
+  
+ //trim the space
+  foreach($_POST as $key => $value){
+  	$_POST[$key]=trim($value);
+  }
+  foreach($records as $key => $value){
+  	$records[$key]=trim($value);
+  }
+  
+if(!empty($_POST['UserName']) && !empty($_POST['fname']) && !empty($_POST['lname']) && !empty($_POST['position']) && !empty($_POST['phoneNum']) && !empty($_POST['email'])){
 
 //tell the length of Number
 if(strlen($_POST['phoneNum'])>10 or strlen($_POST['phoneNum'])<6){ 
 	//drupal_set_message(t('@warn',array('@warn'=>'The Phone Number should be no more than 10 digits and no less than 6 digits')),'error');
 	$warn="The Phone Number should be no more than 10 digits and no less than 6 digits";
+	$flag=1;
 }
 
 else{	
@@ -23,38 +40,137 @@ $updated = db_update('users')
 //get the entity_id
 $entity_id=pid($uid);
 
-//update the first name
+//update or insert the first name
+if(!empty($records['1'])){
 $updated = db_update('field_data_field_library_reg_fname')
   ->fields(array(
     'field_library_reg_fname_value' => $_POST['fname'],
   ))
   ->condition('entity_id',$entity_id, '=')
-  ->execute();
+  ->execute();}
+else{
+	$inserted = db_insert('field_data_field_library_reg_fname') 
+		->fields(array(
+  		'field_library_reg_fname_value' => $_POST['fname'],
+  		'entity_id' => $entity_id,
+		'delta' =>'0',
+		'entity_type' => 'profile2',
+		'bundle'=>'library_registration',
+		'deleted'=>'0',
+		'revision_id'=>$entity_id,
+		'language'=>'und',
+))
+->execute();		
+}
 
-//update last name
+//update or insert last name
+if(!empty($records['2'])){
 $updated = db_update('field_data_field_library_reg_lname')
   ->fields(array(
     'field_library_reg_lname_value' => $_POST['lname'],
   ))
   ->condition('entity_id',$entity_id, '=')
   ->execute();  
+}
+else{
+		$inserted = db_insert('field_data_field_library_reg_lname') 
+		->fields(array(
+  		'field_library_reg_lname_value' => $_POST['lname'],
+  		'entity_id' => $entity_id,
+		'delta' =>'0',
+		'entity_type' => 'profile2',
+		'bundle'=>'library_registration',
+		'deleted'=>'0',
+		'revision_id'=>$entity_id,
+		'language'=>'und',
+))
+->execute();
+}
 
-//update position
+
+//update or insert position
+if(!empty($records['3'])){
 $updated = db_update('field_data_field_library_reg_position')
   ->fields(array(
     'field_library_reg_position_value' => $_POST['position'],
   ))
   ->condition('entity_id',$entity_id, '=')
   ->execute();  
-  
- //update phone number
+}
+else{
+		$inserted = db_insert('field_data_field_library_reg_position') 
+		->fields(array(
+  		'field_library_reg_position_value' => $_POST['position'],
+  		'entity_id' => $entity_id,
+		'delta' =>'0',
+		'entity_type' => 'profile2',
+		'bundle'=>'library_registration',
+		'deleted'=>'0',
+		'revision_id'=>$entity_id,
+		'language'=>'und',
+))
+->execute();
+}
+
+ //update or insert phone number
+if(!empty($records['4'])){
 $updated = db_update('field_data_field_library_reg_phone')
   ->fields(array(
     'field_library_reg_phone_value' => $_POST['phoneNum'],
   ))
   ->condition('entity_id',$entity_id, '=')
   ->execute();   
-  
+}
+else{
+		$inserted = db_insert('field_data_field_library_reg_phone') 
+		->fields(array(
+  		'field_library_reg_phone_value' => $_POST['phoneNum'],
+  		'entity_id' => $entity_id,
+		'delta' =>'0',
+		'entity_type' => 'profile2',
+		'bundle'=>'library_registration',
+		'deleted'=>'0',
+		'revision_id'=>$entity_id,
+		'language'=>'und',
+))
+->execute();
+}
+
+ //update or insert phone extention
+if(!empty($records['5'])){	
+	//if updated to empty, delete the record
+	if(empty($_POST['phoneExt'])){
+			$deleted = db_delete('field_data_field_library_reg_extension')
+  			->condition('entity_id',$entity_id, '=')
+ 			->execute();
+	}
+	else{
+	$updated = db_update('field_data_field_library_reg_extension')
+  		->fields(array(
+    		'field_library_reg_extension_value' => $_POST['phoneExt'],
+  		))
+  	->condition('entity_id',$entity_id, '=')
+  	->execute();
+	}   
+}
+else {
+	if(!empty($_POST['phoneExt'])){
+
+		$inserted = db_insert('field_data_field_library_reg_extension') 
+		->fields(array(
+  		'field_library_reg_extension_value' => $_POST['phoneExt'],
+  		'entity_id' => $entity_id,
+		'delta' =>'0',
+		'entity_type' => 'profile2',
+		'bundle'=>'library_registration',
+		'deleted'=>'0',
+		'revision_id'=>$entity_id,
+		'language'=>'und',
+		))
+		->execute();
+	}
+}
+
 //update email
   $updated = db_update('users')
   ->fields(array(
@@ -67,7 +183,13 @@ $updated = db_update('field_data_field_library_reg_phone')
 }
 
 }
-
+else {
+	$warn="Please fill out all the fields";
+	
+	//flag is used to tell whether we use the data filled out or not
+	$flag=1;
+}
+  }
 
 //get the pid, which is the entity_id in profile tables
 function pid($uid){
@@ -232,8 +354,19 @@ In the meantime, a welcome message with further instructions has been sent to yo
             <?php elseif (user_is_logged_in()): ?>
              
             <?php 
-
-                $uid = $user->uid;
+				
+				if($flag==1){
+					$firstname=$_POST['fname'];
+					$lastname= $_POST['lname'];
+					$jobtitle= $_POST['position'];
+					$phonenum= $_POST['phoneNum'];
+					$phoneext= $_POST['phoneExt'];
+					
+										
+					//remember the privous record
+					$record_post=$_POST['record'];
+				}            
+            	else{
 
                 //Name
                 $sql="select field_library_reg_fname_value as value from {field_data_field_library_reg_fname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
@@ -249,13 +382,21 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 //Phone number
                 $sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
-
-                                
+            	
+                //Phone extension
+                $sql="select field_library_reg_extension_value as value from {field_data_field_library_reg_extension} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $phoneext=db_query($sql,array('uid'=>$uid))->fetchField();
+                  
+       			 $records=array($user->name, $firstname, $lastname, $jobtitle, $phonenum, $phoneext, $user->mail);
+       			 $record_post=implode('/',$records);            	
+            	}          	
+            	
                //Output
                 $output = "<h3>$system_name</h3>";
                 //Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>Position:".$jobtitle."<br>  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail;
        			 print $output;
-                
+
+			 
        			 ?>
                 <!-- Edit form -->
                 <form action="" method="post">
@@ -263,8 +404,9 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 Registered User: <input name="fname" value="<?php print $firstname; ?>"></input>
                 <input name="lname" value="<?php print $lastname; ?>"></input><br>
                 Position: <input name="position" value="<?php print $jobtitle; ?>"></input><br>
-                Phone Number: <input name="phoneNum" value="<?php print $phonenum; ?>"></input>(no more than 10 digits, no less than 6 digits)<br>
+                Phone Number: <input name="phoneNum" value="<?php print $phonenum; ?>"></input>-ex<input name="phoneExt" value="<?php print $phoneext;?>"/><br>
                 Email: <input name="email" value="<?php print $user->mail; ?>"></input><br>
+                <input type="hidden" name="record" value="<?php print $record_post;?>"></input>
                 <input type="submit" value="Save"/>
                 </form>
              
