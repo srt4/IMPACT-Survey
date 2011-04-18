@@ -1,6 +1,6 @@
 <?php
 function square_feet_menu() {
-  $items['square-feet'] = array(
+  $items['square_feet'] = array(
     'title' => 'Calculate total square feet',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('square_feet_form'),
@@ -8,7 +8,7 @@ function square_feet_menu() {
     'description' => t('Calculate square feet'),
     //'type' => MENU_CALLBACK,
   );
-  $items['square-feet/edit-all'] = array(
+  $items['square_feet/edit_all'] = array(
     'title' => 'Edit square feet',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('square_feet_change_all_form'),
@@ -20,7 +20,7 @@ function square_feet_menu() {
 }
 function square_feet_form($form_state) {
   $fscs = 'NY0004';
-  $query = 'SELECT id, lib_name, sq_feet FROM {dr_square_feet} WHERE fscs_key = :fscs';
+  $query = 'SELECT id, lib_name, sq_feet FROM {square_feet} WHERE fscs_key = :fscs';
   $result = db_query($query, array(":fscs" => $fscs));
   $total_sq_feet = 0;
   $missing_data = 0;
