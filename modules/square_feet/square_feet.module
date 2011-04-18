@@ -110,7 +110,7 @@ function square_feet_form($form_state) {
 // Render all fields as text entries
 function square_feet_change_all_form($form_state) {
   $fscs = 'NY0004';
-  $query = 'SELECT id, lib_name, sq_feet FROM {dr_square_feet} WHERE fscs_key = :fscs';
+  $query = 'SELECT id, lib_name, sq_feet FROM {square_feet} WHERE fscs_key = :fscs';
   $result = db_query($query, array(":fscs" => $fscs));
   $total_sq_feet = 0;
 
