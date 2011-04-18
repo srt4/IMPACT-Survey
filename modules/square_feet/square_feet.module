@@ -89,7 +89,7 @@ function square_feet_form($form_state) {
   );
   	$form['square_feet']['change'] = array (
   		'#type' => 'item',
-  		'#prefix' => '<a href="/square_feet/change_all">',
+  		'#prefix' => '<a href="/square_feet/edit_all">',
   		'#markup' => "<input type='button' value= 'Edit all'/>",
   		'#suffix' => '</a>',
       	'#weight' => 9998, 
