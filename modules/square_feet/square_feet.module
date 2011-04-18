@@ -89,7 +89,7 @@ function square_feet_form($form_state) {
   );
   	$form['square_feet']['change'] = array (
   		'#type' => 'item',
-  		'#prefix' => '<a href="/square-feet/change-all">',
+  		'#prefix' => '<a href="/square_feet/change_all">',
   		'#markup' => "<input type='button' value= 'Edit all'/>",
   		'#suffix' => '</a>',
       	'#weight' => 9998, 
@@ -110,7 +110,7 @@ function square_feet_form($form_state) {
 // Render all fields as text entries
 function square_feet_change_all_form($form_state) {
   $fscs = 'NY0004';
-  $query = 'SELECT id, lib_name, sq_feet FROM {dr_square_feet} WHERE fscs_key = :fscs';
+  $query = 'SELECT id, lib_name, sq_feet FROM {square_feet} WHERE fscs_key = :fscs';
   $result = db_query($query, array(":fscs" => $fscs));
   $total_sq_feet = 0;
 
@@ -183,5 +183,5 @@ function square_feet_change_all_form_submit($form, &$form_state) {
    }
   }
   drupal_set_message('Your entries have been saved');
-  $form_state['redirect'] = 'square-feet';
+  $form_state['redirect'] = 'square_feet';
 }
