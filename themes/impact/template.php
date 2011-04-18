@@ -42,6 +42,12 @@
       if ($_GET['q'] == 'node/51') {
           $variables['theme_hook_suggestions'][] = "page__myimpact";
           }
+          
+//go to the Edit Myimpact page
+  if ($_GET['q'] == 'node/61') {
+          $variables['theme_hook_suggestions'][] = "page__myimpact__edit";
+          }
+          
            
      //go to codebox template
           if ($_GET['q'] == 'node/8') {
@@ -73,10 +79,7 @@
 	    $field_date= date('m/d/y', $date1).' - '.date('m/d/y', $date2);
 	
 	    //output   
-	    $variables['field_date']="<br><span style='float: right;'>Fielding Dates:</span><br>".$field_date;
-	    
-	   //do not diplay the fielding date if it is empty
-	    if ($date2=='' && $date1=='') $variables['field_date']='';
+	    $variables['field_date']="<br><span style='float: right;'>Fielding Dates:</span><br><a href='profile-survey_fielding' STYLE='text-decoration:none'>".$field_date."</a>";
 	    }
 	   }
 	    

@@ -1,4 +1,204 @@
-<?php //test $Id$?>
+<?php //test $Id$ 
+
+  $uid = $user->uid;
+  $output='';
+  
+  //print ($_POST['record']);
+  $flag=0;
+  //print_r($_POST);
+  if(!empty($_POST)) {
+  
+  $records=explode('/',$_POST['record']);
+
+  
+ //trim the space
+  foreach($_POST as $key => $value){
+  	$_POST[$key]=trim($value);
+  }
+  foreach($records as $key => $value){
+  	$records[$key]=trim($value);
+  }
+  
+if(!empty($_POST['UserName']) && !empty($_POST['fname']) && !empty($_POST['lname']) && !empty($_POST['position']) && !empty($_POST['phoneNum']) && !empty($_POST['email'])){
+
+//tell the length of Number
+if(strlen($_POST['phoneNum'])>10 or strlen($_POST['phoneNum'])<6){ 
+	//drupal_set_message(t('@warn',array('@warn'=>'The Phone Number should be no more than 10 digits and no less than 6 digits')),'error');
+	$warn="The Phone Number should be no more than 10 digits and no less than 6 digits";
+	$flag=1;
+}
+
+else{	
+//update user name
+$updated = db_update('users')
+  ->fields(array(
+    'name' => $_POST['UserName'],
+  ))
+  ->condition('uid',$uid, '=')
+  ->execute();
+
+//get the entity_id
+$entity_id=pid($uid);
+
+//update or insert the first name
+if(!empty($records['1'])){
+$updated = db_update('field_data_field_library_reg_fname')
+  ->fields(array(
+    'field_library_reg_fname_value' => $_POST['fname'],
+  ))
+  ->condition('entity_id',$entity_id, '=')
+  ->execute();}
+else{
+	$inserted = db_insert('field_data_field_library_reg_fname') 
+		->fields(array(
+  		'field_library_reg_fname_value' => $_POST['fname'],
+  		'entity_id' => $entity_id,
+		'delta' =>'0',
+		'entity_type' => 'profile2',
+		'bundle'=>'library_registration',
+		'deleted'=>'0',
+		'revision_id'=>$entity_id,
+		'language'=>'und',
+))
+->execute();		
+}
+
+//update or insert last name
+if(!empty($records['2'])){
+$updated = db_update('field_data_field_library_reg_lname')
+  ->fields(array(
+    'field_library_reg_lname_value' => $_POST['lname'],
+  ))
+  ->condition('entity_id',$entity_id, '=')
+  ->execute();  
+}
+else{
+		$inserted = db_insert('field_data_field_library_reg_lname') 
+		->fields(array(
+  		'field_library_reg_lname_value' => $_POST['lname'],
+  		'entity_id' => $entity_id,
+		'delta' =>'0',
+		'entity_type' => 'profile2',
+		'bundle'=>'library_registration',
+		'deleted'=>'0',
+		'revision_id'=>$entity_id,
+		'language'=>'und',
+))
+->execute();
+}
+
+
+//update or insert position
+if(!empty($records['3'])){
+$updated = db_update('field_data_field_library_reg_position')
+  ->fields(array(
+    'field_library_reg_position_value' => $_POST['position'],
+  ))
+  ->condition('entity_id',$entity_id, '=')
+  ->execute();  
+}
+else{
+		$inserted = db_insert('field_data_field_library_reg_position') 
+		->fields(array(
+  		'field_library_reg_position_value' => $_POST['position'],
+  		'entity_id' => $entity_id,
+		'delta' =>'0',
+		'entity_type' => 'profile2',
+		'bundle'=>'library_registration',
+		'deleted'=>'0',
+		'revision_id'=>$entity_id,
+		'language'=>'und',
+))
+->execute();
+}
+
+ //update or insert phone number
+if(!empty($records['4'])){
+$updated = db_update('field_data_field_library_reg_phone')
+  ->fields(array(
+    'field_library_reg_phone_value' => $_POST['phoneNum'],
+  ))
+  ->condition('entity_id',$entity_id, '=')
+  ->execute();   
+}
+else{
+		$inserted = db_insert('field_data_field_library_reg_phone') 
+		->fields(array(
+  		'field_library_reg_phone_value' => $_POST['phoneNum'],
+  		'entity_id' => $entity_id,
+		'delta' =>'0',
+		'entity_type' => 'profile2',
+		'bundle'=>'library_registration',
+		'deleted'=>'0',
+		'revision_id'=>$entity_id,
+		'language'=>'und',
+))
+->execute();
+}
+
+ //update or insert phone extention
+if(!empty($records['5'])){	
+	//if updated to empty, delete the record
+	if(empty($_POST['phoneExt'])){
+			$deleted = db_delete('field_data_field_library_reg_extension')
+  			->condition('entity_id',$entity_id, '=')
+ 			->execute();
+	}
+	else{
+	$updated = db_update('field_data_field_library_reg_extension')
+  		->fields(array(
+    		'field_library_reg_extension_value' => $_POST['phoneExt'],
+  		))
+  	->condition('entity_id',$entity_id, '=')
+  	->execute();
+	}   
+}
+else {
+	if(!empty($_POST['phoneExt'])){
+
+		$inserted = db_insert('field_data_field_library_reg_extension') 
+		->fields(array(
+  		'field_library_reg_extension_value' => $_POST['phoneExt'],
+  		'entity_id' => $entity_id,
+		'delta' =>'0',
+		'entity_type' => 'profile2',
+		'bundle'=>'library_registration',
+		'deleted'=>'0',
+		'revision_id'=>$entity_id,
+		'language'=>'und',
+		))
+		->execute();
+	}
+}
+
+//update email
+  $updated = db_update('users')
+  ->fields(array(
+    'mail' => $_POST['email'],
+  ))
+  ->condition('uid',$uid, '=')
+  ->execute();
+
+  drupal_goto('myimpact');
+}
+
+}
+else {
+	$warn="Please fill out all the fields";
+	
+	//flag is used to tell whether we use the data filled out or not
+	$flag=1;
+}
+  }
+
+//get the pid, which is the entity_id in profile tables
+function pid($uid){
+	$sql="select pid from {profile} where uid=:uid";
+	$result=db_query($sql, array('uid'=>$uid))->fetchField();
+	return $result;
+}
+
+?>
   <div id="header">
     <?php if($page['header_top']): ?>
       <div id="headerTop" class="blockregion">
@@ -10,11 +210,11 @@
       <?php if (!empty($secondary_menu)): ?>
         <div id="topMenu">
        <?php 
-             $uid = $user->uid;
+           
           // add system name as link to profile at top of page
        
              //get the alternative name from field_data_field_library_name_pref
-   				$sql="select field_library_reg_pref_value as value from {field_data_field_library_reg_pref} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+   				$sql="select field_library_name_pref_value as value from {field_data_field_library_name_pref} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
    				$result=db_query($sql, array('uid'=>$uid));
 				$alt_name = '';
    				foreach($result as $r){
@@ -112,7 +312,8 @@
             </div>
           <?php endif; */?>
           
-         <?php //print $messages; ?>
+         <?php print $messages;
+         if(isset($warn)) print "<div id='warn' style=' color:red;'><b>".$warn."</b></div>"; ?>
          
           
         
@@ -153,8 +354,19 @@ In the meantime, a welcome message with further instructions has been sent to yo
             <?php elseif (user_is_logged_in()): ?>
              
             <?php 
-
-                $uid = $user->uid;
+				
+				if($flag==1){
+					$firstname=$_POST['fname'];
+					$lastname= $_POST['lname'];
+					$jobtitle= $_POST['position'];
+					$phonenum= $_POST['phoneNum'];
+					$phoneext= $_POST['phoneExt'];
+					
+										
+					//remember the privous record
+					$record_post=$_POST['record'];
+				}            
+            	else{
 
                 //Name
                 $sql="select field_library_reg_fname_value as value from {field_data_field_library_reg_fname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
@@ -170,24 +382,38 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 //Phone number
                 $sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
-
+            	
                 //Phone extension
-                 $sql="select field_library_reg_extension_value as value from {field_data_field_library_reg_extension} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_extension_value as value from {field_data_field_library_reg_extension} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
                 $phoneext=db_query($sql,array('uid'=>$uid))->fetchField();
-                if(!empty($phoneext)) $phoneext="-ex($phoneext)";
-
-                                
+                  
+       			 $records=array($user->name, $firstname, $lastname, $jobtitle, $phonenum, $phoneext, $user->mail);
+       			 $record_post=implode('/',$records);            	
+            	}          	
+            	
                //Output
-                $output = "<h3>$system_name</h3>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>Position:".$jobtitle."<br>  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-(strlen($phonenum)-6)).$phoneext.'<br>'.$user->mail;
+                $output = "<h3>$system_name</h3>";
+                //Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>Position:".$jobtitle."<br>  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail;
+       			 print $output;
 
-                print $output;
-                
+			 
+       			 ?>
+                <!-- Edit form -->
+                <form action="" method="post">
+                Username: <input name="UserName" value="<?php print $user->name; ?>"></input><br>
+                Registered User: <input name="fname" value="<?php print $firstname; ?>"></input>
+                <input name="lname" value="<?php print $lastname; ?>"></input><br>
+                Position: <input name="position" value="<?php print $jobtitle; ?>"></input><br>
+                Phone Number: <input name="phoneNum" value="<?php print $phonenum; ?>"></input>-ex<input name="phoneExt" value="<?php print $phoneext;?>"/><br>
+                Email: <input name="email" value="<?php print $user->mail; ?>"></input><br>
+                <input type="hidden" name="record" value="<?php print $record_post;?>"></input>
+                <input type="submit" value="Save"/>
+                </form>
+             
+                <?php
+        
                 //Survey URL: 
-                print "<br><Br>Survey URL:"."http://www.uwsrd.org/impact/index.asp?LibID=".token_replace("[current-user:profile-library-registration:field-library-reg-system]"); 
-
-                
-                //Edit URL
-                print "<br><br><a href='myimpact/edit'><input type='button' value='Edit'></input></a>";
+                print "<br><Br>Survey URL:"."http://www.uwsrd.org/impact/index.asp?LibID=".token_replace("[current-user:profile-library-registration:field-library-reg-system]");             
                 
                 //"Next Step" 
                 print "<Br><h4>Next Step</h4>";

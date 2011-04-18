@@ -3,7 +3,7 @@
 
 var interstitialBox={
 //1) list of files on server to randomly pick from and display
-displayfiles: ['sites/default/files/overlay/impact.php'],
+displayfiles: ['sites/impactsurvey.org/files/overlay/impact.php'],
 
 //2) display freqency: ["frequency_type", "frequency_value"]
 displayfrequency: ["chance", "1"],
