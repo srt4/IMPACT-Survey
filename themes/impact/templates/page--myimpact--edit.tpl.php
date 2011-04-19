@@ -214,7 +214,7 @@ function pid($uid){
           // add system name as link to profile at top of page
        
              //get the alternative name from field_data_field_library_name_pref
-   				$sql="select field_library_name_pref_value as value from {field_data_field_library_name_pref} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+   				$sql="select field_library_reg_pref_value as value from {field_data_field_library_reg_pref} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
    				$result=db_query($sql, array('uid'=>$uid));
 				$alt_name = '';
    				foreach($result as $r){
