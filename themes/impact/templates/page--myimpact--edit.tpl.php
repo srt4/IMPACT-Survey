@@ -28,6 +28,13 @@ if(strlen($_POST['phoneNum'])>10 or strlen($_POST['phoneNum'])<6){
 	$flag=1;
 }
 
+//tell if the phone number is numeric
+elseif (!is_numeric($_POST['phoneExt']) or !is_numeric($_POST['phoneNum'])){ 
+	//drupal_set_message(t('@warn',array('@warn'=>'The Phone Number should be no more than 10 digits and no less than 6 digits')),'error');
+	$warn="The Phone Number should be numeric";
+	$flag=1;
+}
+
 else{	
 //update user name
 $updated = db_update('users')
@@ -193,9 +200,23 @@ else {
 
 //get the pid, which is the entity_id in profile tables
 function pid($uid){
-	$sql="select pid from {profile} where uid=:uid";
+	$sql="select pid from {profile} where uid=:uid and type='library_registration'";
 	$result=db_query($sql, array('uid'=>$uid))->fetchField();
+	
+	if(!empty($result)) return $result;
+	else{
+		$inserted = db_insert('profile') 
+		->fields(array(
+  		'type' => 'library_registration',
+  		'uid' => $uid,
+		))
+		->execute();
+		
+	$sql="select pid from {profile} where uid=:uid and type='library_registration'";
+	$result=db_query($sql, array('uid'=>$uid))->fetchField();		
+	
 	return $result;
+	}	
 }
 
 ?>
@@ -214,7 +235,7 @@ function pid($uid){
           // add system name as link to profile at top of page
        
              //get the alternative name from field_data_field_library_name_pref
-   				$sql="select field_library_reg_pref_value as value from {field_data_field_library_reg_pref} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+   				$sql="select field_library_reg_pref_value as value from {field_data_field_library_reg_pref} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration' ";
    				$result=db_query($sql, array('uid'=>$uid));
 				$alt_name = '';
    				foreach($result as $r){
@@ -369,22 +390,22 @@ In the meantime, a welcome message with further instructions has been sent to yo
             	else{
 
                 //Name
-                $sql="select field_library_reg_fname_value as value from {field_data_field_library_reg_fname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_fname_value as value from {field_data_field_library_reg_fname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
                 $firstname=db_query($sql,array('uid'=>$uid))->fetchField();
 
-                $sql="select field_library_reg_lname_value as value from {field_data_field_library_reg_lname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_lname_value as value from {field_data_field_library_reg_lname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
                 $lastname=db_query($sql,array('uid'=>$uid))->fetchField();
 
                 //Job title
-                $sql="select field_library_reg_position_value as value from {field_data_field_library_reg_position} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_position_value as value from {field_data_field_library_reg_position} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
                 $jobtitle=db_query($sql,array('uid'=>$uid))->fetchField();
 
                 //Phone number
-                $sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
                 $phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
             	
                 //Phone extension
-                $sql="select field_library_reg_extension_value as value from {field_data_field_library_reg_extension} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_extension_value as value from {field_data_field_library_reg_extension} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
                 $phoneext=db_query($sql,array('uid'=>$uid))->fetchField();
                   
        			 $records=array($user->name, $firstname, $lastname, $jobtitle, $phonenum, $phoneext, $user->mail);
