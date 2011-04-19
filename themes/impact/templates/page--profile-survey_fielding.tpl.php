@@ -134,14 +134,14 @@
             <?php endif; ?>
             <h2><?php print render($page['content']);?></h2>
      
-     <?php if($_GET['q']!='profile-survey_fielding/1/edit'):?>       
+     <?php if($_GET['q']!="profile-survey_fielding/$uid/edit"):?>       
 To field the IMPACT survey.<br><br>
 
 You must prepare your website with survey links in order to collect results from your patrons.  Visit the <a href="codebox">Get your links</a> page.
 Please <a href="contact">contact us</a> if you have any questions.
 
 <h3>If you need to change your dates, click here:</h3>
-<a href='profile-survey_fielding/1/edit'><input type="submit" value="Change Dates"></a>
+<a href='profile-survey_fielding/<?php print $uid;?>/edit'><input type="submit" value="Change Dates"></a>
             
             <?php endif;?>
             <div class="feedicons">
