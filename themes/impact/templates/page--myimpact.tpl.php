@@ -14,7 +14,7 @@
           // add system name as link to profile at top of page
        
              //get the alternative name from field_data_field_library_name_pref
-   				$sql="select field_library_reg_pref_value as value from {field_data_field_library_reg_pref} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+   				$sql="select field_library_reg_pref_value as value from {field_data_field_library_reg_pref} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
    				$result=db_query($sql, array('uid'=>$uid));
 				$alt_name = '';
    				foreach($result as $r){
@@ -157,22 +157,22 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 $uid = $user->uid;
 
                 //Name
-                $sql="select field_library_reg_fname_value as value from {field_data_field_library_reg_fname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_fname_value as value from {field_data_field_library_reg_fname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
                 $firstname=db_query($sql,array('uid'=>$uid))->fetchField();
 
-                $sql="select field_library_reg_lname_value as value from {field_data_field_library_reg_lname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_lname_value as value from {field_data_field_library_reg_lname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
                 $lastname=db_query($sql,array('uid'=>$uid))->fetchField();
 
                 //Job title
-                $sql="select field_library_reg_position_value as value from {field_data_field_library_reg_position} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_position_value as value from {field_data_field_library_reg_position} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
                 $jobtitle=db_query($sql,array('uid'=>$uid))->fetchField();
 
                 //Phone number
-                $sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                $sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
                 $phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
 
                 //Phone extension
-                 $sql="select field_library_reg_extension_value as value from {field_data_field_library_reg_extension} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid";
+                 $sql="select field_library_reg_extension_value as value from {field_data_field_library_reg_extension} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
                 $phoneext=db_query($sql,array('uid'=>$uid))->fetchField();
                 if(!empty($phoneext)) $phoneext="-ex($phoneext)";
 
