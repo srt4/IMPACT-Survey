@@ -29,7 +29,7 @@ if(strlen($_POST['phoneNum'])>10 or strlen($_POST['phoneNum'])<6){
 }
 
 //tell if the phone number is numeric
-elseif (!is_numeric($_POST['phoneExt']) or !is_numeric($_POST['phoneNum'])){ 
+elseif ((!is_numeric($_POST['phoneExt']) && !empty($_POST['phoneExt'])) or !is_numeric($_POST['phoneNum'])){ 
 	//drupal_set_message(t('@warn',array('@warn'=>'The Phone Number should be no more than 10 digits and no less than 6 digits')),'error');
 	$warn="The Phone Number should be numeric";
 	$flag=1;
@@ -144,7 +144,7 @@ else{
 }
 
  //update or insert phone extention
-if(!empty($records['5'])){	
+if(!empty($records['5']) or $records['5']=='0'){	
 	//if updated to empty, delete the record
 	if(empty($_POST['phoneExt'])){
 			$deleted = db_delete('field_data_field_library_reg_extension')
@@ -162,7 +162,6 @@ if(!empty($records['5'])){
 }
 else {
 	if(!empty($_POST['phoneExt'])){
-
 		$inserted = db_insert('field_data_field_library_reg_extension') 
 		->fields(array(
   		'field_library_reg_extension_value' => $_POST['phoneExt'],
