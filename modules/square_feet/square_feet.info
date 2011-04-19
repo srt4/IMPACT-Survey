@@ -1,0 +1,6 @@
+; $Id$
+name = Square Feet
+description = "Calculate total square feet of library branches in a system."
+package = IMPACT
+version = 0.1
+core = 7.x
