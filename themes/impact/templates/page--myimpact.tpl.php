@@ -1,4 +1,9 @@
-<?php //test $Id$?>
+<?php //test $Id$
+
+$publicPath=variable_get('file_public_path', conf_path() . '/files'); 
+
+?>
+
   <div id="header">
     <?php if($page['header_top']): ?>
       <div id="headerTop" class="blockregion">
@@ -122,7 +127,8 @@
             </div>
           <?php endif; ?>
         
-          <div id="content">        
+          <div id="content">  
+          <div id="contentLeft" Style="float:left">      
             <?php //print render($title_prefix); ?>
             <?php if ($title): ?>
               <h2 class="title" id="page-title"><?php //print $title; ?></h2>
@@ -257,6 +263,62 @@ In the meantime, a welcome message with further instructions has been sent to yo
             <div class="feedicons">
               <?php echo $feed_icons ?>
             </div>
+            </div><!-- contentLeft -->
+            
+            
+            
+            
+            
+          
+          <div id="centerRight" Style="float: right; margin: -5px 80px 0px 0px; ">
+            <?php 
+          $tag="Change";
+
+          //get the path of logo
+           $sql="select uri from {profile} as p,{field_data_field_reg_logo_pic} as f, {file_managed} as m where p.uid=:uid and p.type='logo' and f.entity_id=p.pid and m.fid=f.field_reg_logo_pic_fid";
+           $logo=db_query($sql,array('uid'=>$uid))->fetchField();
+           //print logo;
+          
+           
+       
+           //get the path of library pic
+           $sql="select uri from {profile} as p,{field_data_field_reg_library_pic} as f, {file_managed} as m where p.uid=:uid and p.type='logo' and f.entity_id=p.pid and m.fid=f.field_reg_library_pic_fid";
+           $libPic=db_query($sql,array('uid'=>$uid))->fetchField();
+           //print $logo;
+           
+           //default tips
+           if(empty($logo) or empty($libPic)) $tip="<h5>Please upload your library<br> logo and picture,so we<br> could use them in your report.</h5>";
+           else $tip="<br><br><br>";
+           print $tip;
+           
+           //default pictures
+           if(empty($logo)) {$logo="public://default_images/default_logo.jpg";$tag="Upload";}
+		   if(empty($libPic)) {$libPic="public://default_images/default_library_pic.jpg";$tag="Upload";} 
+		   	   
+		   print "<img width=100px height=100px src='".convUri($logo, $publicPath)."' alt='LoGo'/>"."<br>";
+           print "<img width=100px height=100px src='".convUri($libPic, $publicPath)."' alt='Library Pic' align=center />";
+           //button
+           print "<br><div align='center'><a href='./profile-logo/".$uid."/edit'><input type='button' value='".$tag."'/></a></div>";
+          
+           
+           
+           
+           
+           
+          //deal with the uri from the DB
+          function convUri($uri="", $publicPath){
+        	 $position=explode("://",$uri);
+          	//else $position[1]="default_images/default_logo.jpg";
+          	return $publicPath."/".$position[1];  	
+          } 
+           
+          ?>
+          
+          
+          
+          
+          
+          </div>
           </div>
         
           <?php if($page['content_bottom']): ?>
