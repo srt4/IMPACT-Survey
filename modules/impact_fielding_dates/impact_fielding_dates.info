@@ -1,5 +1,0 @@
-; $Id$
-name = IMPACT Fielding Dates
-description = "Handles the Fielding Dates form."
-core = 7.x
-package = IMPACT

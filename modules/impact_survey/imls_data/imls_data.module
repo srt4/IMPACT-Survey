@@ -6,7 +6,7 @@
  * Creates the registration form that libraries must complete in order to complete registration for the survey.
  *
  */
-function intake_form_form_profile2_edit_imls_data_form_alter(&$form, &$form_state, $form_id) {
+function imls_data_form_profile2_edit_imls_data_form_alter(&$form, &$form_state, $form_id) {
 // get the users fscs key	
 $fscs = token_replace('[current-user:profile-library-registration:field-library-reg-system]');
 
@@ -52,7 +52,6 @@ $lib_info = db_select('library_lookup', 'll')
       ->execute()
       ->fetchAssoc();
       
-      
 	  //$form['profile_intake_form']['field_library_system'] = '';
 	  $form['profile_imls_data']['field_library_name_pref']['und'][0]['value']['#default_value'] = $lib_info['library_name'];
 		$form['profile_imls_data']['field_library_system_website']['und'][0]['value']['#default_value'] = $lib_info['web_address'];
@@ -65,5 +64,4 @@ $lib_info = db_select('library_lookup', 'll')
 		$form['profile_imls_data']['field_legalpop']['und'][0]['value']['#default_value'] = $pop;
 		$form['profile_imls_data']['field_pac_uses']['und'][0]['value']['#default_value'] = $pit_usr;
 		$form['profile_imls_data']['field_circ']['und'][0]['value']['#default_value'] = $tot_cir;
-
 }

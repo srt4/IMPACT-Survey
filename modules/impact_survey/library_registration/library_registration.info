@@ -1,5 +1,5 @@
 ; $Id$
-name = IMPACT Registration
+name = Library Registration
 description = "Modifies the registration form to add necessary fields for the IMPACT survey."
 core = 7.x
 package = IMPACT

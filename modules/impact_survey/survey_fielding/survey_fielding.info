@@ -1,0 +1,5 @@
+; $Id$
+name = Survey Fielding
+description = "Handles the Survey Fielding form."
+core = 7.x
+package = IMPACT
