@@ -26,10 +26,7 @@
               //get the label of the page
               $type = $tell2[0];
               $sql = "select label from {profile_type} where type=:type";
-              $result_l = db_query($sql, array('type' => $type));
-              foreach ($result_l as $l) {
-                  $label = $l->label;
-              }
+              $label = db_query($sql, array('type' => $type))->fetchField();
               
               if($type=="intake_form") $label.="<br><font size='2px' color='blue'>Please provide the following information about your library system.</font>";
               if($type=="imls_data") $label.="<br><font size='2px' color='blue'>These fields are pre-populated from the <u>IMLS Public Library Dataset</u>. Please verify that they are correct and submit this form.</font>";
