@@ -16,13 +16,15 @@ function library_registration_menu() {
  *
  */
 function library_registration_form_profile2_edit_library_registration_form_alter(&$form, &$form_state) {
+  // This field from the default registration form breaks ajax in IE.
+  unset($form['picture']);
   // Change email description.
   $form['account']['mail']['#description'] = 'A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used for important information from us or if you wish to receive a new password.';
   global $user;
   if ($user->uid < 1) {
     // Add ajax to fields
     $form['profile_library_registration']['field_library_reg_state']['und']['#options'] = _library_registration_library_states();
-    //$form['profile_library_registration']['field_library_reg_state']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
+    $form['profile_library_registration']['field_library_reg_state']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
     $form['profile_library_registration']['field_library_reg_state']['und']['#ajax'] = array(
         'callback' => 'library_registration_state_change_callback',
         'wrapper' => 'name-select',
@@ -32,7 +34,7 @@ function library_registration_form_profile2_edit_library_registration_form_alter
       
     $form['profile_library_registration']['field_library_reg_system']['#weight'] = 1;
     $form['profile_library_registration']['field_library_reg_system']['und']['#options'] = _library_registration_library_names($selected);
-    //$form['profile_library_registration']['field_library_reg_system']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
+    $form['profile_library_registration']['field_library_reg_system']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
     $form['profile_library_registration']['field_library_reg_system']['und']['#prefix'] = "<div id='name-select'>";
     $form['profile_library_registration']['field_library_reg_system']['und']['#suffix'] = "</div>";
     $form['profile_library_registration']['field_library_reg_system']['und']['#ajax'] = array(
@@ -53,11 +55,13 @@ function library_registration_form_profile2_edit_library_registration_form_alter
     $form['profile_library_registration']['name_and_website_group']['#weight'] = 2;
     $form['profile_library_registration']['name_and_website_group']['#prefix'] = "<div id='name-and-website'>";
     $form['profile_library_registration']['name_and_website_group']['#suffix'] = "</div>";
+    if(isset($form['profile_library_registration']['field_library_reg_pref']) &&
+      isset($form['profile_library_registration']['field_library_reg_website'])) {
     $form['profile_library_registration']['name_and_website_group'][] = $form['profile_library_registration']['field_library_reg_pref'];
     $form['profile_library_registration']['name_and_website_group'][] = $form['profile_library_registration']['field_library_reg_website'];
     unset($form['profile_library_registration']['field_library_reg_pref']);
     unset($form['profile_library_registration']['field_library_reg_website']);
-    
+     }
     
   // Pre populate alternative system name
   //$form['profile_library_registration']['field_library_name_pref']['und'][0]['value']['#default_value'] = $selected_system;
@@ -114,6 +118,7 @@ function library_registration_form_profile2_edit_library_registration_form_alter
   	);
   	$form['profile_library_registration']['field_library_reg_auth']['#weight'] = 11;
 	}
+	dpm($form);
 }
 // 1 = after registration
 function library_registration_name_and_website(&$form, &$form_state) {
