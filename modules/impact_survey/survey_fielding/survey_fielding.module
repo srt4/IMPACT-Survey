@@ -5,12 +5,66 @@
 *
 * Defines all the triggers that this module implements triggers for.
 */
-function survey_fielding_dates_trigger_info() {
+function survey_fielding_trigger_info() {
 	return array(
-		'impact_fielding_dates' => array (
-			'impact_fielding_dates_presave' => array (
+		'survey_fielding' => array (
+			'content_submit' => array (
 				'label' => t('After saving or changing the Fielding Dates Form'),
 			),
 		),
 	);
+}
+
+
+
+
+function survey_fielding_form_profile2_edit_survey_fielding_form_alter(&$form, &$form_state) {
+      // impact_registration_  form_profile2_edit_library_registration_form_alter
+	// Your alterations.
+
+  	//$form_state['redirect']="profile_survey_fielding";
+  	$form['#submit']['1']="survey_fielding_submit";
+
+}
+
+/**
+ * 
+ * Submit handler for the profile2_edit_survey_fielding_form
+ * 
+ * @param $form
+ * @param $form_state
+ */
+function survey_fielding_submit($form, &$form_state){
+
+		module_invoke_all('send_action','NULL', 'NULL');
+		
+		$form_state['redirect'] = 'myimpact';
+
+}
+
+/**
+ * 
+ * Do the action when the form is submitted
+ * 
+ * object $account user object that has logged in.
+ * $context
+ */
+function survey_fielding_send_action($object, $context){
+	
+	// Get all assigned actions for the 'content_submit' trigger.
+	$aids=trigger_get_assigned_actions('content_submit');
+	
+  	global $user;
+	$account = user_load($user->uid);
+	
+	// prepare a basic context, indicating group and "hook", and call all the
+  	// actions with this context as arguments.
+  	 $context = array(
+    'group' => 'survey_fielding', 
+    'hook' => 'contest_submit',
+  	);
+  	
+  	//do actions
+	actions_do(array_keys($aids),$account,$context);
+	
 }
