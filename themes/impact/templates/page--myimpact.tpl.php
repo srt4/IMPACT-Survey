@@ -298,7 +298,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
 		   print "<img width=100px height=100px src='".convUri($logo, $publicPath)."' alt='LoGo'/>"."<br>";
            print "<img width=100px height=100px src='".convUri($libPic, $publicPath)."' alt='Library Pic' align=center />";
            //button
-           print "<br><div align='center'><a href='./profile-logo/".$uid."/edit'><input type='button' value='".$tag."'/></a></div>";
+           print "<br><div align='center'><a href='./profile-photo_logo/".$uid."/edit'><input type='button' value='".$tag."'/></a></div>";
           
            
            
