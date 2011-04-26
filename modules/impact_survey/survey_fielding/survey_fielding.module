@@ -19,12 +19,10 @@ function survey_fielding_trigger_info() {
 
 
 function survey_fielding_form_profile2_edit_survey_fielding_form_alter(&$form, &$form_state) {
-      // impact_registration_  form_profile2_edit_library_registration_form_alter
-	// Your alterations.
 
-  	//$form_state['redirect']="profile_survey_fielding";
-  	$form['#submit']['1']="survey_fielding_submit";
-
+  	//redirect
+	$form['#submit']['1']="survey_fielding_submit";
+  	
 }
 
 /**
