@@ -232,17 +232,20 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 $date=strtotime($date);
                 
                 //check whether the date is expired.
-                if($date<time()){
-                	$flag=4;
+                   if(isset($date)){
+                	if(empty($date)) $flag=3;
+                	elseif($date<time()) $flag=4;
                 }
+                
+                
                 }
                 
                 switch($flag){
                     case 0: 
-                        print "1. Complete the <a href=./profile-imls_data>Library IMLS Data</a>";
+                        print "1. Confirm your library's <a href=./profile-imls_data>Library IMLS Data</a>";
                         break;
                     case 1:
-                        print "2. Select <a href=./profile-intake_form>Information Form</a>";
+                        print "2. Complete the <a href=./profile-intake_form>Information Form</a>";
                         break;
                     case 2:
                         print "3. <a href=./profile-survey_fielding>Verify Library Fielding Dates</a>";
