@@ -31,7 +31,7 @@
               // removed labels - Andrew 4/28
               
               $variables['title'] = $label;
-              
+              //asdf
           }
       }
       
