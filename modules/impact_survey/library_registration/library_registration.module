@@ -59,10 +59,11 @@ function library_registration_form_profile2_edit_library_registration_form_alter
       isset($form['profile_library_registration']['field_library_reg_website'])) {
     $form['profile_library_registration']['name_and_website_group'][] = $form['profile_library_registration']['field_library_reg_pref'];
     $form['profile_library_registration']['name_and_website_group'][] = $form['profile_library_registration']['field_library_reg_website'];
+    $form['profile_library_registration']['name_and_website_group'][] = $form['profile_library_registration']['field_library_reg_short_name'];
     unset($form['profile_library_registration']['field_library_reg_pref']);
     unset($form['profile_library_registration']['field_library_reg_website']);
+    unset($form['profile_library_registration']['field_library_reg_short_name']);
      }
-    
   // Pre populate alternative system name
   //$form['profile_library_registration']['field_library_name_pref']['und'][0]['value']['#default_value'] = $selected_system;
   //$form['profile_library_registration']['field_library_name_pref']['und']['#attributes'] = array('class' => array('enabled-for-ajax'));
@@ -114,7 +115,7 @@ function library_registration_form_profile2_edit_library_registration_form_alter
   	  	'filter_xss' => FALSE,
   	  ),
   	  '#after_build' => array (0 => 'field_form_element_after_build'),
-  	  '#weight' => 10,
+  	  '#weight' => 11,
   	);
   	$form['profile_library_registration']['field_library_reg_auth']['#weight'] = 11;
 	}
