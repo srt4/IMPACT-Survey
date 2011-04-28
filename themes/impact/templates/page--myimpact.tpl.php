@@ -271,7 +271,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
           <div id='centerRight' Style='float: right; margin: -5px 80px 0px 0px; '>
             
            <?php   
-            
+            if(user_is_logged_in()){
            $tag="Change";
 
           //get the path of logo
@@ -300,7 +300,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
            //button
            $output.="<br><div align='center'><a href='./profile-photo_logo/".$uid."/edit'><input type='button' value='".$tag."'/></a></div>";
           
-           
+            }
            if(user_is_logged_in()) print $output;
 		   
            //deal with the uri from the DB
