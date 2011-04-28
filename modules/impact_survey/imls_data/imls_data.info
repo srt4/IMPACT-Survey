@@ -3,3 +3,4 @@ name = IMLS Data
 description = "Modifies the IMLS Data Form to pre-populate fields."
 core = 7.x
 package = IMPACT
+files[] = imls_data.module

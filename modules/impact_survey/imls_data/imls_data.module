@@ -7,6 +7,7 @@
  *
  */
 function imls_data_form_profile2_edit_imls_data_form_alter(&$form, &$form_state, $form_id) {
+  drupal_add_js(drupal_get_path('module', 'imls_data').'/imls_data.js');
 // get the users fscs key	
 $fscs = token_replace('[current-user:profile-library-registration:field-library-reg-system]');
 
@@ -64,4 +65,7 @@ $lib_info = db_select('library_lookup', 'll')
 		$form['profile_imls_data']['field_legalpop']['und'][0]['value']['#default_value'] = $pop;
 		$form['profile_imls_data']['field_pac_uses']['und'][0]['value']['#default_value'] = $pit_usr;
 		$form['profile_imls_data']['field_circ']['und'][0]['value']['#default_value'] = $tot_cir;
+}
+function imls_data_init() {
+  
 }
