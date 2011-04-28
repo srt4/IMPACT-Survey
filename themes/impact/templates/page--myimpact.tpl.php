@@ -242,16 +242,16 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 
                 switch($flag){
                     case 0: 
-                        print "1. Confirm your library's <a href=./profile-imls_data>Library IMLS Data</a>";
+                        print "1. Confirm your library's <a href=./profile-imls_data>IMLS Data</a>";
                         break;
                     case 1:
-                        print "2. Complete the <a href=./profile-intake_form>Information Form</a>";
+                        print "2. Complete the <a href=./profile-intake_form>Intake Form</a>";
                         break;
                     case 2:
-                        print "3. <a href=./profile-survey_fielding>Verify Library Fielding Dates</a>";
+                        print "3. Select your <a href=./profile-survey_fielding>survey fielding</a> dates";
                         break;
                     case 3:
-                        print "4. <a href=./codebox>Link to the Web Survey</a>";
+                        print "4. <a href=./codebox>Get your links</a>";
                         break; 
                     case 4:
                         print "Your report is done, view it <a href=./reports>here</a>";
