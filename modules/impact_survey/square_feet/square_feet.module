@@ -16,23 +16,9 @@ function square_feet_menu() {
     'description' => t('Calculate square feet'),
     //'type' => MENU_CALLBACK,
   );
-  $items['square_feet/test'] = array(
-    'title' => 'test square feet',
-    'page callback' => 'square_feet_form_test',
-    //'page arguments' => array('square_feet_form'),
-    'access arguments' => TRUE,
-    'description' => t('Calculate square feet'),
-    //'type' => MENU_CALLBACK,
-  );
   return $items;
 }
-function square_feet_form_test() {
-  $form = drupal_get_form('square_feet_form_template');
-  dpm($form);
-  return $form;
-}
-
-function square_feet_form_template($form_state) {
+function square_feet_form($form_state) {
   $fscs = token_replace('[current-user:profile-library-registration:field-library-reg-system]');
   //$fscs = 'NY0004';
   $query = 'SELECT id, lib_name, sq_feet FROM {square_feet} WHERE fscs_key = :fscs';
@@ -65,7 +51,7 @@ function square_feet_form_template($form_state) {
   $weight = 2;
   foreach ($result as $record) {
     $weight++;
-    if($record->sq_feet < 0) {
+    if($record->sq_feet == -1) {
       $missing_data ++;
       $form['square_feet']['table']['entries'][$record->id] = array(
       '#type' => 'textfield',
@@ -75,6 +61,15 @@ function square_feet_form_template($form_state) {
       '#suffix' => '</td></tr>',
       '#weight' => $weight,
       '#size' => 8,
+      );
+    }else if($record->sq_feet == -3) {
+      $form['square_feet']['table']['static'][$record->id] = array(
+        //'#title' => $record->lib_name,
+        '#type' => 'item',
+        '#markup' => 'N/A',
+        '#prefix' => "<tr><td>$record->lib_name</td><td>",
+        '#suffix' => '</td></tr>',
+      	'#weight' => $weight,
       );
     }else{
       $total_sq_feet += $record->sq_feet;
@@ -118,12 +113,12 @@ function square_feet_form_template($form_state) {
       '#weight' => 9999,
     );
   }
-  dpm($form);
   return $form;
 }
 // Render all fields as text entries
 function square_feet_change_all_form($form_state) {
-  $fscs = 'NY0004';
+  $fscs = token_replace('[current-user:profile-library-registration:field-library-reg-system]');
+  //$fscs = 'NY0004';
   $query = 'SELECT id, lib_name, sq_feet FROM {square_feet} WHERE fscs_key = :fscs';
   $result = db_query($query, array(":fscs" => $fscs));
   $total_sq_feet = 0;
