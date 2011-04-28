@@ -27,8 +27,8 @@
               $type = $tell2[0];
               $sql = "select label from {profile_type} where type=:type";
               $label = db_query($sql, array('type' => $type))->fetchField();
-              
-              // removed instruction labels, and "edit" from title - Andrew 4/28
+
+              // removed labels - Andrew 4/28
               
               $variables['title'] = $label;
               
