@@ -94,8 +94,7 @@
 	<li>Right click on the image and save it to your computer.</li>
 	<li>Upload the image to an appropriate location on your web server.</li>
 	<li>Press the button to select and copy your code.</li>
-	<li>Paste this code into an appropriate place in your website, you may
-	need to seek a developer for help.</li>
+	<li>Paste this code into your website files.<br>You may need to adjust the image location.</li>
 </ol>
 
 <?php
