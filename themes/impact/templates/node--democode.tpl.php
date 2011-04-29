@@ -24,9 +24,8 @@
  
  
  <!-- Demo Code Instruction -->
-<br>
-<li>Step 1: Simply insert the below code into the HEAD section of your page:</li>
-<br>
+<p>Please also include a static button or banner on your website if you use this option. That way if your patrons dismiss the survey at the start of their PAC session they will be able to return to it later. </p>
+<p>Copy and paste the following code in the &lt;HEAD&gt; section of your website:</p>
 <form name="codeform">
 <textarea name="code" id="code" class="codecontainer" rows="11" name="S1" cols="65" wrap="virtual" onclick="this.focus();this.select()">
 <link rel="stylesheet" type="text/css" href="interstitial.css" />
@@ -41,7 +40,13 @@
 </script>
 </textarea>
 </form>
-<li>Step 2: Uncompress the demo.zip to  the same directory as where your webpage is in</li>
+<p>Download the attached zip file and extract it to your web directory.</p>
+<p>
+Now you just need to configure the impact.html file:
+Open the impact.html file in a text editor and locate the command
+href="http://www.uwsrd.org/impact/index.asp?LibID=XXTEST"
+<em>Replace XXTEST with <strong><?php print token_replace('[current-user:profile-library-registration:field-library-reg-system]'); ?></strong></em>.
+</p>
 <br>
   
   
