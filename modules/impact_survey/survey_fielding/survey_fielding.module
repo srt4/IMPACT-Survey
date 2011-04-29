@@ -1,5 +1,12 @@
 <?php // $Id$
 
+function survey_fielding_init(){
+	//drupal_add_css(drupal_get_path('module', survey_fielding) . "/survey_fielding.css");
+}
+
+
+
+
 /**
 * Implements hook_trigger_info().
 *
@@ -21,6 +28,27 @@ function survey_fielding_trigger_info() {
 function survey_fielding_form_profile2_edit_survey_fielding_form_alter(&$form, &$form_state) {
 
   	//redirect
+  	$instruction="<h3>Select the dates that you will run the survey and click save.</h3>
+<p>Consider the time it will take to complete promotional tasks, including editing your library website and posting flyers.  Visit <a href='./codebox'>Get your links</a> for more information.</p>
+<p>You will not be able to edit the IMLS Data and Intake forms once the survey fielding has begun.</p>
+<p>As the survey runs, you will be informed of the number of responses, and will have the option to extend the survey.  You may extend the survey while it is running, <em>but not after it has ended.<em></p>
+<p>Please <a href='./contact'>contact us</a> if you have any questions.</p>
+<strong>We recommend that you run the survey for at least 2 weeks.</strong>
+<br><br>";
+	
+	
+	
+	$form['profile_survey_fielding']['instruction'] = array(
+		'#markup' => $instruction
+		);
+
+	$date1=$form['profile_survey_fielding']['field_fielding_date']['und']['0']['#default_value']['value'];
+	
+	$form['profile_survey_fielding']['field_fielding_date']['und']['0']['#default_value']['value']="2011-05-02 00:00:00";
+		$form['profile_survey_fielding']['field_fielding_date']['und']['0']['#columns']['0']='value';
+		unset($form['profile_survey_fielding']['field_fielding_date']['und']['0']['#columns']['1']);
+		unset($form['profile_survey_fielding']['field_fielding_date']['und']['0']['#default_value']['value2']);
+
 	$form['#submit']['1']="survey_fielding_submit";
   	
 }
@@ -36,8 +64,9 @@ function survey_fielding_submit($form, &$form_state){
 
 		module_invoke_all('send_action','NULL', 'NULL');
 		
-		$form_state['redirect'] = 'myimpact';
-
+		
+		
+		//$form_state['redirect'] = '/profile-survey_fielding';
 }
 
 /**
@@ -63,6 +92,341 @@ function survey_fielding_send_action($object, $context){
   	);
   	
   	//do actions
-	actions_do(array_keys($aids),$account,$context);
+	actions_do(array_keys($aids),$account,$context);	
+}
+
+/** 
+ * 
+ * 
+ * 
+ *  Implementation of hook_menu(). 
+ *  
+ *  
+*/
+function survey_fielding_menu() { 
+	$items['formexample'] = array(
+			'title' => 'View the sample form',
+			//'title callback' => 'survey_fielding_title',
+			'page callback' => 'drupal_get_form',
+			'access callback' => 'user_access', 
+			'access arguments' => array('receive greeting'),
+			'type' => MENU_NORMAL_ITEM,
+			'page arguments' => array('survey_fielding_nameform'),
+			//'file' => 'survey_fielding.inc',
+			);
+			
+		return $items;
+	}
+
+/** * 
+ * 
+ * 
+ * 
+ * Define a form. 
+ * 
+ * */
+	
+	
+function survey_fielding_nameform() { 
+	
+	$form['user_name'] = array(
+		'#title' => t('Your Name'), 
+		'#type' => 'textfield',
+		'#description' => t('Please enter your name.')
+		);
+
+	$form['submit'] = array( 
+		'#type' => 'submit',
+		'#value' => t('Submit') 
+	);
+	
+	$class=array('0'=> 'field-type-date', '1' => 'field-name-field-fielding-date', '2'=>'field-widget-date-popup');
+	
+	
+	$form['date'] =array(
+		'#type' => 'container',
+		'#attributes' => $class,
+		'#tree' => TRUE,
+		'und' => array(
+
+				'#title' => t('date'),
+				'#type' => 'date_combo',
+				//'#default value' =>
+				'#entity_type' => 'profile2',
+				'#bundle' => 'survey_fielding',
+				'#field_name' => 'field_fielding_date',
+				'#language' => 'und',
+				'#date_timezone' => 'America/Vancouver',
+				'#field_parents' => array('profile_survey_fielding'),
+				'#theme_wrappers' => array('date_combo'),
+				'#description' => '',
+				'#fieldset_description' => ''
+				),
+		'#prefix' => "<div id='profile-survey-fielding-field-fielding-date-add-more-wrapper'>",
+		'#suffix' => "</div>"
+				
+		);
+	
+		
+		  // Provide a default date in the format YYYY-MM-DD HH:MM:SS.
+  $date = '2008-12-31 00:00:00';
+   $format = 'Y-m-d';
+	 $form['date2'] = array(
+     '#type' => 'date_popup', // types 'date_text' and 'date_timezone' are also supported. See .inc file.
+     '#title' => 'select a date',
+     '#default_value' => $date, 
+     '#date_format' => $format,
+     '#date_label_position' => 'within', // See other available attributes and what they do in date_api_elements.inc
+     '#date_timezone' => 'America/Chicago', // Optional, if your date has a timezone other than the site timezone.
+     '#date_increment' => 15, // Optional, used by the date_select and date_popup elements to increment minutes and seconds.
+     '#date_year_range' => '-3:+3', // Optional, used to set the year range (back 3 years and forward 3 years is the default).	
+		);		
+		
+	return $form;
+		
+}	
+	
+	
+	
+	
+	
+	
+/**
+ * Implements hook_theme().
+ */
+function survey_fielding_theme() {
+
+  return array(
+    'survey_fielding' => array(
+      'template' => 'survey_fielding',
+  	  //'variables' => array('output' => NULL,'topic'=>NULL),
+  	 //'render element' => 'element',
+  	
+    ),
+  );
+
+}
+
+/** 
+ * 
+ * Implements hook_menu_alter
+ * 
+ * Implement the survey fieldind status: Not Ready, Empty, Selected, Running, Ended. 
+ * 
+ */
+
+
+
+
+function survey_fielding_menu_alter(&$items){
+	
+	$items['profile-survey_fielding']['title callback'] = 'survey_fielding_title';
+	if(isset($items['profile-survey_fielding'])) unset($items['profile-survey_fielding']['file']);
+	$items['profile-survey_fielding']['page callback'] = 'survey_fielding_new_page';
+
+	
+	/*
+	//if(isset($items['profile-survey_fielding/%/edit'])) unset($items['profile-survey_fielding/%/edit']);
+	//if(isset($items['profile-survey_fielding/%/edit'])) unset($items['profile-survey_fielding/%/edit']['access arguments'])
+	$items['profile-survey_fielding/%/edit']['type'] = MENU_CALLBACK;
+	
+	$items['profile-survey_fielding/%/edit']['title callback'] = 'survey_fielding_title';
+	$items['profile-survey_fielding/%/edit']['access callback'] = "user_access";
+	$items['profile-survey_fielding/%/edit']['access arguments'] = array('greeting');
+	$items['profile-survey_fielding/%/edit']['page callback'] = 'survey_fielding_new_page';
+	
+	*/
+	//$items['profile-survey_fielding/%/edit']['title'] = 'edit';
+	//$items['profile-survey_fielding/%/edit']['file'] = drupal_get_path('module', 'profile2')."/contrib/profile2_page.inc";
+}
+
+
+/** 
+ * 
+ * 
+ * Page callback. 
+ * 
+ * 
+ */
+function survey_fielding_new_page() {
+	
+	global $user;
+	$uid = $user->uid;
+	
+	//Not Ready
+			//get the forms filled out
+                $sql="select type from {profile} where uid=:uid";
+                $results=db_query($sql,array('uid'=>$uid));
+
+                $i=0;
+                foreach($results as $type){
+                    $user_filled[$i]=$type->type;
+                    $i++;
+                }
+
+       			//check IMLS
+                $flag=0;            
+                foreach($user_filled as $r){
+                     if ($r=="imls_data") $flag=1;
+                }
+                
+                //check Information Form
+                if($flag==1){
+                foreach($user_filled as $r){
+                    if ($r=="intake_form") $flag=2;
+                }
+                }
+ 
+	if($flag<2){
+	$not_ready="<h3>You must complete the <a href='./profile-imls_data'>IMLS Data</a> and <a href='./profile-intake_form'>Intake</a> forms before selecting your fielding dates.</h3>
+<p>Consider the time it will take to complete promotional tasks, including editing your library website and posting flyers.  Visit <a href='./codebox'>Get your links</a> for more information.</p>
+<p>You will not be able to edit the IMLS Data and Intake forms once the survey fielding has begun.</p>
+<p>As the survey runs, you will be informed of the number of responses, and will have the option to extend the survey.  You may extend the survey while it is running, <em>but not after it has ended.<em></p>
+<p>Please <a href='./contact'>contact us</a> if you have any questions.</p>
+<strong>We recommend that you run the survey for at least 2 weeks.</strong>";
+	
+	$content=array(
+		'output'=>$not_ready,
+		);
+
+	return theme('survey_fielding', $content);
+	}
+	
+	//empty
+		$sql="select type from {profile} where uid=:uid and type='survey_fielding'";
+		$result=db_query($sql, array('uid'=>$uid))->fetchField();
+		
+		if(empty($result)) drupal_goto("profile-survey_fielding/".$uid."/edit");
+		//return theme('survey_fielding');
+
+	//Get the Date
+
+	   //get the fielding dates from field_data_field_fielding_date
+	   $sql="SELECT field_fielding_date_value AS from_date, 
+	   field_fielding_date_value2 AS to_date 
+	   FROM {field_data_field_fielding_date} AS a, 
+	   {profile} AS b WHERE a.entity_id=b.pid AND b.uid=:uid";
+	   $result=db_query($sql, array('uid'=>$uid));
+	
+	   $date1 = '';
+	   $date2 = '';
+	   foreach($result as $r){
+	        $date1=strtotime($r->from_date);
+	        $date2=strtotime($r->to_date);
+	   }
+
+	   
+	    $field_date= date('D m/d/y', $date1).' - '.date('D m/d/y', $date2);
+	   
+	   
+	   //Selected
+	   if(isset($date1, $date2)){
+	   	
+	   	if($date1>time()){
+	   	
+	   $selected="<h3>Your survey is scheduled for:</h3>
+<h4>$field_date</h4><br><br><a href='./profile-survey_fielding/".$uid."/edit'><input type='button' value='Change Dates'></a><br><br>
+<p>Ensure that your library website is ready to display the survey links, and promotional activities are coordinated.  Visit <a href='.	/codebox'>Get your links</a> for more information about survey promotion.</p>
+<p>You will not be able to edit the IMLS Data and Intake forms once the survey fielding has begun.</p>
+<p>You may extend the survey while it is running, <em>but not after it has ended.<em></p>
+<p>Please <a href='./contact'>contact us</a> if you have any questions.</p>";
+	   
+	   //$selected.=drupal_get_form('entity_ui_get_form', 'profile2');
+	   $type=profile2_type_load('survey_fielding');
+	   $path = profile2_page_get_base_path($type);
+	   $count = count(explode('/', $path));
+	   
+	   
+	   //$selected.=entity_ui_get_form('profile2',$count);
+	   
+	   $content=array(
+		'output'=>$selected,
+		);
+	   	}
+	   
+	//Running
+	
+	   	if($date1<=time() && $date2>=time()){
+	   		$running="
+<h3>Your survey is running:</h3>
+<h4>$field_date</h4>
+<br>
+<h2>56 </h2><h4>Current responses</h4>
+<br><br>
+<input type='button' value='Extend Fielding'>
+<br><br>
+<p>Please maintain the links on your website and promotional flyers during the dates below.  Visit <a href='./codebox'>Get your links</a> for more information about survey promotion.</p>
+<p>You are no longer allowed to change information on your IMLS Data and Intake survey forms.</p>
+<p>You may extend the survey while it is running, <em>but not after it has ended.<em></p>
+<p>Please <a href='./contact'>contact us</a> if you have any questions.</p>";
+
+	   		$content=array(
+		'output'=>$running,
+		);
+	   		   		
+	   	}
+		
+	 //Ended
+
+	   		if($date2<time()){
+	   			$ended="<h3>Your survey ended on:</h3>
+<h4>".date('D m/d/y', $date2)."</h4><strong><a href='./reports'>view report</a></strong>
+<br>
+<h2>109 </h2><h4>Responses</h4>
+<h5>Fielding Dates:</h5>
+<p>$field_date</p>";
+	   			
+	   $content=array(
+		'output'=>$ended,
+		);
+	   				
+	   		}
+	   	
+	   	
+	   	
+	   	
+	   	
+	   	
+	   	if(empty($content)) 
+	   		$content=array(
+		'output'=>$date1."  ".$date2,
+		);
+	   		   		
+	   	
+	   	
+		
+		
+		
+		
+		
+		
+		
+		
+	   
+	return theme('survey_fielding',$content);	
+	   }
+
+
+
+	return theme('survey_fielding');
+
+}
+
+
+/** 
+ * 
+ * 
+ * title callback. 
+ */
+function survey_fielding_title() {
+	
+	
+	//$now = format_date(time());
+	
+	drupal_set_title(t('Survey Fielding'));
+}
+function survey_fielding_edit_title(){
+	
+	drupal_set_title(t('Survey Fielding'));
 	
 }
