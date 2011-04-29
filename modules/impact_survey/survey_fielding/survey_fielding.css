@@ -1,0 +1,9 @@
+
+#center h2,
+#center h4 {
+display:inline;
+}
+#center h4,
+#center h1 {
+margin:0;
+}
