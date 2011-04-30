@@ -1,12 +1,5 @@
 <?php // $Id$
 
-function survey_fielding_init(){
-	//drupal_add_css(drupal_get_path('module', survey_fielding) . "/survey_fielding.css");
-}
-
-
-
-
 /**
 * Implements hook_trigger_info().
 *
@@ -21,8 +14,6 @@ function survey_fielding_trigger_info() {
 		),
 	);
 }
-
-
 
 
 function survey_fielding_form_profile2_edit_survey_fielding_form_alter(&$form, &$form_state) {
@@ -42,13 +33,6 @@ function survey_fielding_form_profile2_edit_survey_fielding_form_alter(&$form, &
 		'#markup' => $instruction
 		);
 
-	$date1=$form['profile_survey_fielding']['field_fielding_date']['und']['0']['#default_value']['value'];
-	
-	$form['profile_survey_fielding']['field_fielding_date']['und']['0']['#default_value']['value']="2011-05-02 00:00:00";
-		$form['profile_survey_fielding']['field_fielding_date']['und']['0']['#columns']['0']='value';
-		unset($form['profile_survey_fielding']['field_fielding_date']['und']['0']['#columns']['1']);
-		unset($form['profile_survey_fielding']['field_fielding_date']['und']['0']['#default_value']['value2']);
-
 	$form['#submit']['1']="survey_fielding_submit";
   	
 }
@@ -63,9 +47,7 @@ function survey_fielding_form_profile2_edit_survey_fielding_form_alter(&$form, &
 function survey_fielding_submit($form, &$form_state){
 
 		module_invoke_all('send_action','NULL', 'NULL');
-		
-		
-		
+
 		//$form_state['redirect'] = '/profile-survey_fielding';
 }
 
@@ -142,32 +124,6 @@ function survey_fielding_nameform() {
 	
 	$class=array('0'=> 'field-type-date', '1' => 'field-name-field-fielding-date', '2'=>'field-widget-date-popup');
 	
-	
-	$form['date'] =array(
-		'#type' => 'container',
-		'#attributes' => $class,
-		'#tree' => TRUE,
-		'und' => array(
-
-				'#title' => t('date'),
-				'#type' => 'date_combo',
-				//'#default value' =>
-				'#entity_type' => 'profile2',
-				'#bundle' => 'survey_fielding',
-				'#field_name' => 'field_fielding_date',
-				'#language' => 'und',
-				'#date_timezone' => 'America/Vancouver',
-				'#field_parents' => array('profile_survey_fielding'),
-				'#theme_wrappers' => array('date_combo'),
-				'#description' => '',
-				'#fieldset_description' => ''
-				),
-		'#prefix' => "<div id='profile-survey-fielding-field-fielding-date-add-more-wrapper'>",
-		'#suffix' => "</div>"
-				
-		);
-	
-		
 		  // Provide a default date in the format YYYY-MM-DD HH:MM:SS.
   $date = '2008-12-31 00:00:00';
    $format = 'Y-m-d';
@@ -186,10 +142,7 @@ function survey_fielding_nameform() {
 		
 }	
 	
-	
-	
-	
-	
+
 	
 /**
  * Implements hook_theme().
@@ -224,20 +177,6 @@ function survey_fielding_menu_alter(&$items){
 	if(isset($items['profile-survey_fielding'])) unset($items['profile-survey_fielding']['file']);
 	$items['profile-survey_fielding']['page callback'] = 'survey_fielding_new_page';
 
-	
-	/*
-	//if(isset($items['profile-survey_fielding/%/edit'])) unset($items['profile-survey_fielding/%/edit']);
-	//if(isset($items['profile-survey_fielding/%/edit'])) unset($items['profile-survey_fielding/%/edit']['access arguments'])
-	$items['profile-survey_fielding/%/edit']['type'] = MENU_CALLBACK;
-	
-	$items['profile-survey_fielding/%/edit']['title callback'] = 'survey_fielding_title';
-	$items['profile-survey_fielding/%/edit']['access callback'] = "user_access";
-	$items['profile-survey_fielding/%/edit']['access arguments'] = array('greeting');
-	$items['profile-survey_fielding/%/edit']['page callback'] = 'survey_fielding_new_page';
-	
-	*/
-	//$items['profile-survey_fielding/%/edit']['title'] = 'edit';
-	//$items['profile-survey_fielding/%/edit']['file'] = drupal_get_path('module', 'profile2')."/contrib/profile2_page.inc";
 }
 
 
@@ -381,37 +320,18 @@ function survey_fielding_new_page() {
 		);
 	   				
 	   		}
-	   	
-	   	
-	   	
-	   	
-	   	
-	   	
+  	
 	   	if(empty($content)) 
 	   		$content=array(
 		'output'=>$date1."  ".$date2,
 		);
 	   		   		
-	   	
-	   	
-		
-		
-		
-		
-		
-		
-		
-		
-	   
 	return theme('survey_fielding',$content);	
 	   }
-
-
 
 	return theme('survey_fielding');
 
 }
-
 
 /** 
  * 
