@@ -12,18 +12,10 @@
   <?php if (!$page): ?>
     <h2 class="title"<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
   <?php endif; ?>
-	<?php print render($title_suffix); ?>
-
-  <?php if ($display_submitted): ?>
-    <div class="meta">
-      <span class="submitted"><?php print t('Submitted by !username on !datetime', array('!username' => $name, '!datetime' => $date)); ?></span>
-    </div>
-  <?php endif; ?>
-  <?php if($user_picture): print $user_picture; endif; ?>
-  <div class="content clear-block"<?php print $content_attributes; ?>>
  
  
  <!-- Demo Code Instruction -->
+<p>We are working to make this process as easy as possible.  If you get stuck, please <a href="/contact">contact us</a> for assistance.</p>
 <p>Please also include a static button or banner on your website if you use this option. That way if your patrons dismiss the survey at the start of their PAC session they will be able to return to it later. </p>
 <p>Copy and paste the following code in the &lt;HEAD&gt; section of your website:</p>
 <form name="codeform">
