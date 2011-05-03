@@ -86,17 +86,7 @@ function survey_fielding_send_action($object, $context){
  *  
 */
 function survey_fielding_menu() { 
-	$items['formexample'] = array(
-			'title' => 'View the sample form',
-			//'title callback' => 'survey_fielding_title',
-			'page callback' => 'drupal_get_form',
-			'access callback' => 'user_access', 
-			'access arguments' => array('receive greeting'),
-			'type' => MENU_NORMAL_ITEM,
-			'page arguments' => array('survey_fielding_nameform'),
-			//'file' => 'survey_fielding.inc',
-			);
-			
+
 	$items['profile-survey_fielding/%/extend'] = array(
 			'titile' => 'Extend Survey Fielding',
 			'page callback' => 'survey_fielding_extend',
@@ -104,8 +94,6 @@ function survey_fielding_menu() {
 			'access callback' => 'user_access',
 			'type' => MENU_NORMAL_ITEM,
 		);		
-			
-			
 			
 		return $items;
 	}
@@ -161,6 +149,8 @@ form_set_error('user_name',t('Please use the date popup to select the prospectiv
 }
 
 function survey_fielding_nameform_submit($form_id, $form_state) {
+	
+	module_invoke_all('send_action','NULL', 'NULL');
 
 	$date=$form_state['values']['date2'];
 	$date=strtotime($date);
