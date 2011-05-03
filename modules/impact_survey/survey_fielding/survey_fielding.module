@@ -97,6 +97,16 @@ function survey_fielding_menu() {
 			//'file' => 'survey_fielding.inc',
 			);
 			
+	$items['profile-survey_fielding/%/extend'] = array(
+			'titile' => 'Extend Survey Fielding',
+			'page callback' => 'survey_fielding_extend',
+			'access arguments' => array('extend'),
+			'access callback' => 'user_access',
+			'type' => MENU_NORMAL_ITEM,
+		);		
+			
+			
+			
 		return $items;
 	}
 
@@ -109,27 +119,16 @@ function survey_fielding_menu() {
  * */
 	
 	
-function survey_fielding_nameform() { 
-	
-	$form['user_name'] = array(
-		'#title' => t('Your Name'), 
-		'#type' => 'textfield',
-		'#description' => t('Please enter your name.')
-		);
-
-	$form['submit'] = array( 
-		'#type' => 'submit',
-		'#value' => t('Submit') 
-	);
-	
-	$class=array('0'=> 'field-type-date', '1' => 'field-name-field-fielding-date', '2'=>'field-widget-date-popup');
-	
+function survey_fielding_nameform($date1,$date2) { 
+		
+	//dpm($date2);
+	$date=$date2['build_info']['args']['1'];
 		  // Provide a default date in the format YYYY-MM-DD HH:MM:SS.
-  $date = '2008-12-31 00:00:00';
-   $format = 'Y-m-d';
+  	//$date = '2008-12-31 00:00:00';
+   	$format = 'Y-m-d';
 	 $form['date2'] = array(
      '#type' => 'date_popup', // types 'date_text' and 'date_timezone' are also supported. See .inc file.
-     '#title' => 'select a date',
+     '#title' => 'to date',
      '#default_value' => $date, 
      '#date_format' => $format,
      '#date_label_position' => 'within', // See other available attributes and what they do in date_api_elements.inc
@@ -138,12 +137,54 @@ function survey_fielding_nameform() {
      '#date_year_range' => '-3:+3', // Optional, used to set the year range (back 3 years and forward 3 years is the default).	
 		);		
 		
-	return $form;
+	$form['submit'] = array(
+		'#type'=>'submit',
+		'#value' => t('Save')
+	);
 		
+	return $form;
 }	
-	
 
+/** * Validate the form. */
+function survey_fielding_nameform_validate($form, &$form_state) { 
 	
+	if (empty($form_state['values']['date2'])){ 
+form_set_error('user_name',t('Please use the date popup to select the prospective date'));
+	}
+	
+	if(strtotime($form_state['values']['date2'])<=time()){
+		form_set_error('user_name',t('The end date can not be before the start date'));
+	}
+	
+	
+	
+}
+
+function survey_fielding_nameform_submit($form_id, $form_state) {
+
+	$date=$form_state['values']['date2'];
+	$date=strtotime($date);
+	
+	$date=format_date($date,'custom','c');
+	
+	$date=substr($date,0,19);
+	
+	global $user;
+	$uid=$user->uid;
+	//get the pid by the uid
+	$sql="select pid from {profile} where uid=:uid and type='survey_fielding'";
+	$result=db_query($sql, array('uid'=>$uid))->fetchField();
+	
+	//update the data base
+	$updated = db_update('field_data_field_fielding_date')
+  	->fields(array(
+    	'field_fielding_date_value2' => $date,
+  	))
+  	->condition('entity_id',$result, '=')
+  	->execute();
+
+  	drupal_goto('profile-survey_fielding');
+}	
 /**
  * Implements hook_theme().
  */
@@ -286,34 +327,64 @@ function survey_fielding_new_page() {
 	//Running
 	
 	   	if($date1<=time() && $date2>=time()){
+	   		
+	   		
+	   		//get the pid
+	   		$sql="select pid from {profile} where uid=:uid and type='library_registration'";
+			$result=db_query($sql, array('uid'=>$uid))->fetchField();
+	
+			//get the libarary ID
+			$sql="select field_library_reg_system_value from {field_data_field_library_reg_system} where entity_id=:pid";
+			$libID=db_query($sql, array('pid'=>$result))->fetchField();
+	   		
+	   		//count the responses
+	   		$sql="select count('LibID') from {survey_responses} where LibID=:libid and Status='complete'";
+			$count=db_query($sql, array('libid'=>$libID))->fetchField();
+   		
 	   		$running="
-<h3>Your survey is running:</h3>
-<h4>$field_date</h4>
-<br>
-<h2>56 </h2><h4>Current responses</h4>
-<br><br>
-<input type='button' value='Extend Fielding'>
-<br><br>
-<p>Please maintain the links on your website and promotional flyers during the dates below.  Visit <a href='./codebox'>Get your links</a> for more information about survey promotion.</p>
-<p>You are no longer allowed to change information on your IMLS Data and Intake survey forms.</p>
-<p>You may extend the survey while it is running, <em>but not after it has ended.<em></p>
-<p>Please <a href='./contact'>contact us</a> if you have any questions.</p>";
+					<h3>Your survey is running:</h3>
+					<h4>$field_date</h4>
+					<br>
+					<h2>$count </h2><h4>Current responses</h4>
+					<br><br>
+					<a href='./profile-survey_fielding/".$uid."/extend'><input type='button' value='Extend Fielding'></a>
+					<br><br>
+					<p>Please maintain the links on your website and promotional flyers during the dates below.  Visit <a href='./codebox'>Get your links</a> for more information about survey promotion.</p>
+					<p>You are no longer allowed to change information on your IMLS Data and Intake survey forms.</p>
+					<p>You may extend the survey while it is running, <em>but not after it has ended.<em></p>
+					<p>Please <a href='./contact'>contact us</a> if you have any questions.</p>";
 
 	   		$content=array(
 		'output'=>$running,
 		);
 	   		   		
 	   	}
-		
-	 //Ended
+		  	
+	   	//Ended
 
 	   		if($date2<time()){
+	   			
+	   		//get the pid
+		   		$sql="select pid from {profile} where uid=:uid and type='library_registration'";
+				$result=db_query($sql, array('uid'=>$uid))->fetchField();
+		
+			//get the libarary ID
+				$sql="select field_library_reg_system_value from {field_data_field_library_reg_system} where entity_id=:pid";
+				$libID=db_query($sql, array('pid'=>$result))->fetchField();
+	   		
+	   		//count the responses
+	   			$sql="select count('LibID') from {survey_responses} where LibID=:libid and Status='complete'";
+				$count=db_query($sql, array('libid'=>$libID))->fetchField();
+   		
+	   			
+	   			
+	   			
 	   			$ended="<h3>Your survey ended on:</h3>
-<h4>".date('D m/d/y', $date2)."</h4><strong><a href='./reports'>view report</a></strong>
-<br>
-<h2>109 </h2><h4>Responses</h4>
-<h5>Fielding Dates:</h5>
-<p>$field_date</p>";
+					<h4>".date('D m/d/y', $date2)."</h4><strong><a href='./reports'>view report</a></strong>
+					<br>
+					<h2>$count </h2><h4>Responses</h4>
+					<h5>Fielding Dates:</h5>
+					<p>$field_date</p>";
 	   			
 	   $content=array(
 		'output'=>$ended,
@@ -332,6 +403,64 @@ function survey_fielding_new_page() {
 	return theme('survey_fielding');
 
 }
+
+function survey_fielding_extend(){
+	
+	global $user;
+	$uid=$user->uid;
+	//Get the Date
+
+	   //get the fielding dates from field_data_field_fielding_date
+	   $sql="SELECT field_fielding_date_value AS from_date, 
+	   field_fielding_date_value2 AS to_date 
+	   FROM {field_data_field_fielding_date} AS a, 
+	   {profile} AS b WHERE a.entity_id=b.pid AND b.uid=:uid";
+	   $result=db_query($sql, array('uid'=>$uid));
+	
+	   $date1 = '';
+	   $date2 = '';
+	   foreach($result as $r){
+	        $date1=strtotime($r->from_date);
+	        $date2=strtotime($r->to_date);
+	   }
+
+	   
+	    //$field_date= date('D m/d/y', $date1).' - '.date('D m/d/y', $date2);
+	
+	$date1=date('Y-m-d',$date1);
+	$date2=date('Y-m-d H:i:s',$date2);
+	//$get_form=array('survey_fielding_nameform','11','2');
+	
+	
+	$form = drupal_get_form('survey_fielding_nameform',$date1, $date2);
+	
+	$date2 = render($form);
+	
+	
+		   	$output="
+<h3>Your survey is running:</h3>
+<b>from date<b><br><h4>$date1</h4>$date2
+<p>Please maintain the links on your website and promotional flyers during the dates below.  Visit <a href='./codebox'>Get your links</a> for more information about survey promotion.</p>
+<p>You are no longer allowed to change information on your IMLS Data and Intake survey forms.</p>
+<p>You may extend the survey while it is running, <em>but not after it has ended.<em></p>
+<p>Please <a href='./contact'>contact us</a> if you have any questions.</p>";
+	
+		$content=array(
+			'output'=>$output,
+		);
+	
+
+		
+		   	return theme('survey_fielding', $content);
+	
+	
+}
+
+
+
+
+
+
 
 /** 
  * 
