@@ -26,16 +26,28 @@ function survey_fielding_form_profile2_edit_survey_fielding_form_alter(&$form, &
 <p>Please <a href='./contact'>contact us</a> if you have any questions.</p>
 <strong>We recommend that you run the survey for at least 2 weeks.</strong>
 <br><br>";
-	
-	
-	
+		
 	$form['profile_survey_fielding']['instruction'] = array(
 		'#markup' => $instruction
 		);
 
 	$form['#submit']['1']="survey_fielding_submit";
-  	
+
+	$form['#validate']['1']="survey_fielding_validate";
 }
+
+/**
+ * validate the form
+ * 
+ * make sure the start date not before current date
+ */
+function survey_fielding_validate($form, &$form_state){
+
+	if(strtotime($form_state['values']['profile_survey_fielding']['field_fielding_date']['und']['0']['value'])<time())
+		form_set_error('user','The start date can not be greater than the current date');
+
+}
+
 
 /**
  * 
@@ -48,7 +60,7 @@ function survey_fielding_submit($form, &$form_state){
 
 		module_invoke_all('send_action','NULL', 'NULL');
 
-		//$form_state['redirect'] = '/profile-survey_fielding';
+		$form_state['redirect'] = '/profile-survey_fielding';
 }
 
 /**
