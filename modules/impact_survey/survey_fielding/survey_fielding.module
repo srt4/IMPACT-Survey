@@ -217,7 +217,7 @@ function survey_fielding_theme() {
 
 function survey_fielding_menu_alter(&$items){
 	
-	$items['profile-survey_fielding']['title callback'] = 'survey_fielding_title';
+	$items['profile-survey_fielding']['title'] = 'Survey Fielding';
 	if(isset($items['profile-survey_fielding'])) unset($items['profile-survey_fielding']['file']);
 	$items['profile-survey_fielding']['page callback'] = 'survey_fielding_new_page';
 
@@ -471,11 +471,11 @@ function survey_fielding_extend(){
  * title callback. 
  */
 function survey_fielding_title() {
-	
+	//return 'Survey Fielding';
 	
 	//$now = format_date(time());
 	
-	drupal_set_title(t('Survey Fielding'));
+	//drupal_set_title(t('Survey Fielding'));
 }
 function survey_fielding_edit_title(){
 	
