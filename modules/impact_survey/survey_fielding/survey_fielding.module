@@ -44,7 +44,7 @@ function survey_fielding_form_profile2_edit_survey_fielding_form_alter(&$form, &
 function survey_fielding_validate($form, &$form_state){
 
 	if(strtotime($form_state['values']['profile_survey_fielding']['field_fielding_date']['und']['0']['value'])<time())
-		form_set_error('user','The start date can not be greater than the current date');
+		form_set_error('user','The start date must be greater than the current date');
 
 }
 
