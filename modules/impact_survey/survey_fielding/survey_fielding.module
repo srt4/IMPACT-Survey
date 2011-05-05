@@ -56,6 +56,12 @@ function survey_fielding_validate($form, &$form_state){
 	{form_set_error('datecheck',"Please use the <font color='green' size='3px'>pop-up calendar</font> (recommended), or input in the correct format, i.e. May 16 2011");
 			//drupal_set_message('<i>hello</i>',"status");
 	}
+	
+	//dpm ($form_state['values']['profile_survey_fielding']['field_fielding_date']['und']['0']['value2']);
+	
+	if(strtotime($form_state['values']['profile_survey_fielding']['field_fielding_date']['und']['0']['value2'])<=strtotime($form_state['values']['profile_survey_fielding']['field_fielding_date']['und']['0']['value']) && !empty($form_state['values']['profile_survey_fielding']['field_fielding_date']['und']['0']['value']))
+		form_set_error('user','The To date must be greater than the From date (If your To date is correct, please check your formate, i.e. May 6 2011, or use the pop-up calendar.)');
+	
 		
 }
 
