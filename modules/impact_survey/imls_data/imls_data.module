@@ -1,4 +1,4 @@
-<?php 
+<?php
 // $Id$
 /**
  * @file
@@ -8,64 +8,78 @@
  */
 function imls_data_form_profile2_edit_imls_data_form_alter(&$form, &$form_state, $form_id) {
   drupal_add_js(drupal_get_path('module', 'imls_data').'/imls_data.js');
-// get the users fscs key	
-$fscs = token_replace('[current-user:profile-library-registration:field-library-reg-system]');
+  // get the users fscs key
+  $fscs = token_replace('[current-user:profile-library-registration:field-library-reg-system]');
+global $user;
+$token_legalpop = 0;
+$token_visits = 0;
+$token_hours = 0;
+$token_sq_feet = 0;
+$token_circ = 0;
+$token_expend_tot = 0;
+$token_fte = 0;
+$token_terminals = 0;
+$token_pac_uses = 0;
+  // Get data from dr_library_lookup if user has no submission
+  if($imls_data = profile2_user_get_properties($user->uid, array(), 'profile-imls_data')) {
+    $token_legalpop = token_replace('[current-user:profile-imls-data:field-legalpop]');
+    $token_visits = token_replace('[current-user:profile-imls-data:field-visits');
+    $token_hours = token_replace('[current-user:profile-imls-data:field-hours]');
+    $token_sq_feet = token_replace('[current-user:profile-imls-data:field-sq-feet]');
+    $token_circ = token_replace('[current-user:profile-imls-data:field-circ]');
+    $token_expend_tot = token_replace('[current-user:profile-imls-data:field-expend-tot]');
+    $token_fte = token_replace('[current-user:profile-imls-data:field-fte]');
+    $token_terminals = token_replace('[current-user:profile-imls-data:field-terminals]');
+    $token_pac_uses = token_replace('[current-user:profile-imls-data:field-pac-uses]');
+  }
+  	
+  // calc sq feet
+  $outlets = db_select('square_feet', 's')
+  ->fields('s', array('lib_name', 'sq_feet'))
+  ->condition('fscs_key', $fscs)
+  ->execute()
+  ->fetchAllAssoc('lib_name');
 
-// get data from dr_library_lookup
-	  $query_system = "SELECT * FROM {library_lookup} WHERE fscs_key = '$fscs'";
-	  $result_system = db_query($query_system)->fetchObject();
-	    //$system = $result_system->library_name;
-  	 	//$lib_web_addr = $result_system->web_address;
-  	 	$hours = $result_system->hrs_open;
-  	 	//$sq_feet = $result_system->sq_feet;
-  	 	$terminals = $result_system->gp_terms;
-  	 	$staff = $result_system->tot_staff;
-  	 	$op_exp = $result_system->tot_op_exp;
-  	 	$visits = $result_system->visits;
-  	 	$pop = $result_system->popu_lsa;
-  	 	$pit_usr = $result_system->pit_usr;
-  	 	$tot_cir = $result_system->tot_cir;
-  	 	
-  	 	// calc sq feet
-  	 	$outlets = db_select('square_feet', 's')
-      ->fields('s', array('lib_name', 'sq_feet'))
-      ->condition('fscs_key', $fscs)
-      ->execute()
-      ->fetchAllAssoc('lib_name');
-      
   $sum = 0;
   $error = 0;
   foreach ($outlets as $outlet) {
-      if ($outlet->sq_feet == -1) {
-  	$error = 1;
-  } else if ($outlet->sq_feet > 0) {
-  	$sum += $outlet->sq_feet;
+    if ($outlet->sq_feet == -1) {
+      $error = 1;
+    } else if ($outlet->sq_feet > 0) {
+      $sum += $outlet->sq_feet;
+    }
   }
-      }
-if ($error == 0) {
-	$form['profile_imls_data']['field_sq_ft']['und'][0]['value']['#default_value'] = $sum;
-}
-
-
-$lib_info = db_select('library_lookup', 'll')
-	->fields('ll', array('web_address', 'library_name'))
-      ->condition('fscs_key', $fscs)
-      ->execute()
-      ->fetchAssoc();
-      
-	  //$form['profile_intake_form']['field_library_system'] = '';
-	  $form['profile_imls_data']['field_library_name_pref']['und'][0]['value']['#default_value'] = $lib_info['library_name'];
-		$form['profile_imls_data']['field_library_system_website']['und'][0]['value']['#default_value'] = $lib_info['web_address'];
-		$form['profile_imls_data']['field_sq_ft']['und'][0]['value']['#default_value'] = $sum;
-		$form['profile_imls_data']['field_hours']['und'][0]['value']['#default_value'] = $hours;
-		$form['profile_imls_data']['field_terminals']['und'][0]['value']['#default_value'] = $terminals;
-		$form['profile_imls_data']['field_fte']['und'][0]['value']['#default_value'] = $staff;
-		$form['profile_imls_data']['field_expend_tot']['und'][0]['value']['#default_value'] = $op_exp;
-		$form['profile_imls_data']['field_visits']['und'][0]['value']['#default_value'] = $visits;
-		$form['profile_imls_data']['field_legalpop']['und'][0]['value']['#default_value'] = $pop;
-		$form['profile_imls_data']['field_pac_uses']['und'][0]['value']['#default_value'] = $pit_usr;
-		$form['profile_imls_data']['field_circ']['und'][0]['value']['#default_value'] = $tot_cir;
-}
-function imls_data_init() {
+  if ($error > 0) {
+    $sum = 'Check branches';
+  }
   
+  $query_system = "SELECT * FROM {library_lookup} WHERE fscs_key = '$fscs'";
+  $result_system = db_query($query_system)->fetchObject();
+  
+  $pop = ($token_legalpop > 0) ? $token_legalpop : $result_system->popu_lsa;
+  $visits = ($token_visits > 0) ? $token_visits : $result_system->visits;
+  $hours = ($token_hours > 0) ? $token_hours : $result_system->hrs_open;
+  $sq_feet = ($token_sq_feet > 0) ? $token_sq_feet : $sum;
+  $tot_cir = ($token_circ > 0) ? $token_circ : $result_system->tot_cir;
+  $op_exp = ($token_expend_tot > 0) ? $token_expend_tot : $result_system->tot_op_exp;
+  $staff = ($token_fte > 0) ? $token_fte : $result_system->tot_staff;
+  $terminals = ($token_terminals > 0) ? $token_terminals : $result_system->gp_terms;
+  $pit_usr = ($token_pac_uses > 0) ? $token_pac_uses : $result_system->pit_usr;
+
+  
+  $form['profile_imls_data']['field_legalpop']['und'][0]['value']['#default_value'] = $pop;
+  $form['profile_imls_data']['field_visits']['und'][0]['value']['#default_value'] = $visits;
+  $form['profile_imls_data']['field_hours']['und'][0]['value']['#default_value'] = $hours;
+  $form['profile_imls_data']['field_sq_ft']['und'][0]['value']['#default_value'] = $sq_feet;
+  $form['profile_imls_data']['field_circ']['und'][0]['value']['#default_value'] = $tot_cir;
+  $form['profile_imls_data']['field_expend_tot']['und'][0]['value']['#default_value'] = $op_exp;
+  $form['profile_imls_data']['field_fte']['und'][0]['value']['#default_value'] = $staff;
+  $form['profile_imls_data']['field_terminals']['und'][0]['value']['#default_value'] = $terminals;
+  $form['profile_imls_data']['field_pac_uses']['und'][0]['value']['#default_value'] = $pit_usr;
+  //dpm($form);
 }
+/*
+ function imls_data_form_submit($form, &$form_state) {
+ drupal_set_message(t('The changes have been saved.'));
+ $form_state['redirect'] = 'myimpact';
+ }*/
