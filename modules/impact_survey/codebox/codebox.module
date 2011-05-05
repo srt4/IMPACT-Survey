@@ -3,7 +3,7 @@ function codebox_menu() {
   $items = array(
   	'codebox/download/%' => array(
       'page callback' => 'codebox_impact_html',
-      'page arguments' => array(3),
+      'page arguments' => array(2),
       'access callback' => TRUE,
     	'type' => MENU_CALLBACK,
     ),
