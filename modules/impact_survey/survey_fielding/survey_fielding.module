@@ -33,12 +33,10 @@ function survey_fielding_form_profile2_edit_survey_fielding_form_alter(&$form, &
 
 	$form['#submit']['1']="survey_fielding_submit";
 
-	//unset($form['#validate']);
-	//$form['#validate']['1']=$form['#validate']['0'];
+	//unset($form['#validate']['1']);
+
 	$form['#validate']['1']="survey_fielding_validate";
-	//$form['#validate']['0']="survey_fielding_validate";
-	//dpm($form['profile_survey_fielding']);
-	//dpm($form['#validate']);
+
 }
 
 /**
@@ -47,15 +45,19 @@ function survey_fielding_form_profile2_edit_survey_fielding_form_alter(&$form, &
  * make sure the start date not before current date
  */
 function survey_fielding_validate($form, &$form_state){
-	
+
+	//delete all the default error messages because the default one, say "Field value #1 is required", is not very understandable and friendly
+	drupal_get_messages('error');
+		
 	if(strtotime($form_state['values']['profile_survey_fielding']['field_fielding_date']['und']['0']['value'])<time() && !empty($form_state['values']['profile_survey_fielding']['field_fielding_date']['und']['0']['value']))
 		form_set_error('user','The start date must be greater than the current date');
-
+			
 	if(empty($form_state['values']['profile_survey_fielding']['field_fielding_date']['und']['0']['value']))	
-		form_set_error('ad','Please make sure you used the pop-up calendar or input the date in correct format, i.e. May 16 2011');
+	{form_set_error('datecheck',"Please use the <font color='green' size='3px'>pop-up calendar</font> (recommended), or input in the correct format, i.e. May 16 2011");
+			//drupal_set_message('<i>hello</i>',"status");
+	}
 		
 }
-
 
 /**
  * 
