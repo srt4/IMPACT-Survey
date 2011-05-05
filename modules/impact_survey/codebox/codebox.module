@@ -1,0 +1,26 @@
+<?php
+function codebox_menu() {
+  $items = array(
+  	'codebox/download/%' => array(
+      'page callback' => 'codebox_impact_html',
+      'page arguments' => array(3),
+      'access callback' => TRUE,
+    	'type' => MENU_CALLBACK,
+    ),
+  );
+  return $items;
+}
+
+function codebox_impact_html($fscs) {
+  $html = '<p style="margin: 5px 10px">';
+  $html .= '<a href="http://www.uwsrd.org/impact/index.asp?LibID=' . $fscs . '">';
+  $html .= '<img title="Click here to take our survey" alt="Click here to take our survey" src="/impact/impactbanner.jpg" width="631" height="194" style="border: 1px solid gray" /></a><br />';
+  $html .= 'How do you use the library\'s computers and Internet access?</p>';
+  $html .= '<p style="margin: 5px 10px"> <b style="font-size: 110%"><a href="http://www.uwsrd.org/impact/index.asp?LibID=' . $fscs . '">';
+  $html .= '<span style="color:#0000FF">Take our survey</span></a> and help your library evaluate its technology services!</b></p>';
+
+  $filename = file_unmanaged_save_data($html, 'temporary://impact.html', FILE_EXISTS_REPLACE);
+  
+  header('Content-Disposition: attachment; filename="impact.html"');
+  readfile('temporary://impact.html');
+}
