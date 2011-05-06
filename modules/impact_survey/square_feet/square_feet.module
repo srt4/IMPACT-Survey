@@ -16,6 +16,12 @@ function square_feet_menu() {
     'description' => t('Calculate square feet'),
     //'type' => MENU_CALLBACK,
   );
+  $items['square_feet/calculate/%'] = array(
+    'page callback' => 'square_feet_calculate',
+    'page arguments' => array(2),
+    'access arguments' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
   return $items;
 }
 function square_feet_form($form_state) {
@@ -99,7 +105,7 @@ function square_feet_form($form_state) {
   );
   	$form['square_feet']['change'] = array (
   		'#type' => 'item',
-  		'#prefix' => '<a href="/square_feet/edit_all">',
+  		'#prefix' => '<a href="square_feet/edit_all">',
   		'#markup' => "<input type='button' value= 'Edit all'/>",
   		'#suffix' => '</a>',
       	'#weight' => 9998, 
