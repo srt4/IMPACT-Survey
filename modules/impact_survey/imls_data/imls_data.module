@@ -23,7 +23,7 @@ $token_pac_uses = 0;
   // Get data from dr_library_lookup if user has no submission
   if($imls_data = profile2_user_get_properties($user->uid, array(), 'profile-imls_data')) {
     $token_legalpop = token_replace('[current-user:profile-imls-data:field-legalpop]');
-    $token_visits = token_replace('[current-user:profile-imls-data:field-visits');
+    $token_visits = token_replace('[current-user:profile-imls-data:field-visits]');
     $token_hours = token_replace('[current-user:profile-imls-data:field-hours]');
     $token_sq_feet = token_replace('[current-user:profile-imls-data:field-sq-feet]');
     $token_circ = token_replace('[current-user:profile-imls-data:field-circ]');
