@@ -11,9 +11,10 @@
       }
             
       //if view is not edited, direct to edit
+      /*
       if (isset($variables['page']['content']['system_main']['profile2']['']['empty'])) {
           drupal_goto($_GET['q'] . '/edit');
-      }
+      }*/
       
       //check if edit part are using profile2
       $tell = explode('-', $_GET['q']);
@@ -83,7 +84,7 @@
 	    
 	   //if the survey does not start, they could edit the profiles
 	   if(isset($date1) && $date1>time()){
-	   		if(isset($variables['page']['content']['system_main']['profile2'])) drupal_goto($_GET['q'].'/edit');
+	   		//if(isset($variables['page']['content']['system_main']['profile2'])) drupal_goto($_GET['q'].'/edit');
 	   }
 
 	   //if the survey has started, the edit page will not be allowed.

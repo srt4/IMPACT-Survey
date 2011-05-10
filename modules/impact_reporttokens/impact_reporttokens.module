@@ -1,0 +1,4 @@
+<?php
+
+include('impact_reporttokens.inc.php');
+

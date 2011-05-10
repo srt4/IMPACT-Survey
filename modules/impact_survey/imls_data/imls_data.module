@@ -1,4 +1,4 @@
-<?php 
+<?php
 // $Id$
 /**
  * @file
@@ -6,66 +6,63 @@
  * Creates the registration form that libraries must complete in order to complete registration for the survey.
  *
  */
-function imls_data_form_profile2_edit_imls_data_form_alter(&$form, &$form_state, $form_id) {
+function imls_data_form_profile2_edit_imls_data_form_alter(&$form, &$form_state) {
+  
+  // Add link to square feet table
   drupal_add_js(drupal_get_path('module', 'imls_data').'/imls_data.js');
-// get the users fscs key	
-$fscs = token_replace('[current-user:profile-library-registration:field-library-reg-system]');
+  	
+  // Get the user's fscs key
+  $fscs = token_replace('[current-user:profile-library-registration:field-library-reg-system]');
+  
+  // Get IMLS Data
+  $query_system = "SELECT * FROM {library_lookup} WHERE fscs_key = '$fscs'";
+  $result_system = db_query($query_system)->fetchObject();
+  
+  if(empty($form['profile_imls_data']['field_legalpop']['und'][0]['value']['#default_value']))
+    $form['profile_imls_data']['field_legalpop']['und'][0]['value']['#default_value'] = $result_system->popu_lsa;
+  if(empty($form['profile_imls_data']['field_visits']['und'][0]['value']['#default_value'])) 
+    $form['profile_imls_data']['field_visits']['und'][0]['value']['#default_value']= $result_system->visits;
+  if(empty($form['profile_imls_data']['field_hours']['und'][0]['value']['#default_value']))
+    $form['profile_imls_data']['field_hours']['und'][0]['value']['#default_value'] = $result_system->hrs_open;
+  if(empty($form['profile_imls_data']['field_sq_ft']['und'][0]['value']['#default_value']));
+    $form['profile_imls_data']['field_sq_ft']['und'][0]['value']['#default_value'] = imls_data_calculate_sq_feet($fscs);
+  if(empty($form['profile_imls_data']['field_circ']['und'][0]['value']['#default_value']))
+    $form['profile_imls_data']['field_circ']['und'][0]['value']['#default_value'] = $result_system->tot_cir;
+  if(empty($form['profile_imls_data']['field_expend_tot']['und'][0]['value']['#default_value']))
+    $form['profile_imls_data']['field_expend_tot']['und'][0]['value']['#default_value'] = $result_system->tot_op_exp;
+  if(empty($form['profile_imls_data']['field_fte']['und'][0]['value']['#default_value']))
+    $form['profile_imls_data']['field_fte']['und'][0]['value']['#default_value'] = $result_system->tot_staff;
+  if(empty($form['profile_imls_data']['field_terminals']['und'][0]['value']['#default_value']))
+    $form['profile_imls_data']['field_terminals']['und'][0]['value']['#default_value'] = $result_system->gp_terms;
+  if(empty($form['profile_imls_data']['field_pac_uses']['und'][0]['value']['#default_value']))
+    $form['profile_imls_data']['field_pac_uses']['und'][0]['value']['#default_value'] = $result_system->pit_usr;
+}
+/*
+ function imls_data_form_submit($form, &$form_state) {
+ drupal_set_message(t('The changes have been saved.'));
+ $form_state['redirect'] = 'myimpact';
+ }*/
+function imls_data_calculate_sq_feet($fscs) {
+    // calc sq feet
+  $outlets = db_select('square_feet', 's')
+  ->fields('s', array('lib_name', 'sq_feet'))
+  ->condition('fscs_key', $fscs)
+  ->execute()
+  ->fetchAllAssoc('lib_name');
 
-// get data from dr_library_lookup
-	  $query_system = "SELECT * FROM {library_lookup} WHERE fscs_key = '$fscs'";
-	  $result_system = db_query($query_system)->fetchObject();
-	    //$system = $result_system->library_name;
-  	 	//$lib_web_addr = $result_system->web_address;
-  	 	$hours = $result_system->hrs_open;
-  	 	//$sq_feet = $result_system->sq_feet;
-  	 	$terminals = $result_system->gp_terms;
-  	 	$staff = $result_system->tot_staff;
-  	 	$op_exp = $result_system->tot_op_exp;
-  	 	$visits = $result_system->visits;
-  	 	$pop = $result_system->popu_lsa;
-  	 	$pit_usr = $result_system->pit_usr;
-  	 	$tot_cir = $result_system->tot_cir;
-  	 	
-  	 	// calc sq feet
-  	 	$outlets = db_select('square_feet', 's')
-      ->fields('s', array('lib_name', 'sq_feet'))
-      ->condition('fscs_key', $fscs)
-      ->execute()
-      ->fetchAllAssoc('lib_name');
-      
   $sum = 0;
   $error = 0;
   foreach ($outlets as $outlet) {
-      if ($outlet->sq_feet == -1) {
-  	$error = 1;
-  } else if ($outlet->sq_feet > 0) {
-  	$sum += $outlet->sq_feet;
+    if ($outlet->sq_feet == -1) {
+      $error = 1;
+    } else if ($outlet->sq_feet > 0) {
+      $sum += $outlet->sq_feet;
+    }
   }
-      }
-if ($error == 0) {
-	$form['profile_imls_data']['field_sq_ft']['und'][0]['value']['#default_value'] = $sum;
-}
-
-
-$lib_info = db_select('library_lookup', 'll')
-	->fields('ll', array('web_address', 'library_name'))
-      ->condition('fscs_key', $fscs)
-      ->execute()
-      ->fetchAssoc();
-      
-	  //$form['profile_intake_form']['field_library_system'] = '';
-	  $form['profile_imls_data']['field_library_name_pref']['und'][0]['value']['#default_value'] = $lib_info['library_name'];
-		$form['profile_imls_data']['field_library_system_website']['und'][0]['value']['#default_value'] = $lib_info['web_address'];
-		$form['profile_imls_data']['field_sq_ft']['und'][0]['value']['#default_value'] = $sum;
-		$form['profile_imls_data']['field_hours']['und'][0]['value']['#default_value'] = $hours;
-		$form['profile_imls_data']['field_terminals']['und'][0]['value']['#default_value'] = $terminals;
-		$form['profile_imls_data']['field_fte']['und'][0]['value']['#default_value'] = $staff;
-		$form['profile_imls_data']['field_expend_tot']['und'][0]['value']['#default_value'] = $op_exp;
-		$form['profile_imls_data']['field_visits']['und'][0]['value']['#default_value'] = $visits;
-		$form['profile_imls_data']['field_legalpop']['und'][0]['value']['#default_value'] = $pop;
-		$form['profile_imls_data']['field_pac_uses']['und'][0]['value']['#default_value'] = $pit_usr;
-		$form['profile_imls_data']['field_circ']['und'][0]['value']['#default_value'] = $tot_cir;
-}
-function imls_data_init() {
-  
+  if ($error > 0) {
+    $message = "One or more of your branches is missing square feet values.  <a href='/square_feet' target='_blank' class='square_feet_link'>Click here</a> to edit branch data.";
+    drupal_set_message($message, 'warning');
+    $sum = 0;
+  }
+  return $sum;
 }
