@@ -446,7 +446,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
        			 ?>
                 <!-- Edit form -->
                 <form action="" method="post">
-                Prefered Name: <input name="preName" value="<?php print $system_name; ?>"></input><br>
+                Library Prefered Name: <input name="preName" value="<?php print $system_name; ?>"></input><br>
                 Username: <input name="UserName" value="<?php print $user->name; ?>"></input><br>
                 Registered User: <input name="fname" value="<?php print $firstname; ?>"></input>
                 <input name="lname" value="<?php print $lastname; ?>"></input><br>
