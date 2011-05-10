@@ -2,15 +2,12 @@
 
   $uid = $user->uid;
   $output='';
-  
-  //print ($_POST['record']);
+
   $flag=0;
-  //print_r($_POST);
+
   if(!empty($_POST)) {
   
   $records=explode('/',$_POST['record']);
-
-  
  //trim the space
   foreach($_POST as $key => $value){
   	$_POST[$key]=trim($value);
@@ -19,7 +16,7 @@
   	$records[$key]=trim($value);
   }
   
-if(!empty($_POST['UserName']) && !empty($_POST['fname']) && !empty($_POST['lname']) && !empty($_POST['position']) && !empty($_POST['phoneNum']) && !empty($_POST['email'])){
+if(!empty($_POST['preName']) && !empty($_POST['UserName']) && !empty($_POST['fname']) && !empty($_POST['lname']) && !empty($_POST['position']) && !empty($_POST['phoneNum']) && !empty($_POST['email'])){
 
 //tell the length of Number
 if(strlen($_POST['phoneNum'])>10 or strlen($_POST['phoneNum'])<6){ 
@@ -165,6 +162,40 @@ else {
 		$inserted = db_insert('field_data_field_library_reg_extension') 
 		->fields(array(
   		'field_library_reg_extension_value' => $_POST['phoneExt'],
+  		'entity_id' => $entity_id,
+		'delta' =>'0',
+		'entity_type' => 'profile2',
+		'bundle'=>'library_registration',
+		'deleted'=>'0',
+		'revision_id'=>$entity_id,
+		'language'=>'und',
+		))
+		->execute();
+	}
+}
+
+//update the prefered name
+if(!empty($records[7]) or $records['7']=='0'){	
+	//if updated to empty, delete the record
+	if(empty($_POST['preName'])){
+			$deleted = db_delete('field_data_field_library_reg_pref')
+  			->condition('entity_id',$entity_id, '=')
+ 			->execute();
+	}
+	else{
+	$updated = db_update('field_data_field_library_reg_pref')
+  		->fields(array(
+    		'field_library_reg_pref_value' => $_POST['preName'],
+  		))
+  	->condition('entity_id',$entity_id, '=')
+  	->execute();
+	}   
+}
+else {
+	if(!empty($_POST['phoneExt'])){
+		$inserted = db_insert('field_data_field_library_reg_pref') 
+		->fields(array(
+  		'field_library_reg_pref_value' => $_POST['preName'],
   		'entity_id' => $entity_id,
 		'delta' =>'0',
 		'entity_type' => 'profile2',
@@ -376,6 +407,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
             <?php 
 				
 				if($flag==1){
+					$system_name=$_POST['preName'];
 					$firstname=$_POST['fname'];
 					$lastname= $_POST['lname'];
 					$jobtitle= $_POST['position'];
@@ -407,19 +439,14 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 $sql="select field_library_reg_extension_value as value from {field_data_field_library_reg_extension} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
                 $phoneext=db_query($sql,array('uid'=>$uid))->fetchField();
                   
-       			 $records=array($user->name, $firstname, $lastname, $jobtitle, $phonenum, $phoneext, $user->mail);
+       			 $records=array($user->name, $firstname, $lastname, $jobtitle, $phonenum, $phoneext, $user->mail, $system_name);
        			 $record_post=implode('/',$records);            	
             	}          	
             	
-               //Output
-                $output = "<h3>$system_name</h3>";
-                //Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>Position:".$jobtitle."<br>  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-4).'<br>'.$user->mail;
-       			 print $output;
-
-			 
        			 ?>
                 <!-- Edit form -->
                 <form action="" method="post">
+                Prefered Name: <input name="preName" value="<?php print $system_name; ?>"></input><br>
                 Username: <input name="UserName" value="<?php print $user->name; ?>"></input><br>
                 Registered User: <input name="fname" value="<?php print $firstname; ?>"></input>
                 <input name="lname" value="<?php print $lastname; ?>"></input><br>
