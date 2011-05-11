@@ -13,7 +13,7 @@ function codebox_menu() {
 
 function codebox_impact_html($fscs) {
   $html = '<p style="margin: 5px 10px">';
-  $html .= '<a href="http://www.uwsrd.org/impact/index.asp?LibID=' . $fscs . '">';
+  $html .= '<a href="http://impactsurvey.org/libselect/index.php?fscs=' . $fscs . '">';
   $html .= '<img title="Click here to take our survey" alt="Click here to take our survey" src="/impact/impactbanner.jpg" width="631" height="194" style="border: 1px solid gray" /></a><br />';
   $html .= 'How do you use the library\'s computers and Internet access?</p>';
   $html .= '<p style="margin: 5px 10px"> <b style="font-size: 110%"><a href="http://impactsurvey.org/libselect/index.php?fscs=' . $fscs . '">';
