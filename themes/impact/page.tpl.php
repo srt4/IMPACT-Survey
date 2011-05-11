@@ -132,9 +132,9 @@
             <?php if ($action_links): ?>
               <ul class="action-links"><?php print render($action_links); ?></ul>
             <?php endif; ?>
-            <?php print token_replace(render($page['content'])); ?>
+            <?php print render($page['content']); ?>
             <div class="feedicons">
-              <?php echo $feed_icons ?>
+              <?php echo $feed_icons; ?>
             </div>
           </div>
         
