@@ -74,28 +74,29 @@
 	   }
 
 	   if(isset($date1, $date2)){
-	   if(!empty($date1) and !empty($date2)){
-	    $field_date= date('m/d/y', $date1).' - '.date('m/d/y', $date2);
+	   		if(!empty($date1) and !empty($date2)){
+	    		$field_date= date('m/d/y', $date1).' - '.date('m/d/y', $date2);
 	
-	    //output   
-	    $variables['field_date']="<br><span style='float: right;'>Fielding Dates:</span><br><a href='profile-survey_fielding' STYLE='text-decoration:none'>".$field_date."</a>";
-	    }
+	    	//output   
+	    	$variables['field_date']="<br><span style='float: right;'>Fielding Dates:</span><br><a href='profile-survey_fielding' STYLE='text-decoration:none'>".$field_date."</a>";
+	    	}
 	   }
 	    
 	   //if the survey does not start, they could edit the profiles
-	   if(isset($date1) && $date1>time()){
+	   if(isset($date1) && !empty($date1) && $date1>time()){
 	   		//if(isset($variables['page']['content']['system_main']['profile2'])) drupal_goto($_GET['q'].'/edit');
 	   }
 
 	   //if the survey has started, the edit page will not be allowed.
-	   if(isset($date1) && $date1<=time()){
+	   if(isset($date1) && !empty($date1) && $date1<=time()){
 	   	     	//check if edit part are using profile2
      			 $tell = explode('-', $_GET['q']);
      
       			if ($tell[0] == 'profile') {
           			$tell2 = explode('/', $tell[1]);
           			if (isset($tell2[2]) && $tell2[2] == 'edit') {
-          				drupal_goto($tell[0].'-'.$tell2[0]);		
+          				drupal_goto($tell[0].'-'.$tell2[0]);	
+          				drupal_set_message("nonono");	
           			}
           		}
 	   }
