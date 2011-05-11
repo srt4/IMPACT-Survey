@@ -352,7 +352,7 @@ function survey_fielding_new_page() {
 	   		//get the pid
 	   		$sql="select pid from {profile} where uid=:uid and type='library_registration'";
 			$result=db_query($sql, array('uid'=>$uid))->fetchField();
-	
+			
 			//get the libarary ID
 			$sql="select field_library_reg_system_value from {field_data_field_library_reg_system} where entity_id=:pid";
 			$libID=db_query($sql, array('pid'=>$result))->fetchField();
@@ -361,6 +361,8 @@ function survey_fielding_new_page() {
 	   		$sql="select count('LibID') from {survey_responses} where LibID=:libid and Status='complete'";
 			$count=db_query($sql, array('libid'=>$libID))->fetchField();
    		
+			if(empty($result)) $count=0;
+			
 	   		$running="
 					<h3>Your survey is running:</h3>
 					<h4>$field_date</h4>
@@ -377,7 +379,7 @@ function survey_fielding_new_page() {
 	   		$content=array(
 		'output'=>$running,
 		);
-	   		   		
+				
 	   	}
 		  	
 	   	//Ended
@@ -387,7 +389,7 @@ function survey_fielding_new_page() {
 	   		//get the pid
 		   		$sql="select pid from {profile} where uid=:uid and type='library_registration'";
 				$result=db_query($sql, array('uid'=>$uid))->fetchField();
-		
+				
 			//get the libarary ID
 				$sql="select field_library_reg_system_value from {field_data_field_library_reg_system} where entity_id=:pid";
 				$libID=db_query($sql, array('pid'=>$result))->fetchField();
@@ -397,7 +399,7 @@ function survey_fielding_new_page() {
 				$count=db_query($sql, array('libid'=>$libID))->fetchField();
    		
 	   			
-	   			
+	   			if(empty($result)) $count=0;
 	   			
 	   			$ended="<h3>Your survey ended on:</h3>
 					<h4>".date('D m/d/y', $date2)."</h4><strong><a href='./reports'>view report</a></strong>
@@ -409,7 +411,7 @@ function survey_fielding_new_page() {
 	   $content=array(
 		'output'=>$ended,
 		);
-	   				
+		   
 	   		}
   	
 	   	if(empty($content)) 
