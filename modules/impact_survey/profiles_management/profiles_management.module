@@ -32,12 +32,9 @@ function profiles_management_menu() {
 		$items['admin/profiles_management/%profiles_management_check_type/%profiles_management_check_uid'] = array(
 		'title' => 'Profiles Management',
 		'description' => 'Manage the Profiles',
-
 		'page callback' => 'profiles_management_admin_view',
 		'page arguments' => array(2,3),
-	
-		'access arguments' => array('administer site configuration'),
-		
+		'access arguments' => array('administer site configuration'),	
 		'file' => 'contrib/profile2_page.inc',
 		'file path' => drupal_get_path('module','profile2'),
 		'type' => MENU_NORMAL_ITEM,
@@ -46,12 +43,9 @@ function profiles_management_menu() {
 		$items['admin/profiles_management/%profiles_management_check_type/%profiles_management_check_uid/edit'] = array(
 		'title' => 'Profiles Management',
 		'description' => 'Manage the Profiles',
-
 		'page callback' => 'profiles_management_admin_edit',
 		'page arguments' => array(2,3),
-	
-		'access arguments' => array('administer site configuration'),
-		
+		'access arguments' => array('administer site configuration'),	
 		'file' => 'contrib/profile2_page.inc',
 		'file path' => drupal_get_path('module','profile2'),
 		'type' => MENU_NORMAL_ITEM,
@@ -59,9 +53,6 @@ function profiles_management_menu() {
 	
 	return $items;
 }
-
-
-
 
 //the View of the profiles
 
@@ -75,7 +66,7 @@ function profiles_management_admin_view($type,$uid){
 
 	$output = profile2_page_view($profile);
 	
-	$button = "<br><a href='".$uid."/edit'><button type='button'>Edit</button></a>";
+	$button = "<a href='".$uid."/edit'><input type='button'>Edit</input></a>";
 	return render($output).$button;
 }
 
@@ -89,49 +80,47 @@ function profiles_management_admin_edit($type,$uid){
 	$pid=db_query($sql,array('uid'=>$uid, 'type'=>$type))->fetchField();
 	
 	$profile = profile2_load($pid);
-	
-	//$output=drupal_get_form('profile2_form', $profile);
-	
-	//drupal_prepare_form('profile2_form', &$form, &$form_state);
-	
-	//$output2=drupal_retrieve_form('profile2_form', $profile);
-	
-	//dpm($output2);
-	dpm($profile);
-	
+		
 	$output=drupal_get_form('profile2_form', $profile);
-	//$output2=drupal_get_form('library_registration_form_profile2_edit_library_registration_form_alter', $profile);
 	
-	//$output2=drupal_get_form('library_registration_form_profile2_edit_library_registration_form_alter');
-	unset($output['profile_library_registration']['field_library_reg_system']);
-	//unset($output['profile_library_registration']['field_library_reg_state']);
-	
-	
-	unset($output['#validate']);
-	$output['profile_library_registration']['#markup']="noproblem";
-	$output['profile_library_registration']['field_library_reg_state']['und']['#value']="hello";
-	$output['#submit']['0']='profiles_management_profile2_submit';
-	
-	//$output['profile_library_registration']['field_library_reg_system']['und']['#default_value']="hello";
-	//$output['profile_library_registration']['field_library_reg_system']['und']['#type']="text";
-	
-	dpm($output);
-	//dpm($output['profile_library_registration']['field_library_reg_system']['und']['#default_value']);
-	
-	$form_state['values']['profile_library_registration']['field_library_reg_state']['und']['0']['value']="aaaa";
-	
-	$button = "<br><a href='../".$uid."'><button type='button'>View</button></a>";
+	$button = "<a href='../".$uid."'><input type='button'>View</input></a>";
 
-	return "hihihihih".render($output).$button;
+	return render($output).$button;
 	
 }
 
+//hook_profile2_form_alter
+function profiles_management_form_alter(&$form, &$form_state, $form_id) {
+	
+	//only works in this module
+	$path = substr($_GET['q'],0,25);
+	
+	if($form_id=="profile2_form" && $path=='admin/profiles_management' ){
+		$form['#submit'][1] = "profiles_management_profile2_submit";
+	}
 
+	if(isset($form['profile_library_registration']) && $path=='admin/profiles_management'){
+		//$form['profile_library_registration']['field_library_reg_state']['und']['#default_value']="Select your state";
+		unset($form['profile_library_registration']['field_library_reg_state']);
+		unset($form['profile_library_registration']['field_library_reg_system']);
+	}	
+}
 
+//a new submit function which is only for the profiles2 tables in profiles_management module
 function profiles_management_profile2_submit($form, &$form_state){
-	$form_state['profile2']="no";
-	dpm ($form_state);
-	dpm ($form);
+	global $user;
+	$uid=$user->uid;
+	
+	//edit the path
+	if(isset($form['profile_imls_data'])) $type="imls_data";
+	if(isset($form['profile_library_registration'])) $type="library_registration";
+	if(isset($form['profile_intake_form'])) $type="intake_form";
+	if(isset($form['profile_survey_fielding'])) $type="survey_fielding";
+	if(isset($form['profile_photo_logo'])) $type="photo_logo";
+	
+	$form_state['redirect']="admin/profiles_management/profile-$type/$uid";
+	drupal_set_message(t('The changes have been saved.'));
+	
 }
 
 
@@ -162,13 +151,6 @@ function profiles_management_check_uid_load($uid){
 	return FALSE;	
 }
 
-function profiles_management_profile2_page_view($next){
-	$x = profile2_page_view($next);
-	
-	return render($x)."hello";
-	
-}
-
 
 
 //the profiles management table
@@ -197,18 +179,26 @@ function profiles_management_list(){
 		$system[$s->entity_id]=$s->system;
 	}
 	
-	
+	$no_pid='';
 	
 	//set the types
 	foreach($types as $t){
 		$profile[$t->uid][$t->type]="<a href='profiles_management/profile-".$t->type."/".$t->uid."'>YES</a>";
-		if ($t->type=="library_registration") $profile[$t->uid]['System']=(isset($system[$t->pid])?$system[$t->pid]:' ');
+		if ($t->type=="library_registration") {
+			if(isset($system[$t->pid])) $profile[$t->uid]['System']=$system[$t->pid];
+			else  {$profile[$t->uid]['System']=$t->pid; $no_pid.=$t->pid.",";} //find out the pids which do not have the prefered name
+		}
 	}
 	
+	$no_pid=rtrim($no_pid,",");
 	
+	//get the library name if they do not have the prefered name
+	$sql = "select s.entity_id, library_name from {library_lookup} as l, {field_data_field_library_reg_system} as s where l.fscs_key =s.field_library_reg_system_value  and s.entity_id in ($no_pid)";
+	$result=db_query($sql);
 	
-	
-	
+	foreach($result as $r){
+		$lib_sys[$r->entity_id]=$r->library_name;
+	}
 	
 	$header=array(
 		array('data' => "Library System"),
@@ -223,7 +213,7 @@ function profiles_management_list(){
 	
 	foreach($profile as $key => $value){
 			$rows[] = array(
-				array('data' => isset($value['System'])? $value['System']:' '),
+				array('data' => isset($value['System'])?(is_numeric($value['System']) ? $lib_sys[$value['System']] : $value['System']):' '),
 				array('data' => $value['name']),
 				array('data' => isset($value['library_registration'])?$value['library_registration']:"<font color='grey'>NO</font>",'align'=>'center'),
 				array('data' => isset($value['imls_data'])?$value['imls_data']:"<font color='grey'>NO</font>",'align'=>'center'),
@@ -234,8 +224,6 @@ function profiles_management_list(){
 	
 	}
 
-
-		
 	$output = theme('table', array('header' => $header, 'rows' => $rows));
 	return $output;
 }
