@@ -104,6 +104,10 @@ function profiles_management_form_alter(&$form, &$form_state, $form_id) {
 		unset($form['profile_library_registration']['field_library_reg_state']);
 		unset($form['profile_library_registration']['field_library_reg_system']);
 	}	
+	
+	if($form_id=="profile2_edit_imls_data_form" or $form_id=="profile2_edit_intake_form_form")
+		$form['#submit'][] = "profiles_management_profile2_user_submit";
+
 }
 
 //a new submit function which is only for the profiles2 tables in profiles_management module
@@ -122,6 +126,13 @@ function profiles_management_profile2_submit($form, &$form_state){
 	drupal_set_message(t('The changes have been saved.'));
 	
 }
+
+function profiles_management_profile2_user_submit($form, &$form_state){
+	$form_state['redirect']="myimpact";
+	//drupal_set_message(t('The changes have been saved.'));
+}
+
+
 
 
 //check if it is the correct type
@@ -213,8 +224,8 @@ function profiles_management_list(){
 	
 	foreach($profile as $key => $value){
 			$rows[] = array(
-				array('data' => isset($value['System'])?(is_numeric($value['System']) ? $lib_sys[$value['System']] : $value['System']):' '),
-				array('data' => $value['name']),
+				array('data' => isset($value['System'])?(is_numeric($value['System']) ? (isset($lib_sys[$value['System']])?$lib_sys[$value['System']]:" ") : $value['System']):' '),
+				array('data' => isset($value['name'])? $value['name']:" "),
 				array('data' => isset($value['library_registration'])?$value['library_registration']:"<font color='grey'>NO</font>",'align'=>'center'),
 				array('data' => isset($value['imls_data'])?$value['imls_data']:"<font color='grey'>NO</font>",'align'=>'center'),
 				array('data' => isset($value['intake_form'])?$value['intake_form']:"<font color='grey'>NO</font>",'align'=>'center'),
