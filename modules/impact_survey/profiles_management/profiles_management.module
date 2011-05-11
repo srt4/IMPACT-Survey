@@ -97,6 +97,9 @@ function profiles_management_form_alter(&$form, &$form_state, $form_id) {
 	
 	if($form_id=="profile2_form" && $path=='admin/profiles_management' ){
 		$form['#submit'][1] = "profiles_management_profile2_submit";
+		
+		//remove the delete button
+		unset($form['actions']['delete']);
 	}
 
 	if(isset($form['profile_library_registration']) && $path=='admin/profiles_management'){
