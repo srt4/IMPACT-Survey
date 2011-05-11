@@ -117,7 +117,7 @@ $publicPath=variable_get('file_public_path', conf_path() . '/files');
             </div>
           <?php endif; */?>
           
-         <?php //print $messages; ?>
+         <?php print $messages; ?>
          
           
         
