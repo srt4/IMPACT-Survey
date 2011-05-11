@@ -188,7 +188,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 print $output;
                 
                 //Survey URL: 
-                print "<br><Br>Survey URL:"."http://www.uwsrd.org/impact/index.asp?LibID=".token_replace("[current-user:profile-library-registration:field-library-reg-system]"); 
+                print "<br><Br>Survey URL:"."http://impactsurvey.org/libselect/index.php?fscs=".token_replace("[current-user:profile-library-registration:field-library-reg-system]"); 
 
                 
                 //Edit URL
