@@ -45,6 +45,9 @@
           $variables['theme_hook_suggestions'][] = "page__myimpact__edit";
           }
           
+          // If viewing howto while logged in, redirect to howto-reg
+          if (($_GET['q'] == 'node/2') && user_is_logged_in())
+            drupal_goto('howto-reg');
            
      //go to codebox template
           if ($_GET['q'] == 'node/8') {
