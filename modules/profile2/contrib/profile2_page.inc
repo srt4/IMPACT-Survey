@@ -66,8 +66,8 @@ function profile2_form($form, &$form_state, $profile) {
  */
 function profile2_form_submit($form, &$form_state) {
   // The profile is being saved by profile2_form_submit_handler().
-  drupal_set_message(t('The changes have been saved.'));
-  $form_state['redirect'] = $form_state['profile2']->path();
+  drupal_set_message(t('Your changes have been saved.'));
+  $form_state['redirect'] = 'myimpact';//$form_state['profile2']->path();
 }
 
 /**
