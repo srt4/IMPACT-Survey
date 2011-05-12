@@ -11,10 +11,9 @@
       }
             
       //if view is not edited, direct to edit
-      /*
       if (isset($variables['page']['content']['system_main']['profile2']['']['empty'])) {
           drupal_goto($_GET['q'] . '/edit');
-      }*/
+      }
       
       //check if edit part are using profile2
       $tell = explode('-', $_GET['q']);
