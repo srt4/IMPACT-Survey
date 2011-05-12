@@ -103,7 +103,7 @@ $field_image = $node->field_image['und'][0]['filename'];
 //dpm($field_image);
 //dpm($field_image['und'][0]['filename']);
 //echo $node->field_image->und->0->filename;
-$code = "&lt;a href='http://www.uwsrd.org/impact/index.asp?LibID=$fscs'&gt;&lt;img title='Click here to take our survey' alt='Click here to take our survey' src='$field_image' border='0' /&gt;&lt;/a&gt;";
+$code = "&lt;a href='http://impactsurvey.org/libselect/index.php?fscs=$fscs'&gt;&lt;img title='Click here to take our survey' alt='Click here to take our survey' src='$field_image' border='0' /&gt;&lt;/a&gt;";
 ?> <?php
 // We hide the comments and links now so that we can render them later.
 hide($content['comments']);
