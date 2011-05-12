@@ -24,7 +24,7 @@ function imls_data_form_profile2_edit_imls_data_form_alter(&$form, &$form_state)
     $form['profile_imls_data']['field_visits']['und'][0]['value']['#default_value']= $result_system->visits;
   if(empty($form['profile_imls_data']['field_hours']['und'][0]['value']['#default_value']))
     $form['profile_imls_data']['field_hours']['und'][0]['value']['#default_value'] = $result_system->hrs_open;
-  if(empty($form['profile_imls_data']['field_sq_ft']['und'][0]['value']['#default_value']));
+  if(empty($form['profile_imls_data']['field_sq_ft']['und'][0]['value']['#default_value']))
     $form['profile_imls_data']['field_sq_ft']['und'][0]['value']['#default_value'] = imls_data_calculate_sq_feet($fscs);
   if(empty($form['profile_imls_data']['field_circ']['und'][0]['value']['#default_value']))
     $form['profile_imls_data']['field_circ']['und'][0]['value']['#default_value'] = $result_system->tot_cir;
@@ -61,7 +61,7 @@ function imls_data_calculate_sq_feet($fscs) {
   }
   if ($error > 0) {
     $message = "One or more of your branches is missing square feet values.  <a href='/square_feet' target='_blank' class='square_feet_link'>Click here</a> to edit branch data.";
-    drupal_set_message($message, 'warning');
+    drupal_set_message($message, 'warning', FALSE);
     $sum = 0;
   }
   return $sum;

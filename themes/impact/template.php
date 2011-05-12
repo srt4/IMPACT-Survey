@@ -11,10 +11,9 @@
       }
             
       //if view is not edited, direct to edit
-      /*
       if (isset($variables['page']['content']['system_main']['profile2']['']['empty'])) {
           drupal_goto($_GET['q'] . '/edit');
-      }*/
+      }
       
       //check if edit part are using profile2
       $tell = explode('-', $_GET['q']);
@@ -46,6 +45,9 @@
           $variables['theme_hook_suggestions'][] = "page__myimpact__edit";
           }
           
+          // If viewing howto while logged in, redirect to howto-reg
+          if (($_GET['q'] == 'node/2') && user_is_logged_in())
+            drupal_goto('howto-reg');
            
      //go to codebox template
           if ($_GET['q'] == 'node/8') {
@@ -81,11 +83,6 @@
 	    	$variables['field_date']="<br><span style='float: right;'>Fielding Dates:</span><br><a href='profile-survey_fielding' STYLE='text-decoration:none'>".$field_date."</a>";
 	    	}
 	   }
-	    
-	   //if the survey does not start, they could edit the profiles
-	   if(isset($date1) && !empty($date1) && $date1>time()){
-	   		//if(isset($variables['page']['content']['system_main']['profile2'])) drupal_goto($_GET['q'].'/edit');
-	   }
 
 	   //if the survey has started, the edit page will not be allowed.
 	   if(isset($date1) && !empty($date1) && $date1<=time()){
@@ -95,14 +92,14 @@
       			if ($tell[0] == 'profile') {
           			$tell2 = explode('/', $tell[1]);
           			if (isset($tell2[2]) && $tell2[2] == 'edit') {
-          				drupal_goto($tell[0].'-'.$tell2[0]);	
-          				drupal_set_message("nonono");	
+          			  drupal_set_message('Your survey has begun, you are no longer allowed to edit the IMLS or Intake forms.');
+          				drupal_goto($tell[0].'-'.$tell2[0]);
           			}
           		}
 	   }
 	   
 	   
-	   }//loggin
+	   }
 	    
   }
 	  
