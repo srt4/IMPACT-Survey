@@ -18,6 +18,7 @@ function profiles_management_menu() {
 	
 	$items['admin/profiles_management'] = array(
 		'title' => 'Profiles Management',
+		//'title callback' => 'profiles_management_get_library_name',
 		'description' => 'Manage the Profiles',
 		'position' => 'right',
 		'weight' => -5,
@@ -30,7 +31,9 @@ function profiles_management_menu() {
 	);
 		
 		$items['admin/profiles_management/%profiles_management_check_type/%profiles_management_check_uid'] = array(
-		'title' => 'Profiles Management',
+		'title' => 'hello',
+		'title callback' => 'profiles_management_get_library_name',
+		'title arguments' => array(2,3),
 		'description' => 'Manage the Profiles',
 		'page callback' => 'profiles_management_admin_view',
 		'page arguments' => array(2,3),
@@ -41,7 +44,9 @@ function profiles_management_menu() {
 	);
 	
 		$items['admin/profiles_management/%profiles_management_check_type/%profiles_management_check_uid/edit'] = array(
-		'title' => 'Profiles Management',
+		'title' => 'Name Here',
+		'title callback' => 'profiles_management_get_library_name',
+		'title arguments' => array(2,3),
 		'description' => 'Manage the Profiles',
 		'page callback' => 'profiles_management_admin_edit',
 		'page arguments' => array(2,3),
@@ -53,6 +58,26 @@ function profiles_management_menu() {
 	
 	return $items;
 }
+
+function profiles_management_preprocess_breadcrumb(&$variables){
+	$path=explode('/',$_GET['q']);
+	
+	if(isset($path['2'])) $path_type=explode('-', $path['2']);
+	if(isset($path_type['1'])) $type=$path_type['1'];
+	if(isset($path['3'])) $uid=$path['3'];
+	
+	if(isset($path['0']) && $path['0']=='admin' && isset($path['1']) && $path['1']=='profiles_management' && isset($path['2']) && isset($path['3']) ){
+
+		if(!isset($path['4'])) $variables['breadcrumb']['3']=profiles_management_get_library_name($type,$uid);
+		//$variables['breadcrumb']['3']='hello';
+		
+	}
+
+}
+
+
+
+
 
 //the View of the profiles
 
@@ -88,6 +113,37 @@ function profiles_management_admin_edit($type,$uid){
 	return render($output).$button;
 	
 }
+//
+function profiles_management_get_library_name($type=NULL, $uid=NULL){
+	
+	/*
+	if($_GET['q']=="admin/profiles_management") return "Profiles Management";
+		else {
+				$path=explode('/',$_GET['q']);
+				if(isset($path['2'])) $path_type=explode('-', $path['2']);
+				if(isset($path_type['1'])) $type=$path_type['1'];
+				if(isset($path['3'])) $uid=$path['3'];
+		}
+	*/
+	//get the pid
+	$sql="select pid from {profile} where uid=:uid and type=:type";
+	$pid=db_query($sql,array('uid'=>$uid, 'type'=>$type))->fetchField();
+	
+	//get the prefered name
+	$sql="select field_library_reg_pref_value from {field_data_field_library_reg_pref} where entity_id=:pid";
+	$preName=db_query($sql, array('pid'=>$pid))->fetchField();
+	
+	if(empty($preName)){
+		//get the libaray name
+		$sql="select library_name from {library_lookup} as l, {field_data_field_library_reg_system} as s where l.fscs_key =s.field_library_reg_system_value  and s.entity_id=:pid";
+		$libName=db_query($sql, array('pid'=>$pid))->fetchField();
+
+		return $libName; 
+	}
+	else return $preName;
+}
+
+
 
 //hook_profile2_form_alter
 function profiles_management_form_alter(&$form, &$form_state, $form_id) {
