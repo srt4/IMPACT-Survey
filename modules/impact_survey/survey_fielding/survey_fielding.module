@@ -363,13 +363,17 @@ function survey_fielding_new_page() {
    		
 			if(empty($result)) $count=0;
 			
+			$url="./profile-survey_fielding/$uid/extend";
+			
+			$onclick = "onClick=\"window.location.href='".$url."'\"";
+			
 	   		$running="
 					<h3>Your survey is running:</h3>
 					<h4>$field_date</h4>
 					<br>
 					<h2>$count </h2><h4>Current responses</h4>
 					<br><br>
-					<a href='./profile-survey_fielding/".$uid."/extend'><input type='button' value='Extend Fielding'></a>
+					<input type='button' value='Extend Fielding' $onclick />
 					<br><br>
 					<p>Please maintain the links on your website and promotional flyers during the dates below.  Visit <a href='./codebox'>Get your links</a> for more information about survey promotion.</p>
 					<p>You are no longer allowed to change information on your IMLS Data and Intake survey forms.</p>
