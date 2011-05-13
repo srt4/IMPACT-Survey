@@ -25,7 +25,7 @@ function profiles_management_menu() {
 		//'page callback' => 'system_admin_menu_block_page',
 		'page callback' => 'profiles_management_list',
 		'access callback' => 'user_access',
-		'access arguments' => array('administer users'),
+		'access arguments' => array('profiles management'),
 		'file' => 'system.admin.inc',
 		'file path' => drupal_get_path('module','system'),
 		'type' => MENU_NORMAL_ITEM,
@@ -41,7 +41,7 @@ function profiles_management_menu() {
 		'page callback' => 'profiles_management_list_custom',
 		'page arguments' => array(2),
 		'access callback' => 'user_access',
-		'access arguments' => array('administer users'),
+		'access arguments' => array('profiles management'),
 		'file' => 'system.admin.inc',
 		'file path' => drupal_get_path('module','system'),
 		'type' => MENU_NORMAL_ITEM,
@@ -55,7 +55,7 @@ function profiles_management_menu() {
 		'page callback' => 'profiles_management_admin_view',
 		'page arguments' => array(3,4),
 		'access callback' => 'user_access',
-		'access arguments' => array('administer users'),	
+		'access arguments' => array('profiles management'),	
 		'file' => 'contrib/profile2_page.inc',
 		'file path' => drupal_get_path('module','profile2'),
 		'type' => MENU_NORMAL_ITEM,
@@ -69,7 +69,7 @@ function profiles_management_menu() {
 		'page callback' => 'profiles_management_admin_edit',
 		'page arguments' => array(3,4),
 		'access callback' => 'user_access',
-		'access arguments' => array('administer users'),	
+		'access arguments' => array('profiles management'),	
 		'file' => 'contrib/profile2_page.inc',
 		'file path' => drupal_get_path('module','profile2'),
 		'type' => MENU_NORMAL_ITEM,
@@ -83,7 +83,7 @@ function profiles_management_menu() {
 		'page callback' => 'profiles_management_admin_view',
 		'page arguments' => array(2,3),
 		'access callback' => 'user_access',
-		'access arguments' => array('administer users'),	
+		'access arguments' => array('profiles management'),	
 		'file' => 'contrib/profile2_page.inc',
 		'file path' => drupal_get_path('module','profile2'),
 		'type' => MENU_NORMAL_ITEM,
@@ -97,7 +97,7 @@ function profiles_management_menu() {
 		'page callback' => 'profiles_management_admin_edit',
 		'page arguments' => array(2,3),
 		'access callback' => 'user_access',
-		'access arguments' => array('administer users'),	
+		'access arguments' => array('profiles management'),	
 		'file' => 'contrib/profile2_page.inc',
 		'file path' => drupal_get_path('module','profile2'),
 		'type' => MENU_NORMAL_ITEM,
@@ -114,6 +114,22 @@ function profiles_management_selected_users_load($arg){
 	return $arg;
 	
 }
+
+
+
+
+function profiles_management_permission(){
+	return array(
+		'profiles management' => array( 
+		'title' => t('Manage the profiles'), 
+		'description' => t('Allow users to manageme the profiles in Profiles Management'),
+		), 
+   );
+}
+
+
+
+
 
 //check if it is the correct type
 function profiles_management_check_type_load($type){
@@ -362,12 +378,17 @@ function profiles_management_list(){
 	
 	$no_pid='';
 	
+
+	//get lib fscs
+	$fscs=profiles_management_get_fscs();
+	
 	//set the types
 	foreach($types as $t){
 		$profile[$t->uid][$t->type]="<a href='profiles_management/profile-".$t->type."/".$t->uid."'>YES</a>";
 		if ($t->type=="library_registration") {
 			if(isset($system[$t->pid])) $profile[$t->uid]['System']=$system[$t->pid];
 			else  {$profile[$t->uid]['System']=$t->pid; $no_pid.=$t->pid.",";} //find out the pids which do not have the prefered name
+			$profile[$t->uid]['fscs']=isset($fscs[$t->pid])?$fscs[$t->pid]:'';
 		}
 	}
 	
@@ -382,7 +403,7 @@ function profiles_management_list(){
 	}
 	
 	$output="<br><a href='profiles_management/AACPL_WA0064_ebaker_karenp_King County Library System'>Five Selected Libraries</a><br><br>";
-	
+
 	$output.=profiles_management_display($profile, $lib_sys);
 	
 	return $output;
@@ -418,7 +439,7 @@ function profiles_management_display($profile, $lib_sys=array()){
 	
 	foreach($profile as $key => $value){
 			$rows[] = array(
-				array('data' => isset($value['System'])?(is_numeric($value['System']) ? (isset($lib_sys[$value['System']])?$lib_sys[$value['System']]:" ") : $value['System']):' '),
+				array('data' => isset($value['System'])?(is_numeric($value['System']) ? (isset($lib_sys[$value['System']])?$lib_sys[$value['System']]:" ") : $value['System']):' ', 'title'=>'noting'),
 				array('data' => isset($value['name'])? $value['name']:" "),
 				array('data' => isset($value['library_registration'])?$value['library_registration']:"<font color='grey'>NO</font>",'align'=>'center'),
 				array('data' => isset($value['imls_data'])?$value['imls_data']:"<font color='grey'>NO</font>",'align'=>'center'),
@@ -432,4 +453,21 @@ function profiles_management_display($profile, $lib_sys=array()){
 	$output = theme('table', array('header' => $header, 'rows' => $rows));
 	return $output;
 
+}
+
+
+
+//get the fscs key, return an array
+function profiles_management_get_fscs($condition="ALL"){
+	
+	if($condition=='ALL'){
+		
+		$sql = "select entity_id, field_library_reg_system_value as fscs from {field_data_field_library_reg_system}";
+		$fscs=db_query($sql);
+		
+		foreach($fscs as $f){
+			$lib_fscs['$f->entity_id']=$f->fscs;
+		}
+	return $lib_fscs;
+	}
 }
