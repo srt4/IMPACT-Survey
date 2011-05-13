@@ -92,8 +92,9 @@
       			if ($tell[0] == 'profile') {
           			$tell2 = explode('/', $tell[1]);
           			if (isset($tell2[2]) && $tell2[2] == 'edit') {
-          			  drupal_set_message('Your survey has begun, you are no longer allowed to edit the IMLS or Intake forms.');
-          				drupal_goto($tell[0].'-'.$tell2[0]);
+          			  if($tell2[0] != "photo_logo")  {
+          				  drupal_set_message('Your survey has begun, you are no longer allowed to edit the IMLS or Intake forms.');
+          				  drupal_goto($tell[0].'-'.$tell2[0]);}
           			}
           		}
 	   }
