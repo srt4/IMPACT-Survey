@@ -191,9 +191,11 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 print "<br><Br>Survey URL:"."http://impactsurvey.org/libselect/index.php?fscs=".token_replace("[current-user:profile-library-registration:field-library-reg-system]"); 
 
                 
-                //Edit URL
-                print "<br><br><a href='myimpact/edit'><input type='button' value='Edit'></input></a>";
+                //Edit URL?>
+                <br><br><input type="button" value="Edit" onClick="window.location.href='myimpact/edit'"/>
                 
+              
+                <?php 
                 //"Next Step" 
                 print "<Br><h4>Next Step</h4>";
                 
@@ -298,11 +300,21 @@ In the meantime, a welcome message with further instructions has been sent to yo
 		   $output.="<img width=100px height=100px src='".convUri($logo, $publicPath)."' alt='LoGo'/>"."<br>";
            $output.="<img width=100px height=100px src='".convUri($libPic, $publicPath)."' alt='Library Pic' align=center />";
            //button
-           $output.="<br><div align='center'><a href='./profile-photo_logo/".$uid."/edit'><input type='button' value='".$tag."'/></a></div>";
-          
+           //$output.="<br><div align='center'><a href='./profile-photo_logo/".$uid."/edit'><input type='button' value='".$tag."' /></a></div>";
+
+          // $output.="<br><div align='center'><input type='button' value='".$tag."' onClick='".$click."'/></div>";
             }
-           if(user_is_logged_in()) print $output;
-		   
+       
+           if(user_is_logged_in()): print $output;
+           
+           $url = "./profile-photo_logo/$uid/edit";
+           
+		   ?>
+           
+           <br><div align='center'><input type='button' value="<?php print $tag;?>" onClick="window.location.href = '<?php print $url;?>'"/></div>
+           
+           
+           <?php endif;
            //deal with the uri from the DB
           function convUri($uri="", $publicPath){
         	 $position=explode("://",$uri);
