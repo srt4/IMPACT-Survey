@@ -394,6 +394,9 @@ function profiles_management_list(){
 	
 	$no_pid=rtrim($no_pid,",");
 	
+	dpm($profile);
+	
+	
 	//get the library name if they do not have the prefered name
 	$sql = "select s.entity_id, library_name from {library_lookup} as l, {field_data_field_library_reg_system} as s where l.fscs_key =s.field_library_reg_system_value  and s.entity_id in ($no_pid)";
 	$result=db_query($sql);
@@ -439,7 +442,7 @@ function profiles_management_display($profile, $lib_sys=array()){
 	
 	foreach($profile as $key => $value){
 			$rows[] = array(
-				array('data' => isset($value['System'])?(is_numeric($value['System']) ? (isset($lib_sys[$value['System']])?$lib_sys[$value['System']]:" ") : $value['System']):' ', 'title'=>'noting'),
+				array('data' => isset($value['System'])?(is_numeric($value['System']) ? (isset($lib_sys[$value['System']])?$lib_sys[$value['System']]:" ") : $value['System']):' ', 'title'=>isset($value['fscs'])?$value['fscs']:'No FSCS'),
 				array('data' => isset($value['name'])? $value['name']:" "),
 				array('data' => isset($value['library_registration'])?$value['library_registration']:"<font color='grey'>NO</font>",'align'=>'center'),
 				array('data' => isset($value['imls_data'])?$value['imls_data']:"<font color='grey'>NO</font>",'align'=>'center'),
@@ -466,7 +469,7 @@ function profiles_management_get_fscs($condition="ALL"){
 		$fscs=db_query($sql);
 		
 		foreach($fscs as $f){
-			$lib_fscs['$f->entity_id']=$f->fscs;
+			$lib_fscs[$f->entity_id]=$f->fscs;
 		}
 	return $lib_fscs;
 	}
