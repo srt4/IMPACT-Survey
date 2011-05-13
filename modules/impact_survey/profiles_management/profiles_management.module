@@ -314,17 +314,12 @@ function profiles_management_form_alter(&$form, &$form_state, $form_id) {
 
 //a new submit function which is only for the profiles2 tables in profiles_management module
 function profiles_management_profile2_submit($form, &$form_state){
-	global $user;
-	$uid=$user->uid;
+
+	$path=explode('/', $_GET['q']);
+
+	if(isset($path['5']) && $path['5']=='edit'){ $form_state['redirect']=$path['0']."/".$path['1']."/".$path['2']."/".$path['3']."/".$path['4'];}
+	else $form_state['redirect']="admin/profiles_management/".$path['2']."/".$path['3'];
 	
-	//edit the path
-	if(isset($form['profile_imls_data'])) $type="imls_data";
-	if(isset($form['profile_library_registration'])) $type="library_registration";
-	if(isset($form['profile_intake_form'])) $type="intake_form";
-	if(isset($form['profile_survey_fielding'])) $type="survey_fielding";
-	if(isset($form['profile_photo_logo'])) $type="photo_logo";
-	
-	$form_state['redirect']="admin/profiles_management/profile-$type/$uid";
 	drupal_set_message(t('The changes have been saved.'));
 	
 }
