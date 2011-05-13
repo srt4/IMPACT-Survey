@@ -394,7 +394,7 @@ function profiles_management_list(){
 	
 	$no_pid=rtrim($no_pid,",");
 	
-	dpm($profile);
+	//dpm($profile);
 	
 	
 	//get the library name if they do not have the prefered name
