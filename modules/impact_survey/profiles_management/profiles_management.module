@@ -192,6 +192,7 @@ function profiles_management_list_custom($users){
 	
 	foreach($types as $t){
 		$profile[$t->uid][$t->type]="<a href='./".$path."/profile-".$t->type."/".$t->uid."'>YES</a>";
+		if($t->type=='library_registration') $profile[$t->uid]['fscs']=profiles_management_get_fscs($t->pid);
 	}
 	
 	$output=profiles_management_display($profile);
@@ -468,4 +469,17 @@ function profiles_management_get_fscs($condition="ALL"){
 		}
 	return $lib_fscs;
 	}
+	
+	else {
+		
+		$sql = "select field_library_reg_system_value as fscs from {field_data_field_library_reg_system} where entity_id=$condition";
+		$fscs = db_query($sql)->fetchField();
+		
+		return $fscs;
+		
+		
+	}
+	
+	
+	
 }
