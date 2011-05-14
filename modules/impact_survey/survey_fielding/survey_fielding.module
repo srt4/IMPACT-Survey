@@ -118,7 +118,7 @@ function survey_fielding_menu() {
 	$items['profile-survey_fielding/%/extend'] = array(
 			'titile' => 'Extend Survey Fielding',
 			'page callback' => 'survey_fielding_extend',
-			'access arguments' => array('extend'),
+			'access arguments' => array('edit own survey_fielding profile'),
 			'access callback' => 'user_access',
 			'type' => MENU_NORMAL_ITEM,
 		);		
