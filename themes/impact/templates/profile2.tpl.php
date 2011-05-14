@@ -48,8 +48,11 @@
 	   $date=db_query($sql, array('uid'=>$user->uid))->fetchField();
 	   
 	   if(empty($date) or strtotime($date)>time()):
+	   
+	   $edit_url = $url."/edit";
+	   
    ?>
-    <a href="<?php print $url?>/edit"><input type="button" value="Edit"></input></a>
+<input type="button" value="Edit" onclick = "window.location.href='<?php print $edit_url; ?>'"></input>
     <?php endif;?>
 
   </div>
