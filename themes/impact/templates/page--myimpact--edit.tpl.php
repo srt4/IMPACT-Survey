@@ -387,7 +387,7 @@ function pid($uid){
             <?php if ($action_links): ?>
               <ul class="action-links"><?php //print render($action_links); ?></ul>
             <?php endif; ?>
-            <h2>My IMPACT</h2>
+            <h2>Edit My IMPACT</h2>
             <?php $status = isset($_GET['status']) ? $_GET['status'] : '';?>
             
             <?php 
@@ -446,86 +446,20 @@ In the meantime, a welcome message with further instructions has been sent to yo
        			 ?>
                 <!-- Edit form -->
                 <form action="" method="post">
-                Library Prefered Name: <input name="preName" value="<?php print $system_name; ?>"></input><br>
-                Username: <input name="UserName" value="<?php print $user->name; ?>"></input><br>
-                Registered User: <input name="fname" value="<?php print $firstname; ?>"></input>
-                <input name="lname" value="<?php print $lastname; ?>"></input><br>
-                Position: <input name="position" value="<?php print $jobtitle; ?>"></input><br>
-                Phone Number: <input name="phoneNum" value="<?php print $phonenum; ?>"></input>-ex<input name="phoneExt" value="<?php print $phoneext;?>"/><br>
-                Email: <input name="email" value="<?php print $user->mail; ?>"></input><br>
+                <table border="0";>
+                <tr><td>Prefered Name</td><td><input name="preName" value="<?php print $system_name; ?>"></input></td></tr>
+                <tr><td>Username</td><td><input name="UserName" value="<?php print $user->name; ?>"></input></td></tr>
+                <tr><td>First Name</td><td><input name="fname" value="<?php print $firstname; ?>"></input></td></tr>
+                <tr><td>Last Name</td><td><input name="lname" value="<?php print $lastname; ?>"></input></td></tr>
+                <tr><td>Position</td><td><input name="position" value="<?php print $jobtitle; ?>"></input></td></tr>
+                <tr><td>Phone Number</td><td><input name="phoneNum" value="<?php print $phonenum; ?>"></input></td></tr>
+                <tr><td>Extension</td><td><input name="phoneExt" value="<?php print $phoneext;?>"/></td></tr>
+                <tr><td>Email</td><td><input name="email" value="<?php print $user->mail; ?>"></input></td></tr>
+                <tr><td><input type="submit" value="Save"/></td></tr>
+                </table>
                 <input type="hidden" name="record" value="<?php print $record_post;?>"></input>
-                <input type="submit" value="Save"/>
                 </form>
-             
-                <?php
-        
-                //Survey URL: 
-                print "<br><Br>Survey URL:"."http://www.uwsrd.org/impact/index.asp?LibID=".token_replace("[current-user:profile-library-registration:field-library-reg-system]");             
-                
-                //"Next Step" 
-                print "<Br><h4>Next Step</h4>";
-                
-                //get the forms filled out
-                $sql="select type from {profile} where uid=:uid";
-                $results=db_query($sql,array('uid'=>$uid));
 
-                $i=0;
-                foreach($results as $type){
-                    $user_filled[$i]=$type->type;
-                    $i++;
-                }
-
-                //check IMLS
-                $flag=0;            
-                foreach($user_filled as $r){
-                     if ($r=="imls_data") $flag='1';
-                }
-                
-                //check Information Form
-                if($flag=='1'){
-                foreach($user_filled as $r){
-                    if ($r=="intake_form") $flag='2';
-                }
-                }
-
-                //chek Dates
-                if ($flag=='2'){
-                foreach($user_filled as $r){
-                   if ($r=="survey_fielding") $flag='3';
-                }              
-                
-           	    //get dates
-           	    $sql="select field_fielding_date_value2 from {profile} as p,{field_data_field_fielding_date} as f where p.uid=:uid and p.type='survey_fielding' and f.entity_id=p.pid";
-                $date=db_query($sql,array('uid'=>$uid))->fetchField();
-                $date=strtotime($date);
-                
-                //check whether the date is expired.
-                if($date<time()){
-                	$flag=4;
-                }
-                }
-                
-                switch($flag){
-                    case 0: 
-                        print "1. Complete the <a href=./profile-imls_data>Library IMLS Data</a>";
-                        break;
-                    case 1:
-                        print "2. Select <a href=./profile-intake_form>Information Form</a>";
-                        break;
-                    case 2:
-                        print "3. <a href=./profile-survey_fielding>Verify Library Fielding Dates</a>";
-                        break;
-                    case 3:
-                        print "4. <a href=./codebox>Link to the Web Survey</a>";
-                        break; 
-                    case 4:
-                        print "Your report is done, view it <a href=./reports>here</a>";
-                        break;            
-                }
-                //print $flag;
-              ?>
-            	
-                <?php //print $myimpact; ?>
             <?php endif; ?>
             <div class="feedicons">
               <?php echo $feed_icons ?>
