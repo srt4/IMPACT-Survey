@@ -192,7 +192,11 @@ function profiles_management_list_custom($users){
 	
 	foreach($types as $t){
 		$profile[$t->uid][$t->type]="<a href='./".$path."/profile-".$t->type."/".$t->uid."'>YES</a>";
-		if($t->type=='library_registration') $profile[$t->uid]['fscs']=profiles_management_get_fscs($t->pid);
+		if($t->type=='library_registration') 
+		{
+		 $profile[$t->uid]['fscs']=profiles_management_get_fscs($t->pid);
+		 $profile[$t->uid]['fullName']=profiles_management_get_name($t->pid);
+		}
 	}
 	
 	$output=profiles_management_display($profile);
@@ -378,10 +382,17 @@ function profiles_management_list(){
 	//get lib fscs
 	$fscs=profiles_management_get_fscs();
 	
+	$fullName = profiles_management_get_name();
+	
+	
 	//set the types
 	foreach($types as $t){
 		$profile[$t->uid][$t->type]="<a href='profiles_management/profile-".$t->type."/".$t->uid."'>YES</a>";
 		if ($t->type=="library_registration") {
+			
+
+			if(isset($fullName[$t->pid])) $profile[$t->uid]['fullName']=$fullName[$t->pid];
+			
 			if(isset($system[$t->pid])) $profile[$t->uid]['System']=$system[$t->pid];
 			else  {$profile[$t->uid]['System']=$t->pid; $no_pid.=$t->pid.",";} //find out the pids which do not have the prefered name
 			$profile[$t->uid]['fscs']=isset($fscs[$t->pid])?$fscs[$t->pid]:'';
@@ -389,9 +400,6 @@ function profiles_management_list(){
 	}
 	
 	$no_pid=rtrim($no_pid,",");
-	
-	//dpm($profile);
-	
 	
 	//get the library name if they do not have the prefered name
 	$sql = "select s.entity_id, library_name from {library_lookup} as l, {field_data_field_library_reg_system} as s where l.fscs_key =s.field_library_reg_system_value  and s.entity_id in ($no_pid)";
@@ -439,7 +447,7 @@ function profiles_management_display($profile, $lib_sys=array()){
 	foreach($profile as $key => $value){
 			$rows[] = array(
 				array('data' => isset($value['System'])?(is_numeric($value['System']) ? (isset($lib_sys[$value['System']])?$lib_sys[$value['System']]:" ") : $value['System']):' ', 'title'=>isset($value['fscs'])?$value['fscs']:'No FSCS'),
-				array('data' => isset($value['name'])? $value['name']:" "),
+				array('data' => isset($value['name'])? $value['name']:" ", 'title'=>(isset($value['fullName']))?$value['fullName']:"empty"),
 				array('data' => isset($value['library_registration'])?$value['library_registration']:"<font color='grey'>NO</font>",'align'=>'center'),
 				array('data' => isset($value['imls_data'])?$value['imls_data']:"<font color='grey'>NO</font>",'align'=>'center'),
 				array('data' => isset($value['intake_form'])?$value['intake_form']:"<font color='grey'>NO</font>",'align'=>'center'),
@@ -479,7 +487,29 @@ function profiles_management_get_fscs($condition="ALL"){
 		
 		
 	}
+}
+
+//get the name of the users
+function profiles_management_get_name($condition="ALL"){
 	
+	if($condition=="ALL"){
+		$sql = "select l.entity_id as id, field_library_reg_fname_value as fname, field_library_reg_lname_value as lname from {field_data_field_library_reg_fname} as f, {field_data_field_library_reg_lname} as l where f.entity_id=l.entity_id";
+		$result = db_query($sql);
+		
+		foreach($result as $n){
+			$name[$n->id] = $n->fname." ".$n->lname;
+		}
+		return $name;
+	}
 	
-	
+	else{
+		$sql = "select l.entity_id as id, field_library_reg_fname_value as fname, field_library_reg_lname_value as lname from {field_data_field_library_reg_fname} as f, {field_data_field_library_reg_lname} as l where f.entity_id=l.entity_id and f.entity_id=:pid";
+		$result = db_query($sql, array('pid'=>$condition));
+		
+		foreach($result as $n){
+			$name= $n->fname." ".$n->lname;
+		}
+		
+		return $name;
+	}
 }
