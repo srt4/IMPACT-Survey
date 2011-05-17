@@ -513,3 +513,56 @@ function profiles_management_get_name($condition="ALL"){
 		return $name;
 	}
 }
+
+
+/*
+ * hook_profile2_view
+ * 
+ */
+function profiles_management_profile2_view($profile, $view_mode, $langcode) {
+  
+  dpm($profile);
+  
+  if($profile->type=="imls_data"){
+    	
+  	$go_through=array('field_hours', 'field_circ','field_expend_tot', 'field_fte', 'field_terminals', 'field_pac_uses', 'field_legalpop', 'field_sq_ft', 'field_visits');
+  	
+  	/*
+	foreach($go_through as $value){
+ 	$profile->content[$value] = array(
+  		'#markup' => "<tr height='15px'><td>".$profile->content[$value]['#title']."</td><td>".$profile->content[$value]['0']['#markup']."</td></tr>",
+  		'#weight' => $profile->content[$value]['#weight'],
+ 	);
+	}	
+
+	$value = 'field_hours';
+	$profile->content[$value] = array(
+  		'#markup' => "<table border='1px'><tr height='15px'><td>".$profile->content[$value]['#title']."</td><td>".$profile->content[$value]['0']['#markup']."</td></tr>",
+  		'#weight' => $profile->content[$value]['#weight'],
+ 	);
+	
+	$value = 'field_circ';
+		$profile->content[$value] = array(
+  		'#markup' => "<tr height='15px'><td>".$profile->content[$value]['#title']."</td><td>".$profile->content[$value]['0']['#markup']."</td></tr></table>",
+  		'#weight' => $profile->content[$value]['#weight'],
+ 	);	
+
+ 	*/
+  	
+	foreach($go_through as $value){
+	$rows[]=array(
+			'data' => array(array('data' => $profile->content[$value]['#title']), array('data' => $profile->content[$value]['0']['#markup'])),
+			'height' => '25px',
+	);
+	
+	
+	}
+ 	
+	unset($profile->content);
+ 	
+ 	 $profile->content[]=array(
+ 	 	'#markup'=>theme('table', array('rows' => $rows)),
+ 	);
+ 	
+  }
+}
