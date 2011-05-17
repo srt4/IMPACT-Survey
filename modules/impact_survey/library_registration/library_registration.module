@@ -114,7 +114,6 @@ function library_registration_form_profile2_edit_library_registration_form_alter
 	  '#disabled' => TRUE,
 	);
 }
-// 1 = after registration
 function library_registration_name_and_website(&$form, &$form_state) {
   $form_state['values']['profile_library_registration']['field_library_reg_pref']['und'][0]['value'] = $form_state['values']['profile_library_registration']['name_and_website_group'][0]['und'][0]['value'];
   $form_state['values']['profile_library_registration']['field_library_reg_website']['und'][0]['value'] = $form_state['values']['profile_library_registration']['name_and_website_group'][1]['und'][0]['value'];
@@ -126,13 +125,15 @@ function library_registration_redirect(&$form, &$form_state) {
 function _library_registration_library_states() {
   $query = "SELECT DISTINCT library_state FROM {library_lookup} ";
   $result = db_query($query);
-  $states = array();
-  $i = 0;
+  $states = array('Select your state');
+  $i = 1;
   foreach ($result as $state) {
-    $states[$i] = $state -> library_state;
-    $i++;
+    if($state->library_state != 'Test') {
+      $states[$i] = $state -> library_state;
+      $i++;
+    }
   }
-  array_unshift($states, 'Select your state');
+  $states[] = 'Test';
   return drupal_map_assoc($states);
 }
 /**
