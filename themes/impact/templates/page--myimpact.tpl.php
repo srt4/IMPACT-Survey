@@ -253,7 +253,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
                         print '3. Select your <a href=./profile-survey_fielding>survey fielding</a> dates';
                         break;
                     case 3:
-                        print '4. Pick Your <a href=./codebox>Survey Fielding Dates</a>';
+                        print '4. <a href=./codebox>Get your survey links.</a>';
                         break; 
                     case 4:
                         print 'Your report is done, view it <a href=./reports>here</a>';
