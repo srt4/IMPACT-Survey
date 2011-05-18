@@ -42,7 +42,7 @@
       print render($content);
     ?>
        <?php
-   $sql="SELECT field_fielding_date_value AS from_date 
+   $sql="SELECT field_fielding_date_value2 AS from_date 
 	   FROM {field_data_field_fielding_date} AS a, 
 	   {profile} AS b WHERE a.entity_id=b.pid AND b.uid=:uid";
 	   $date=db_query($sql, array('uid'=>$user->uid))->fetchField();
