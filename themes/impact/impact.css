@@ -214,6 +214,9 @@ div.view-codebox-gallery td {
 }
 
 /**  My IMPACT **/
+#block-menu-menu-my-impact ul.menu li.first {
+  background-color:#8C4D9F;
+} 
 #completed-form {
 	color:green; margin:0px 0 30px 0;
 }
