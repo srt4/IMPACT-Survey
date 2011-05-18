@@ -84,19 +84,21 @@
 	    	}
 	   }
 
-	   //if the survey has started, the edit page will not be allowed.
-	   if(isset($date1) && !empty($date1) && $date1<=time()){
-	   	     	//check if edit part are using profile2
-     			 $tell = explode('-', $_GET['q']);
+	   
+	   //check if edit part are using profile2
+       $tell = explode('-', $_GET['q']);
      
-      			if ($tell[0] == 'profile') {
-          			$tell2 = explode('/', $tell[1]);
-          			if (isset($tell2[2]) && $tell2[2] == 'edit') {
-          			  if($tell2[0] != "photo_logo")  {
-          				  drupal_set_message('Your survey has begun, you are no longer allowed to edit the IMLS or Intake forms.');
-          				  drupal_goto($tell[0].'-'.$tell2[0]);}
-          			}
+      if ($tell[0] == 'profile') {
+      	$tell2 = explode('/', $tell[1]);
+      		if (isset($tell2[2]) && $tell2[2] == 'edit') {
+	   			//if the survey has ended, the edit page will not be allowed.
+	   			if(!empty($date2) && $date2<time()){
+          			 	if($tell2[0] != "photo_logo")  {
+          					 drupal_set_message('Your survey has ended, you are no longer allowed to edit the IMLS or Intake forms.');
+          				 	 drupal_goto($tell[0].'-'.$tell2[0]);
+          			 	}
           		}
+         	}
 	   }
 	   
 	   
