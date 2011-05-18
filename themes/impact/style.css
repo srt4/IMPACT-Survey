@@ -420,7 +420,7 @@ blockquote {
   float: left;
   margin: 12px 0 0 0;
   min-height: 300px;
-  padding: 0 10px; 
+  padding: 0 20px; 
   width: 922px;
 }
 .node {
@@ -432,7 +432,7 @@ blockquote {
   width: 700px;
 }
 .two-sidebars #center {
-  width: 482px;
+  width: 502px;
 }
 #content {
   clear: both;
@@ -502,7 +502,7 @@ blockquote {
   margin: 0;
   *margin-top: 12px;
   padding: 0;
-  width: 220px;
+  width: 200px;
 }
 .sidebar h2 {
   color: #fff;
