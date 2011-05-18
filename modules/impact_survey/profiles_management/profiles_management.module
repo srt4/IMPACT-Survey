@@ -522,7 +522,9 @@ function profiles_management_get_name($condition="ALL"){
 function profiles_management_profile2_view($profile, $view_mode, $langcode) {
   
   if($profile->type=="imls_data"){
-  		
+
+  	if(isset($profile->content['empty'])) drupal_goto("profile-imls_data/$profile->uid/edit");
+  	
   	$query = "SELECT field_name, data FROM {field_config_instance} WHERE bundle = 'imls_data'";
 	$results = db_query($query);
 	
@@ -555,8 +557,10 @@ function profiles_management_profile2_view($profile, $view_mode, $langcode) {
  	);
   }
   
-  if($profile->type=="intake_form"){
+if($profile->type=="intake_form"){
   		
+  	if(isset($profile->content['empty'])) drupal_goto("profile-intake_form/$profile->uid/edit");
+  	
   	$query = "SELECT field_name, data FROM {field_config_instance} WHERE bundle = 'intake_form'";
 	$results = db_query($query);
 	
