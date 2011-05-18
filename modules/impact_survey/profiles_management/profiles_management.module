@@ -553,6 +553,12 @@ function profiles_management_profile2_view($profile, $view_mode, $langcode) {
     }
 
     unset($profile->content);
+    
+    $table['rows'] = $rows;    
+    
+    $profile->content[]=array(
+ 	 		'#markup'=>theme('table', $table),
+    );
   }
 
   if($profile->type=="intake_form"){
@@ -585,10 +591,11 @@ function profiles_management_profile2_view($profile, $view_mode, $langcode) {
     }
 
     unset($profile->content);
-  }
+    
     $table['rows'] = $rows;    
     
     $profile->content[]=array(
  	 		'#markup'=>theme('table', $table),
     );
+  }
 }
