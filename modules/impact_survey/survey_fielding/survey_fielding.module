@@ -20,10 +20,10 @@ function survey_fielding_form_profile2_edit_survey_fielding_form_alter(&$form, &
 
   	//redirect
   	$instruction="<h3>Select the dates that you will run the survey and click save.</h3>
-<p>Consider the time it will take to complete promotional tasks, including editing your library website and posting flyers.  Visit <a href='./codebox'>Get your links</a> for more information.</p>
+<p>Consider the time it will take to complete promotional tasks, including editing your library website and posting flyers.  Visit <a href='/codebox'>Get your links</a> for more information.</p>
 <p>You will not be able to edit the IMLS Data and Intake forms once the survey fielding has begun.</p>
 <p>As the survey runs, you will be informed of the number of responses, and will have the option to extend the survey.  You may extend the survey while it is running, <em>but not after it has ended.<em></p>
-<p>Please <a href='./contact'>contact us</a> if you have any questions.</p>
+<p>Please <a href='/contact'>contact us</a> if you have any questions.</p>
 <strong>We recommend that you run the survey for at least 2 weeks.</strong>
 <br><br>";
 		
