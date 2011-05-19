@@ -4,7 +4,7 @@ function codebox_menu() {
   	'codebox/download/%' => array(
       'page callback' => 'codebox_impact_html',
       'page arguments' => array(2),
-      'access callback' => TRUE,
+      'access callback' => 'user_is_logged_in',
     	'type' => MENU_CALLBACK,
     ),
   );
