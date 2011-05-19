@@ -787,29 +787,4 @@ a.feed-icon img {
 #forum table {
   width: 100%;
 }
-
-
-table.library_form {
-	border: 1px solid #CCC;
-}	
-
-tr.even, tr.odd {
-border-width: 0 1px 0 1px;
-border-style: solid;
-border-color: #BEBFB9;
-background: #F3F4EE;
-}
-
-tr.odd {
-background: white;
-}
-
-/*remove the tbody*/
-tbody {
-/*border-top: 1px solid #CCC;*/
-	border:none;
-}
-
-
-
 /* END DRUPAL EXTRA'S */
