@@ -1,0 +1,70 @@
+<?php
+/**
+ * @file
+ * Add the table myimpact_profile_status
+ */
+
+/**
+ * Implements hook_install().
+ */
+function myimpact_setting_install() {
+  // Add an initial profile type.
+
+  drupal_set_message(t('table myimpact_profile_status has been created.'));
+}
+
+/**
+ * Implements hook_schema().
+ */
+function myimpact_setting_schema() {
+  $schema['myimpact_profile_status'] = array(
+    'description' => 'Stores profile items.',
+    
+    'fields' => array(
+      'pid' => array(
+        	'type' => 'serial',
+        	'not null' => TRUE,
+        	'description' => 'Primary Key: Unique profile item ID.',
+      ),
+      'type' => array(
+       		'description' => 'The {profile_type}.type of this node.',
+        	'type' => 'varchar',
+        	'length' => 32,
+        	'not null' => TRUE,
+        	'default' => '',
+      ),
+      'uid' => array(
+        	'type' => 'int',
+        	'unsigned' => TRUE,
+        	'not null' => FALSE,
+        	'default' => NULL,
+        	'description' => "The {users}.uid of the associated user.",
+      ),
+      'status' => array(
+   			'type' => 'int',
+        	'not null' => TRUE,
+        	'default' => 0,
+        	'size' => 'tiny',
+        	'description' => 'The status of the forms in profile2.',
+      ),
+    ),
+    
+    'indexes' => array(
+      	'uid' => array('uid'),
+    ),
+    
+    'foreign keys' => array(
+      	'uid' => array('users' => 'uid'),
+      	'type' => array('profile_type' => 'type'),
+      	'pid' => array('profile' => 'pid'),
+    ),
+    
+    'primary key' => array('pid'),
+);
+  
+   return $schema; 
+   
+}
+
+
+

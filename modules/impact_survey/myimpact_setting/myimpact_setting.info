@@ -1,0 +1,5 @@
+name = Myimpact Custom Setting
+description = Global Custom Settings for the IMPACT, such as redirecting function, submit buttons
+package = Pro Drupal Development core = 7.x 
+package = IMPACT
+core = 7.x

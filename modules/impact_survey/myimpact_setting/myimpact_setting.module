@@ -1,0 +1,165 @@
+<?php
+
+
+/*
+ * hook_profile2_form_alter()
+ * 
+ */
+function myimpact_setting_form_alter(&$form, &$form_state, $form_id) {
+
+  //only works in this module
+  $path = substr($_GET['q'],0,25);
+
+  if($form_id=="profile2_form" && $path=='admin/profiles_management' ){
+    $form['#submit'][1] = "myimpact_setting_profile2_submit";
+
+    //remove the delete button
+    unset($form['actions']['delete']);
+  }
+
+  if(isset($form['profile_library_registration']) && $path=='admin/profiles_management'){
+    unset($form['profile_library_registration']['field_library_reg_state']);
+    unset($form['profile_library_registration']['field_library_reg_system']);
+  }
+
+  if($form_id=="profile2_edit_imls_data_form" or $form_id=="profile2_edit_intake_form_form")
+  {	
+  	
+  	$form['#submit'][] = "myimpact_setting_profile2_user_submit";
+  	/*
+  	$form['actions']['done']=array(
+  		'#type'=>'submit', 
+  		'#value'=>'Submit!', 
+  		'#weight'=>'50', 
+  		'#submit'=>array('myimpact_setting_profile_done')
+  	);
+  	
+  	
+  dpm($form);*/
+  }
+}
+
+/*
+ * if the user has done the table and click the submit button
+ */
+function myimpact_setting_profile_done($form, &$form_state){
+	drupal_set_message(t('what the hell.'));
+}
+
+
+/*
+ * 
+ * hook_profile2_submit()
+ * 
+ */
+function myimpact_setting_profile2_submit($form, &$form_state){
+
+  $path=explode('/', $_GET['q']);
+
+  if ( isset($path['6']) && $path['6']=='edit' )
+    $form_state['redirect']="admin/profiles_management/".$path['2']."/custom/".$path['4']."/".$path['5']."/view";
+  else 
+    $form_state['redirect']="admin/profiles_management/".$path['2']."/".$path['3']."/view";
+
+  drupal_set_message(t('The changes have been saved.'));
+
+}
+
+/*
+ * 
+ *  a new submit function which is only for the profiles2 tables in profiles_management module
+ */
+function myimpact_setting_profile2_user_submit($form, &$form_state){
+  $form_state['redirect']="myimpact";
+}
+
+/*
+ * hook_profile2_view
+ *
+ */
+function myimpact_setting_profile2_view($profile, $view_mode, $langcode) {
+  $table = array();
+  $table['attributes'] = array('class' => array('library_form'));
+
+  if($profile->type=="imls_data"){
+
+    if(isset($profile->content['empty'])) drupal_goto("profile-imls_data/$profile->uid/edit");
+     
+    $query = "SELECT field_name, data FROM {field_config_instance} WHERE bundle = 'imls_data'";
+    $results = db_query($query);
+
+    foreach($results as $v){
+      $field[$v->field_name]=unserialize($v->data);
+    }
+
+    foreach($field as $key => $value){
+      $new[$key] = $value['widget']['weight'];
+    }
+
+    //sort the weight
+    asort($new);
+
+    foreach($new as $key=>$value){
+      $go_through[$value]=$key;
+    }
+
+    foreach($go_through as $value){
+      $rows[]=array(
+			'data' => array(array('data' => isset($field[$value]['label'])?$field[$value]['label']:''), array('data' => isset($profile->content[$value]['0']['#markup'])?$profile->content[$value]['0']['#markup']:'')),
+			'height' => '30px',
+      );
+    }
+
+    unset($profile->content);
+    
+    $table['rows'] = $rows;    
+    
+    $profile->content[]=array(
+ 	 		'#markup'=>theme('table', $table),
+    );
+  }
+
+  if($profile->type=="intake_form"){
+
+    if(isset($profile->content['empty'])) drupal_goto("profile-intake_form/$profile->uid/edit");
+     
+    $query = "SELECT field_name, data FROM {field_config_instance} WHERE bundle = 'intake_form'";
+    $results = db_query($query);
+
+    foreach($results as $v){
+      $field[$v->field_name]=unserialize($v->data);
+    }
+
+    foreach($field as $key => $value){
+      $new[$key] = $value['widget']['weight'];
+    }
+
+    //sort the weight
+    asort($new);
+
+    foreach($new as $key=>$value){
+      $go_through[$value]=$key;
+    }
+
+    foreach($go_through as $value){
+      $rows[]=array(
+			'data' => array(array('data' => isset($field[$value]['label'])?$field[$value]['label']:''), array('data' => isset($profile->content[$value]['0']['#markup'])?$profile->content[$value]['0']['#markup']:'')),
+			'height' => '30px',
+      );
+    }
+
+    unset($profile->content);
+    
+    $table['rows'] = $rows;    
+    
+    $profile->content[]=array(
+ 	 		'#markup'=>theme('table', $table),
+    );
+  }
+}
+
+/*
+ * 
+ * 
+ * /
+ */
