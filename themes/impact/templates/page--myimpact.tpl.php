@@ -120,7 +120,7 @@ if(user_is_logged_in()){
    
   //default tips
   if(empty($logo) or empty($libPic)) $tip='<h5 id="photo_logo_message">Please upload your library logo and a photo to use in your report.</h5>';
-  else $tip="<br><br><br>";
+  else $tip='';
   $output = $tip;
    
   //default pictures
