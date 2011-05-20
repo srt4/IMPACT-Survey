@@ -297,7 +297,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
            if(empty($logo)) {$logo="public://default_images/default_logo.jpg";$tag="Upload";}
 		   if(empty($libPic)) {$libPic="public://default_images/default_library_pic.jpg";$tag="Upload";} 
 		   	   
-		   $output.="<img width=100px height=100px src='".convUri($logo, $publicPath)."' alt='LoGo'/>"."<br>";
+		   $output.="<img width=100px height=100px src='".convUri($logo, $publicPath)."' alt='logo'/>"."<br>";
            $output.="<img width=100px height=100px src='".convUri($libPic, $publicPath)."' alt='Library Pic' align=center />";
            //button
            //$output.="<br><div align='center'><a href='./profile-photo_logo/".$uid."/edit'><input type='button' value='".$tag."' /></a></div>";
