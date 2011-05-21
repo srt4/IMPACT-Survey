@@ -7,6 +7,12 @@ function codebox_menu() {
       'access callback' => 'user_is_logged_in',
     	'type' => MENU_CALLBACK,
     ),
+  	'codebox/js/%' => array(
+      'page callback' => 'codebox_impact_js',
+      'page arguments' => array(2),
+      'access callback' => TRUE,
+    	'type' => MENU_CALLBACK,
+    ),
   );
   return $items;
 }
@@ -23,4 +29,19 @@ function codebox_impact_html($fscs) {
   
   header('Content-Disposition: attachment; filename="impact.html"');
   readfile('temporary://impact.html');
+}
+function codebox_impact_js($fscs) {
+  $js = 'var fscs = "' . $fscs . '";' . "\n";
+  $js .= file_get_contents(drupal_get_path('module', 'codebox') . '/interstitial.js');
+  $filename = file_unmanaged_save_data($js, 'temporary://impact.js', FILE_EXISTS_REPLACE);
+  //$stream = fopen('temporary://impact.js', 'r+');
+  //fwrite($stream, "var fscs = $fscs ");
+  //dpm($js);
+  
+  
+  //'alert("hello");';
+  
+  
+  header('Content-Disposition: attachment; filename="impact.js"');
+  readfile('temporary://impact.js');
 }
