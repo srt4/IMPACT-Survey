@@ -36,7 +36,7 @@ function codebox_impact_html($fscs) {
   readfile('temporary://impact.html');
 }
 function codebox_impact_js($fscs) {
-  $js = 'var fscs = "' . $fscs . "';\n";
+  $js = "var fscs = '$fscs';\n";
   $js .= file_get_contents(drupal_get_path('module', 'codebox') . '/interstitial.js');
   print $js;
 }
