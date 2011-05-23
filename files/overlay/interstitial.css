@@ -37,7 +37,7 @@ text-decoration: none;
 
 #interVeil{ /*CSS for background veil that covers entire page while interstitial box is visible*/
 position: absolute;
-background: black url(blackdot.gif);
+background: black url(http://impactsurvey.org/sites/impactsurvey.org/files/overlay/blackdot.gif);
 right: 0;
 width: 10px;
 top: 0;
