@@ -13,6 +13,11 @@ function codebox_menu() {
       'access callback' => TRUE,
     	'type' => MENU_CALLBACK,
     ),
+  	'codebox/js/test' => array(
+      'page callback' => 'codebox_js_test',
+      'access callback' => TRUE,
+    	'type' => MENU_CALLBACK,
+    ),
   );
   return $items;
 }
@@ -33,5 +38,10 @@ function codebox_impact_html($fscs) {
 function codebox_impact_js($fscs) {
   $js = 'var fscs = "' . $fscs . '";' . "\n";
   $js .= file_get_contents(drupal_get_path('module', 'codebox') . '/interstitial.js');
+  print $js;
+}
+function codebox_js_test() {
+  $js = 'var fscs = TE0001' . "\n";
+  $js .= file_get_contents(drupal_get_path('module', 'codebox') . '/interstitial_test.js');
   print $js;
 }

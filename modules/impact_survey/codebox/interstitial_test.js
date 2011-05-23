@@ -6,7 +6,7 @@ var interstitialBox={
 displayfiles: [],
 
 //2) display freqency: ["frequency_type", "frequency_value"]
-displayfrequency: ["cookie", "session"],
+displayfrequency: ["cookie", 0],
 
 //3) HTML for the header bar portion of the interstitial box
 defineheader: '<link rel="stylesheet" type="text/css" href="http://impactsurvey.org/sites/impactsurvey.org/files/overlay/interstitial.css" /><div class="headerbar"><a href="#" onClick="javascript:interstitialBox.closeit(); return false"><img src="http://impactsurvey.org/sites/impactsurvey.org/files/overlay/closeit.gif" style="border: 0" title="Close Box"/></a></div>',
