@@ -13,9 +13,9 @@ function codebox_menu() {
       'access callback' => TRUE,
     	'type' => MENU_CALLBACK,
     ),
-  	'codebox/js/test' => array(
+  	'codebox/js/test/%' => array(
       'page callback' => 'codebox_js_test',
-      'page arguments' => array(2),
+      'page arguments' => array(3),
       'access callback' => TRUE,
     	'type' => MENU_CALLBACK,
     ),
