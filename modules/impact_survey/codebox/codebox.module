@@ -36,12 +36,12 @@ function codebox_impact_html($fscs) {
   readfile('temporary://impact.html');
 }
 function codebox_impact_js($fscs) {
-  $js = 'var fscs = "' . $fscs . '";' . "\n";
+  $js = 'var fscs = "' . $fscs . "';\n";
   $js .= file_get_contents(drupal_get_path('module', 'codebox') . '/interstitial.js');
   print $js;
 }
 function codebox_js_test() {
-  $js = 'var fscs = TE0001' . "\n";
+  $js = "var fscs = 'TE0001';\n";
   $js .= file_get_contents(drupal_get_path('module', 'codebox') . '/interstitial_test.js');
   print $js;
 }
