@@ -15,6 +15,7 @@ function codebox_menu() {
     ),
   	'codebox/js/test' => array(
       'page callback' => 'codebox_js_test',
+      'page arguments' => array(2),
       'access callback' => TRUE,
     	'type' => MENU_CALLBACK,
     ),
@@ -40,8 +41,8 @@ function codebox_impact_js($fscs) {
   $js .= file_get_contents(drupal_get_path('module', 'codebox') . '/interstitial.js');
   print $js;
 }
-function codebox_js_test() {
-  $js = "var fscs = 'TE0001';\n";
+function codebox_js_test($fscs) {
+  $js = "var fscs = '$fscs';\n";
   $js .= file_get_contents(drupal_get_path('module', 'codebox') . '/interstitial_test.js');
   print $js;
 }
