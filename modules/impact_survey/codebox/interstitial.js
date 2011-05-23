@@ -6,10 +6,10 @@ var interstitialBox={
 displayfiles: [],
 
 //2) display freqency: ["frequency_type", "frequency_value"]
-displayfrequency: ["cookie", "session"],
+displayfrequency: ["cookie", 0],
 
 //3) HTML for the header bar portion of the interstitial box
-defineheader: '<p style="margin: 5px 10px"><a href="http://impactsurvey.org/libselect/index.php?fscs=' + fscs + '&utm_source=library&utm_medium=interstitial&utm_term=' + fscs + '&utm_campaign=beta"><img title="Click here to take our survey" alt="Click here to take our survey" src="http://impactsurvey.org/sites/impactsurvey.org/files/overlay/impactbanner.jpg" width="631" height="194" style="border: 1px solid gray" /></a><br />How do you use the library\'s computers and Internet access?</p><p style="margin: 5px 10px"> <b style="font-size: 110%"><a href="http://impactsurvey.org/libselect/index.php?fscs=' + fscs + '&utm_source=library&utm_medium=interstitial&utm_term=' + fscs + '&utm_campaign=beta"><span style="color:#0000FF">Take our survey</span></a> and help your library evaluate its technology services!</b></p><div class="headerbar"><a href="#" onClick="javascript:interstitialBox.closeit(); return false"><img src="http://impactsurvey.org/sites/impactsurvey.org/files/overlay/closeit.gif" style="border: 0" title="Close Box"/></a></div>',
+defineheader: '<link rel="stylesheet" type="text/css" href="http://impactsurvey.org/sites/impactsurvey.org/files/overlay/interstitial.css" /><div class="headerbar"><a href="#" onClick="javascript:interstitialBox.closeit(); return false"><img src="http://impactsurvey.org/sites/impactsurvey.org/files/overlay/closeit.gif" style="border: 0" title="Close Box"/></a></div>',
 
 //4) cookie setting: ["cookie_name", "cookie_path"]
 cookiesetting: ["stitialcookie", "path=/"],
@@ -65,7 +65,7 @@ document.getElementById("interContent").innerHTML=page_request.responseText
 
 createcontainer:function(){
 //write out entire HTML for Interstitial Box:
-document.write('<div id="interContainer">'+this.defineheader+'<div id="interContent"></div></div><div id="interVeil"></div>')
+document.write('<div id="interContainer">'+this.defineheader+'<div id="interContent"><p style="margin: 5px 10px"><a href="http://impactsurvey.org/libselect/index.php?fscs=' + fscs + '&utm_source=library&utm_medium=interstitial&utm_term=' + fscs + '&utm_campaign=beta"><img title="Click here to take our survey" alt="Click here to take our survey" src="http://impactsurvey.org/sites/impactsurvey.org/files/overlay/impactbanner.jpg" width="631" height="194" style="border: 1px solid gray" /></a><br />How do you use the library\'s computers and Internet access?</p><p style="margin: 5px 10px"> <b style="font-size: 110%"><a href="http://impactsurvey.org/libselect/index.php?fscs=' + fscs + '&utm_source=library&utm_medium=interstitial&utm_term=' + fscs + '&utm_campaign=beta"><span style="color:#0000FF">Take our survey</span></a> and help your library evaluate its technology services!</b></p></div></div><div id="interVeil"></div>')
 this.interContainer=document.getElementById("interContainer") //reference interstitial container
 this.interVeil=document.getElementById("interVeil") //reference veil
 this.standardbody=(document.compatMode=="CSS1Compat")? document.documentElement : document.body //create reference to common "body" across doctypes
@@ -129,7 +129,7 @@ target.attachEvent(tasktype, functionref)
 
 initialize:function(){
 this.createcontainer() //write out interstitial container
-this.ajaxconnect(this.displayfiles[Math.floor(Math.random()*this.displayfiles.length)], this.interContainer) //load page into content via ajax
+//this.ajaxconnect(this.displayfiles[Math.floor(Math.random()*this.displayfiles.length)], this.interContainer) //load page into content via ajax
 this.dotask(window, function(){interstitialBox.hidescrollbar(); interstitialBox.getscrollbarwidth(); setTimeout("interstitialBox.showcontainer()", 100)}, "load")
 this.dotask(window, function(){interstitialBox.showcontainer()}, "resize")
 }
