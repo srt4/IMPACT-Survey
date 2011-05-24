@@ -200,16 +200,17 @@ print "<br><Br>Survey URL:"."http://impactsurvey.org/libselect/index.php?fscs=".
 	//"Next Step"
 	print "<br><h4>Next Step</h4>";
 
-	//get the forms filled out
-	$sql="select type from {profile} where uid=:uid";
-	$results=db_query($sql,array('uid'=>$uid));
+
+	//get the forms submitted
+	$sql="select type from {myimpact_profile_status} where uid=:uid";
+	$submit=db_query($sql,array('uid'=>$uid));
 
 	$i=0;
-	foreach($results as $type){
-	  $user_filled[$i]=$type->type;
-	  $i++;
+	foreach($submit as $s){
+		$user_filled[$i]=$s->type;
+		$i++;
 	}
-
+	
 	//check IMLS
 	$flag=0;
 	foreach($user_filled as $r){
@@ -225,8 +226,11 @@ print "<br><Br>Survey URL:"."http://impactsurvey.org/libselect/index.php?fscs=".
 
 	//chek Dates
 	if ($flag=='2'){
-	  foreach($user_filled as $r){
-	    if ($r=="survey_fielding") $flag='3';
+		//get the forms filled out
+			$sql="select type from {profile} where uid=:uid and type=:type";
+			$survey_fielding=db_query($sql,array('uid'=>$uid, 'type'=>"survey_fielding"))->fetchField();
+
+	    if (!empty($survey_fielding)) $flag='3';
 	  }
 
 	  //get dates
@@ -236,12 +240,9 @@ print "<br><Br>Survey URL:"."http://impactsurvey.org/libselect/index.php?fscs=".
 
 	  //check whether the date is expired.
 	  if(isset($date)){
-	    if(empty($date)) $flag=3;
+	    if(empty($date)) $flag=2;
 	    elseif($date<time()) $flag=4;
 	  }
-
-
-	}
 
 	switch($flag){
 	  case 0:
