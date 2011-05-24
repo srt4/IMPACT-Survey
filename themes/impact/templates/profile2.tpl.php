@@ -47,7 +47,16 @@
 	   {profile} AS b WHERE a.entity_id=b.pid AND b.uid=:uid";
 	   $date=db_query($sql, array('uid'=>$user->uid))->fetchField();
 	   
-	   if(empty($date) or strtotime($date)>time()):
+	   		//get the type
+	   		$sql="select type from {profile_type} where label=:title";
+	   		$type=db_query($sql, array('title'=>$title))->fetchField();
+	   
+	   		//if they have submitted, the edit page will not be allowed
+          		$sql="select pid from {myimpact_profile_status} where uid=:uid and type=:type";
+          		$pid=db_query($sql, array('uid'=>$user->uid, 'type'=>$type))->fetchField();
+	  
+	   
+	   if((empty($date) or strtotime($date)>time()) and empty($pid)):
 	   
 	   $edit_url = $url."/edit";
 	   
