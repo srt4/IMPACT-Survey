@@ -98,6 +98,16 @@
           				 	 drupal_goto($tell[0].'-'.$tell2[0]);
           			 	}
           		}
+          		
+          		//if they have submitted, the edit page will not be allowed
+          		$sql="select pid from {myimpact_profile_status} where uid=:uid and type=:type";
+          		$pid=db_query($sql, array('uid'=>$uid, 'type'=>$tell2['0']))->fetchField();
+
+          		if(!empty($pid)){
+          			drupal_set_message('You have submitted forms. You have no access to go bakc to edit that');
+          			drupal_goto($tell[0].'-'.$tell2[0]);
+          		}
+         
          	}
 	   }
 	   
