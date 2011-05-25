@@ -188,7 +188,7 @@ $output = "<h3>$system_name</h3>Username: ".$user->name."<br>Registered User:  "
 print $output;
 $fscs = token_replace('[current-user:profile-library-registration:field-library-reg-system]');
 $result_count = db_query("SELECT COUNT( * ) AS responses FROM {survey_responses} WHERE libid = :fscs", array('fscs'=>$fscs))->fetchField();
-print "<h3>Completed Surveys:  <span style='color:#333333'>$result_count</span></h3>";
+print "<h3>Completed Surveys:  <span style='color:#333333'>$result_count</span></h3><p>*Updated every 24 hours.</p>";
 
 //Edit URL
 ?> 
