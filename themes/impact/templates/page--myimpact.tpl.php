@@ -187,9 +187,6 @@ $output = "<h3>$system_name</h3>Username: ".$user->name."<br>Registered User:  "
 
 print $output;
 
-//Survey URL:
-print "<br><Br>Survey URL:"."http://impactsurvey.org/libselect/index.php?fscs=".token_replace("[current-user:profile-library-registration:field-library-reg-system]");
-
 
 //Edit URL
 ?> 
