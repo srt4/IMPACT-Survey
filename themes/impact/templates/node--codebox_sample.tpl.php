@@ -79,6 +79,10 @@
  * @see template_process()
  */
 ?>
+<?php if(!$logged_in): ?>
+<h3 style="color:red">Please Log In</h3>
+<p style="color:red">This page is intented to be viewed while <a href="/user">logged in</a>, otherwise the code will not be customized for your library.</p>
+<?php endif; ?>
 <div id="node-<?php print $node->nid; ?>"
 	class="<?php print $classes; ?> clearfix" <?php print $attributes; ?>>
 <?php print $user_picture; ?> <?php print render($title_prefix); ?> <?php if (!$page): ?>
