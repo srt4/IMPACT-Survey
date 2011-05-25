@@ -1,7 +1,9 @@
 <?php //$Id$
   function impact_preprocess_page(&$variables)
   {
-  	
+  	      
+  	 if($_GET['q']=="user/register" or $_GET['q']=="user" or $_GET['q']=="user/password")  drupal_set_title('Library Registration');
+  	 
       if (isset($variables['main_menu'])) {
           $pid = variable_get('menu_main_links_source', 'main-menu');
           $tree = menu_tree($pid);
@@ -14,7 +16,7 @@
       if (isset($variables['page']['content']['system_main']['profile2']['']['empty'])) {
           drupal_goto($_GET['q'] . '/edit');
       }
-      
+          
       //check if edit part are using profile2
       $tell = explode('-', $_GET['q']);
      
