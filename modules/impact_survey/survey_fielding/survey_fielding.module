@@ -361,9 +361,11 @@ function survey_fielding_new_page() {
 			$sql="select field_library_reg_system_value from {field_data_field_library_reg_system} where entity_id=:pid";
 			$libID=db_query($sql, array('pid'=>$result))->fetchField();
 	   		
+			  
 	   		//count the responses
-	   		$sql="select count('LibID') from {survey_responses} where LibID=:libid and Status='complete'";
-			$count=db_query($sql, array('libid'=>$libID))->fetchField();
+	   		$fscs = token_replace('[current-user:profile-library-registration:field-library-reg-system]');
+	   		$sql="SELECT COUNT( * ) AS responses FROM {survey_responses} WHERE libid = :fscs";
+			$count=db_query($sql, array('fscs'=>$fscs))->fetchField();
    		
 			if(empty($result)) $count=0;
 			
@@ -375,7 +377,7 @@ function survey_fielding_new_page() {
 					<h3>Your survey is running:</h3>
 					<h4>$field_date</h4>
 					<br>
-					<h2>$count </h2><h4>Current responses</h4>
+					<h4>$count Completed Surveys</h4>
 					<br><br>
 					<input type='button' value='Extend Fielding' $onclick />
 					<br><br>
