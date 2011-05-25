@@ -83,7 +83,7 @@ function myimpact_setting_form_profile2_form_alter(&$form, &$form_state, $form_i
   	
   	$form['actions']['done']=array(
   		'#type'=>'submit', 
-  		'#value'=>'Submit!', 
+  		'#value'=>'Submit', 
   		'#weight'=>'50', 
   		'#submit'=>array(
   					'profile2_form_submit_handler',
