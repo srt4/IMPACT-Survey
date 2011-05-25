@@ -186,7 +186,9 @@ if(!empty($phoneext)) $phoneext="-ex($phoneext)";
 $output = "<h3>$system_name</h3>Username: ".$user->name."<br>Registered User:  ".$firstname." ".$lastname."<br>Position:".$jobtitle."<br>  ".substr($phonenum,0,3)."-".substr($phonenum,3,3)."-".substr($phonenum,-(strlen($phonenum)-6)).$phoneext.'<br>'.$user->mail;
 
 print $output;
-
+$fscs = 'wa0059';//token_replace('[current-user:profile-library-registration:field-library-reg-system]');
+$result_count = db_query("SELECT COUNT( * ) AS responses FROM {survey_responses} WHERE libid = :fscs", array('fscs'=>$fscs))->fetchField();
+print "<h3>Completed Surveys:  <span style='color:#333333'>$result_count</span></h3>";
 
 //Edit URL
 ?> 
