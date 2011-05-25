@@ -790,9 +790,10 @@ a.feed-icon img {
 /* END DRUPAL EXTRA'S */
 
 
-#edit-profile-library-registration-field-library-reg-system{
-		margin-top:30px;
-	}
-
-               
-                                                                               
+#edit-profile-library-registration-field-library-reg-state{
+	height:30px;
+	}        
+    
+ #edit-profile-library-registration-field-library-reg-system{
+ 	height:30px;
+ }                                                                           
