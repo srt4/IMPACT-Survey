@@ -202,6 +202,14 @@ div.view-codebox-gallery td {
 #edit-profile-library-registration-field-library-reg-position {
 	clear:both;
 }
+
+#edit-profile-library-registration-field-library-reg-state{
+	height:40px;
+	}        
+    
+ #edit-profile-library-registration-field-library-reg-system{
+ 	height:40px;
+ }             
 /**  Set Password  **/
 .page-user-edit div.tabs,
 #edit-contact,
