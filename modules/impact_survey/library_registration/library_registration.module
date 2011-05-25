@@ -95,6 +95,7 @@ function library_registration_form_profile2_edit_library_registration_form_alter
   	  '#weight' => 11,
   	);
   	// Add authorization checkbox
+  	/*
   	$form['profile_library_registration']['field_library_reg_auth'] = array(
       '#type' => 'container',
       '#attributes' => array(
@@ -140,7 +141,7 @@ function library_registration_form_profile2_edit_library_registration_form_alter
           'field_form_element_after_build',
         ),
       ),
-    );
+    );*/
 	}
 	// Assign registered_library role
 	$form['account']['roles'][6] = array(
@@ -212,6 +213,7 @@ function library_registration_system_change_callback(&$form, &$form_state) {
   $preferred_name = ucwords(strtolower(trim($library_system)));
   $system_website = db_query($query)->fetchField(1);
   $system_website = strtolower(trim($system_website));
+  if($system_website == -3) $system_website = '';
   $form['profile_library_registration']['name_and_website_group'][0]['und'][0]['value']['#value'] = $preferred_name;
   $form['profile_library_registration']['name_and_website_group'][1]['und'][0]['value']['#value'] = $system_website;
   return $form['profile_library_registration']['name_and_website_group'];
