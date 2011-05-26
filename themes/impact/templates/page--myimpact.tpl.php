@@ -201,9 +201,8 @@ print "<h3>Completed Surveys:  <span style='color:#333333'>$result_count</span><
 
 
 	//get the forms submitted
-	/*$sql="select type from {myimpact_profile_status} where uid=:uid";
-	$submit=db_query($sql,array('uid'=>$uid));*/
-	$submit = NULL;
+	$sql="select type from {myimpact_profile_status} where uid=:uid";
+	$submit=db_query($sql,array('uid'=>$uid));
 
 	$i=0;
 	foreach($submit as $s){
