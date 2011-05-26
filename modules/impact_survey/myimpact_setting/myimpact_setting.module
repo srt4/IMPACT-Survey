@@ -301,10 +301,13 @@ function myimpact_setting_profile2_view($profile, $view_mode, $langcode) {
     //sort the weight
     asort($new);
 
+    $i=1;
     foreach($new as $key=>$value){
+    	if(isset($go_through[$value])) {$value=$value+$i; $i++;}
       $go_through[$value]=$key;
     }
 
+ 
     foreach($go_through as $value){
       $rows[]=array(
 			'data' => array(array('data' => isset($field[$value]['label'])?$field[$value]['label']:''), array('data' => isset($profile->content[$value]['0']['#markup'])?$profile->content[$value]['0']['#markup']:'')),
@@ -339,7 +342,9 @@ function myimpact_setting_profile2_view($profile, $view_mode, $langcode) {
     //sort the weight
     asort($new);
 
+    $i=1;
     foreach($new as $key=>$value){
+      if(isset($go_through[$value])) {$value=$value+$i; $i++;}
       $go_through[$value]=$key;
     }
 
