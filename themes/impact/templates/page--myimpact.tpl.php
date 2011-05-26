@@ -1,7 +1,6 @@
 <?php //test $Id$
 
 $publicPath=variable_get('file_public_path', conf_path() . '/files');
-
 ?>
 
 <div id="header"><?php if($page['header_top']): ?>
@@ -201,10 +200,10 @@ print "<h3>Completed Surveys:  <span style='color:#333333'>$result_count</span><
 
 
 	//get the forms submitted
-	/*$sql="select type from {myimpact_profile_status} where uid=:uid";
-	$submit=db_query($sql,array('uid'=>$uid));*/
-	$submit = NULL;
+	$sql="select type from {myimpact_profile_status} where uid=:uid";
+	$submit=db_query($sql,array('uid'=>$uid));
 
+	if(!empty($submit)){
 	$i=0;
 	foreach($submit as $s){
 		$user_filled[$i]=$s->type;
@@ -223,7 +222,8 @@ print "<h3>Completed Surveys:  <span style='color:#333333'>$result_count</span><
 	    if ($r=="intake_form") $flag='2';
 	  }
 	}
-
+	}
+	else $flag=0;
 	//chek Dates
 	if ($flag=='2'){
 		//get the forms filled out
