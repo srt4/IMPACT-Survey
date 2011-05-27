@@ -135,7 +135,7 @@ if(user_is_logged_in()): print $output;
 $url = "./profile-photo_logo/$uid/edit";
 
 ?> <br>
-<div align='center'><input type='button' value="<?php print $tag;?>"
+<div align='center'><input type='button' class="form-submit" value="<?php print $tag;?>"
 	onClick="window.location.href = '<?php print $url;?>'" /></div>
 
 
@@ -193,7 +193,7 @@ print "<h3>Completed Surveys:  <span style='color:#333333'>$result_count</span><
 ?> 
 <br>
 <br>
-<input type="button" value="Edit"
+<input type="button" value="Edit" class="form-submit"
 	onClick="window.location.href='myimpact/edit'" /> <?php 
 	//"Next Step"
 	print "<br><h4>Next Step</h4>";
