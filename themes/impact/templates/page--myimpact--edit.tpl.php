@@ -455,7 +455,7 @@ In the meantime, a welcome message with further instructions has been sent to yo
                 <tr><td>Phone Number</td><td><input name="phoneNum" value="<?php print $phonenum; ?>"></input></td></tr>
                 <tr><td>Extension</td><td><input name="phoneExt" value="<?php print $phoneext;?>"/></td></tr>
                 <tr><td>Email</td><td><input name="email" value="<?php print $user->mail; ?>"></input></td></tr>
-                <tr><td><input type="submit" value="Save"/></td></tr>
+                <tr><td><input type="submit" class="form-submit" value="Save"/></td></tr>
                 </table>
                 <input type="hidden" name="record" value="<?php print $record_post;?>"></input>
                 </form>
