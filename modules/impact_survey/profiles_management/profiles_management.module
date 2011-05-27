@@ -11,8 +11,8 @@
 
 /**
  * Implementation of hook_menu().
- * 
- * 
+ *
+ *
  */
 function profiles_management_menu() {
 
@@ -29,7 +29,7 @@ function profiles_management_menu() {
 		'type' => MENU_NORMAL_ITEM,
   );
 
-    $items['admin/profiles_management/%profiles_management_check_type/%profiles_management_check_uid/view'] = array(
+  $items['admin/profiles_management/%profiles_management_check_type/%profiles_management_check_uid/view'] = array(
 		'title' => 'hello',
 		'title callback' => 'profiles_management_get_library_name',
 		'title arguments' => array(3),
@@ -56,8 +56,8 @@ function profiles_management_menu() {
 		'file path' => drupal_get_path('module','profile2'),
 		'type' => MENU_NORMAL_ITEM,
   );
-  
-    $items['admin/profiles_management/%profiles_management_selected_users/custom'] = array(
+
+  $items['admin/profiles_management/%profiles_management_selected_users/custom'] = array(
 		'title' => 'Custom Profiles Management',
 		'description' => 'Manage the Selected Profiles',
 		'position' => 'right',
@@ -70,7 +70,7 @@ function profiles_management_menu() {
 		'file path' => drupal_get_path('module','system'),
 		'type' => MENU_NORMAL_ITEM,
   );
-  
+
   $items['admin/profiles_management/%profiles_management_selected_users/custom/%profiles_management_check_type/%profiles_management_check_uid/view'] = array(
 		'title' => 'Custom Page',
 		'title callback' => 'profiles_management_get_library_name',
@@ -98,21 +98,21 @@ function profiles_management_menu() {
 		'file path' => drupal_get_path('module','profile2'),
 		'type' => MENU_NORMAL_ITEM,
   );
-  
+
   return $items;
 }
 
 /*
  * this function is used to make sure that admins could go back to the search result
- * 
+ *
  */
 function profiles_management_selected_users_load($arg){
 
   global $search_libaries;
 
   if($arg == "profile-library_registration" or $arg=="profile-imls_data" or $arg=="profile-intake_form" or $arg=="profile-survey_fielding" or $arg=="profile-photo_logo")
-  	return $arg;
-  
+  return $arg;
+
   $GLOBALS['search_libaries']=$arg;
   return $arg;
 
@@ -130,7 +130,7 @@ function profiles_management_check_type_load($type){
 
 /*
  * check the uid
- * 
+ *
  */
 function profiles_management_check_uid_load($uid){
   if($uid && is_numeric($uid) && user_load($uid)) return $uid;
@@ -139,9 +139,9 @@ function profiles_management_check_uid_load($uid){
 
 /*
  * hook_permission
- * 
+ *
  * you could change the permission under the item Manage the profiles in Admin Panel
- * 
+ *
  */
 function profiles_management_permission(){
   return array(
@@ -154,11 +154,11 @@ function profiles_management_permission(){
 
 /*
  * hook_process_breadcrumb
- * 
+ *
  * add the library name in view and edit page
  */
 function profiles_management_preprocess_breadcrumb(&$variables){
-  
+
   $path=explode('/',$_GET['q']);
   $count=count($path);
 
@@ -167,7 +167,7 @@ function profiles_management_preprocess_breadcrumb(&$variables){
     //display the library name at the breadcrumb
     $uid=$path[($count-2)];
     $variables['breadcrumb'][]=profiles_management_get_library_name($uid);
-    
+
   }
 }
 
@@ -310,10 +310,10 @@ function profiles_management_list_custom($users){
   return $output;
 
 }
- 
+
 /*
  * display all the users in one table
- * 
+ *
  */
 function profiles_management_list(){
 
@@ -349,10 +349,10 @@ function profiles_management_list(){
   foreach($types as $t){
     $profile[$t->uid][$t->type]="<a href='profiles_management/profile-".$t->type."/".$t->uid."/view'>YES</a>";
     if ($t->type=="library_registration") {
-      	
+       
 
       if(isset($fullName[$t->pid])) $profile[$t->uid]['fullName']=$fullName[$t->pid];
-      	
+       
       if(isset($system[$t->pid])) $profile[$t->uid]['System']=$system[$t->pid];
       else  {$profile[$t->uid]['System']=$t->pid; $no_pid.=$t->pid.",";} //find out the pids which do not have the prefered name
       $profile[$t->uid]['fscs']=isset($fscs[$t->pid])?$fscs[$t->pid]:'';
@@ -376,10 +376,10 @@ function profiles_management_list(){
   return $output;
 
 }
- 
-/* 
+
+/*
  * the table of the user
- * 
+ *
  * $profile[uid][type]
  * $profile[uid]['System']  -> library name
  * $profile[uid]['name'] -> user name
@@ -392,29 +392,32 @@ function profiles_management_list(){
  */
 
 function profiles_management_display($profile, $lib_sys=array()){
-
   $header=array(
-  array('data' => "Library System"),
-  array('data' => "User"),
-  array('data' => "Registration Form"),
-  array('data' => "IMLS Data"),
-  array('data' => "Intake Form"),
-  array('data'=> "Survey Fielding"),
-  array('data'=> "Photo&Logo")
+  array('data' => 'Library System'),
+  array('data' => 'User'),
+  array('data' => 'Result Count'),
+  array('data' => 'Registration Form'),
+  array('data' => 'IMLS Data'),
+  array('data' => 'Intake Form'),
+  array('data' => 'Survey Fielding'),
+  array('data' => 'Photo&Logo'),
   );
 
-
+  $result_count_sql = 'SELECT COUNT( * ) AS responses FROM {survey_responses} WHERE libid = :fscs';
   foreach($profile as $key => $value){
+    if (!empty($value['fscs'])) {
+      $result_count = db_query($result_count_sql, array('fscs'=>$value['fscs']))->fetchField();
+    } else $result_count = 0;
     $rows[] = array(
     array('data' => isset($value['System'])?(is_numeric($value['System']) ? (isset($lib_sys[$value['System']])?$lib_sys[$value['System']]:" ") : $value['System']):' ', 'title'=>isset($value['fscs'])?$value['fscs']:'No FSCS'),
     array('data' => isset($value['name'])? $value['name']:" ", 'title'=>(isset($value['fullName']))?$value['fullName']:"empty"),
+    array('data' => $result_count),
     array('data' => isset($value['library_registration'])?$value['library_registration']:"<font color='grey'>NO</font>",'align'=>'center'),
     array('data' => isset($value['imls_data'])?$value['imls_data']:"<font color='grey'>NO</font>",'align'=>'center'),
     array('data' => isset($value['intake_form'])?$value['intake_form']:"<font color='grey'>NO</font>",'align'=>'center'),
     array('data' => isset($value['survey_fielding'])?$value['survey_fielding']:"<font color='grey'>NO</font>",'align'=>'center'),
     array('data' => isset($value['photo_logo'])?$value['photo_logo']:"<font color='grey'>NO</font>",'align'=>'center')
     );
-
   }
 
   $output = theme('table', array('header' => $header, 'rows' => $rows));
@@ -451,7 +454,7 @@ function profiles_management_get_fscs($condition="ALL"){
 }
 
 /*
- * get the library name based on the condision 
+ * get the library name based on the condision
  */
 function profiles_management_get_name($condition="ALL"){
 

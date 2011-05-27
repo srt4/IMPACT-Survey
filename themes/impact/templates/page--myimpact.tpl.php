@@ -100,8 +100,7 @@ print theme('links__system_secondary_menu', array('links' => $secondary_menu, 'a
 </ul>
 <?php endif; ?>
 <h2>My IMPACT</h2>
-<div id='photo_logo'>
-<?php   
+<div id='photo_logo'><?php   
 if(user_is_logged_in()){
   $tag="Change";
 
@@ -190,8 +189,7 @@ $result_count = db_query("SELECT COUNT( * ) AS responses FROM {survey_responses}
 print "<h3>Completed Surveys:  <span style='color:#333333'>$result_count</span></h3><p>*Updated every 24 hours.</p>";
 
 //Edit URL
-?> 
-<br>
+?> <br>
 <br>
 <input type="button" value="Edit"
 	onClick="window.location.href='myimpact/edit'" /> <?php 
@@ -204,45 +202,45 @@ print "<h3>Completed Surveys:  <span style='color:#333333'>$result_count</span><
 	$submit=db_query($sql,array('uid'=>$uid));
 
 	if(!empty($submit)){
-	$i=0;
-	foreach($submit as $s){
-		$user_filled[$i]=$s->type;
-		$i++;
-	}
-	
-	//check IMLS
-	$flag=0;
-	foreach($user_filled as $r){
-	  if ($r=="imls_data") $flag='1';
-	}
-
-	//check Information Form
-	if($flag=='1'){
-	  foreach($user_filled as $r){
-	    if ($r=="intake_form") $flag='2';
+	  $i=0;
+	  foreach($submit as $s){
+	    $user_filled[$i]=$s->type;
+	    $i++;
 	  }
-	}
+
+	  //check IMLS
+	  $flag=0;
+	  foreach($user_filled as $r){
+	    if ($r=="imls_data") $flag='1';
+	  }
+
+	  //check Information Form
+	  if($flag=='1'){
+	    foreach($user_filled as $r){
+	      if ($r=="intake_form") $flag='2';
+	    }
+	  }
 	}
 	else $flag=0;
 	//chek Dates
 	if ($flag=='2'){
-		//get the forms filled out
+	  //get the forms filled out
 			$sql="select type from {profile} where uid=:uid and type=:type";
 			$survey_fielding=db_query($sql,array('uid'=>$uid, 'type'=>"survey_fielding"))->fetchField();
 
-	    if (!empty($survey_fielding)) $flag='3';
-	  }
+			if (!empty($survey_fielding)) $flag='3';
+	}
 
-	  //get dates
-	  $sql="select field_fielding_date_value2 from {profile} as p,{field_data_field_fielding_date} as f where p.uid=:uid and p.type='survey_fielding' and f.entity_id=p.pid";
-	  $date=db_query($sql,array('uid'=>$uid))->fetchField();
-	  $date=strtotime($date);
+	//get dates
+	$sql="select field_fielding_date_value2 from {profile} as p,{field_data_field_fielding_date} as f where p.uid=:uid and p.type='survey_fielding' and f.entity_id=p.pid";
+	$date=db_query($sql,array('uid'=>$uid))->fetchField();
+	$date=strtotime($date);
 
-	  //check whether the date is expired.
-	  if(isset($date)){
-	    if(empty($date)) $flag=2;
-	    elseif($date<time()) $flag=4;
-	  }
+	//check whether the date is expired.
+	if(isset($date)){
+	  if(empty($date)) $flag=2;
+	  elseif($date<time()) $flag=4;
+	}
 
 	switch($flag){
 	  case 0:
@@ -262,19 +260,13 @@ print "<h3>Completed Surveys:  <span style='color:#333333'>$result_count</span><
 	    break;
 	}
 	//print $flag;
-	?> 
-	<?php endif; ?>
+	?> <?php endif; ?>
 <div class="feedicons"><?php echo $feed_icons ?></div>
-</div><!-- content -->
-
-
-
-
-
-<?php if($page['content_bottom']): ?>
+</div>
+<!-- content --> <?php if($page['content_bottom']): ?>
 <div id="content_bottom" class="blockregion"><?php print render($page['content_bottom']); ?>
 </div>
-<?php endif; ?></div>
+	<?php endif; ?></div>
 <!-- /center --> <?php if($page['sidebar_second']): ?>
 <div id="sidebar_last" class="sidebar"><?php print render($page['sidebar_second']); ?>
 </div>

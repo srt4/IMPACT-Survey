@@ -1,32 +1,32 @@
 <?php
 /*
  * hook_menu
- * 
+ *
  */
 
 function myimpact_setting_menu() {
-	
-	//confirm the imls_data
-      $items['imls_data/%/confirm'] = array(
-        'page callback' => 'drupal_get_form',
-      	'page arguments' => array('myimpact_setting_submit_confirm_form',0),
-        'title' => 'Submit Confirm',
-      	'type' => MENU_CALLBACK,
-      	'access callback' => 'user_access',
-      	'access arguments' => array('imls and intake submit'),	
-      );
 
-      //confirm the intake form
-      $items['intake_form/%/confirm'] = array(
+  //confirm the imls_data
+  $items['imls_data/%/confirm'] = array(
         'page callback' => 'drupal_get_form',
       	'page arguments' => array('myimpact_setting_submit_confirm_form',0),
         'title' => 'Submit Confirm',
       	'type' => MENU_CALLBACK,
       	'access callback' => 'user_access',
       	'access arguments' => array('imls and intake submit'),	
-      );
-      
-     return $items;
+  );
+
+  //confirm the intake form
+  $items['intake_form/%/confirm'] = array(
+        'page callback' => 'drupal_get_form',
+      	'page arguments' => array('myimpact_setting_submit_confirm_form',0),
+        'title' => 'Submit Confirm',
+      	'type' => MENU_CALLBACK,
+      	'access callback' => 'user_access',
+      	'access arguments' => array('imls and intake submit'),	
+  );
+
+  return $items;
 }
 
 /*
@@ -43,7 +43,7 @@ function myimpact_setting_permission(){
 
 /*
  * hook_profile2_form_alter()
- * 
+ *
  */
 function myimpact_setting_form_profile2_form_alter(&$form, &$form_state, $form_id) {
 
@@ -55,14 +55,14 @@ function myimpact_setting_form_profile2_form_alter(&$form, &$form_state, $form_i
 
     //remove the delete button
     unset($form['actions']['delete']);
-    
+
     $form['actions']['unsubmit']=array(
     	'#type' => 'submit',
     	'#value' => 'Unsubmit',
     	'#weight' => '50',
     	'#submit' => array('myimpact_setting_status_delete_submit'),
     );
-    
+
     $form['actions']['new_submit']=array(
     	'#type' => 'submit',
     	'#value' => 'Submit',
@@ -77,125 +77,125 @@ function myimpact_setting_form_profile2_form_alter(&$form, &$form_state, $form_i
   }
 
   if($form_id=="profile2_edit_imls_data_form" or $form_id=="profile2_edit_intake_form_form")
-  {	
-  	
-  	$form['#submit']['1'] = "myimpact_setting_profile2_user_submit";
-  	
-  	$form['actions']['done']=array(
+  {
+     
+    $form['#submit']['1'] = "myimpact_setting_profile2_user_submit";
+     
+    $form['actions']['done']=array(
   		'#type'=>'submit', 
   		'#value'=>'Submit', 
   		'#weight'=>'50', 
   		'#submit'=>array(
   					'profile2_form_submit_handler',
   				    'myimpact_setting_profile_done',
-  				   ),
+    ),
   		'#validate' => array('myimpact_setting_submit_validate')
-  	);
-  	  	
+    );
+
   }
 }
 
 /*
- * confirm the submit function 
+ * confirm the submit function
  */
 function myimpact_setting_submit_confirm_form($form, &$form_state, $type){
-		
-	global $user;
-	
-	$confirm_question = t('Are you sure you want to submit the IMLS Data?');
-  	$description = "After submitting, you will have no access to edit the form any more";
-  	
-  	$form_state['value']['type']=$type;
-	
-  	return confirm_form($form, $confirm_question, "profile-$type/$user->uid/edit", $description);
+
+  global $user;
+
+  $confirm_question = t('Are you sure you want to submit the IMLS Data?');
+  $description = "After submitting, you will have no access to edit the form any more";
+   
+  $form_state['value']['type']=$type;
+
+  return confirm_form($form, $confirm_question, "profile-$type/$user->uid/edit", $description);
 }
 
 function myimpact_setting_submit_confirm_form_submit($form, &$form_state){
-	global $user;
-	
-	$type=$form_state['value']['type'];
-	$insert=(myimpact_setting_insert_status($user->uid, $type))?'Thank you! You have submitted successfully.':'You have submitted before. Thank you!';
-	
-	drupal_set_message($insert);
-	$form_state['redirect'] = "profile-$type/$user->uid";
+  global $user;
+
+  $type=$form_state['value']['type'];
+  $insert=(myimpact_setting_insert_status($user->uid, $type))?'Thank you! You have submitted successfully.':'You have submitted before. Thank you!';
+
+  drupal_set_message($insert);
+  $form_state['redirect'] = "profile-$type/$user->uid";
 }
 
 /*
  * the submit button in Profiles Management
  */
 function myimpact_setting_status_submit_submit($form, &$form_state){
-	$path=explode('/', $_GET['q']);
-	
-	$count=count($path);
+  $path=explode('/', $_GET['q']);
 
-	if(isset($form['profile_imls_data'])) $type="imls_data";
-	if(isset($form['profile_intake_form'])) $type="intake_form";
-	
-	$insert=(myimpact_setting_insert_status($path[($count-2)], $type))?'Thank you! You have submitted successfully.':'You have submitted before. Thank you!';
-	
-	drupal_set_message($insert);	
+  $count=count($path);
+
+  if(isset($form['profile_imls_data'])) $type="imls_data";
+  if(isset($form['profile_intake_form'])) $type="intake_form";
+
+  $insert=(myimpact_setting_insert_status($path[($count-2)], $type))?'Thank you! You have submitted successfully.':'You have submitted before. Thank you!';
+
+  drupal_set_message($insert);
 }
 
 /*
  * submit button in user edit page
  */
 function myimpact_setting_profile_done($form, &$form_state){
-	
-	global $user;
-	
-	//change the id into the type
-	if($form['#id']=="profile2-edit-imls-data-form") $type="imls_data";
-	if($form['#id']=="profile2-edit-intake-form-form") $type="intake_form";
-	
-	
-	$form_state['redirect'] = "$type"."/".$user->uid."/confirm";
-	
+
+  global $user;
+
+  //change the id into the type
+  if($form['#id']=="profile2-edit-imls-data-form") $type="imls_data";
+  if($form['#id']=="profile2-edit-intake-form-form") $type="intake_form";
+
+
+  $form_state['redirect'] = "$type"."/".$user->uid."/confirm";
+
 }
 
 /*
  * hook_profile2_delete
- * 
+ *
  * delete the status when deleting the profile
- * 
+ *
  */
 function myimpact_setting_profile2_delete($profile) {
  	myimpact_setting_delete_status($profile->pid);
- 	
+
 }
 
 /*
  * validate before submit
  */
 function myimpact_setting_submit_validate($form, &$form_state){
-	
-	//check the IMLS form
-	if(isset($form_state['values']['profile_imls_data'])){
-	foreach ($form_state['values']['profile_imls_data'] as $value){
-		if (empty($value['und']['0']['value'])) form_set_error('', t('Sorry! You can not submit the form until you complete all fields!'));	
-	}
-	}
+
+  //check the IMLS form
+  if(isset($form_state['values']['profile_imls_data'])){
+    foreach ($form_state['values']['profile_imls_data'] as $value){
+      if (empty($value['und']['0']['value'])) form_set_error('', t('Sorry! You can not submit the form until you complete all fields!'));
+    }
+  }
 }
 
 /*
- * 
+ *
  * for profiles_management save button
- * 
+ *
  */
 function myimpact_setting_profile_management_submit($form, &$form_state){
 
   $path=explode('/', $_GET['q']);
 
   if ( isset($path['6']) && $path['6']=='edit' )
-    $form_state['redirect']="admin/profiles_management/".$path['2']."/custom/".$path['4']."/".$path['5']."/view";
-  else 
-    $form_state['redirect']="admin/profiles_management/".$path['2']."/".$path['3']."/view";
+  $form_state['redirect']="admin/profiles_management/".$path['2']."/custom/".$path['4']."/".$path['5']."/view";
+  else
+  $form_state['redirect']="admin/profiles_management/".$path['2']."/".$path['3']."/view";
 
   drupal_set_message(t('The changes have been saved.'));
 
 }
 
 /*
- * 
+ *
  *  a new submit function which is only for the profiles2 tables in profiles_management module
  */
 function myimpact_setting_profile2_user_submit($form, &$form_state){
@@ -208,71 +208,71 @@ function myimpact_setting_profile2_user_submit($form, &$form_state){
  */
 function myimpact_setting_status_delete_submit($form, &$form_state){
 
-	$path=explode('/', $_GET['q']);
-	
-	$count=count($path);
+  $path=explode('/', $_GET['q']);
 
-	if(isset($form['profile_imls_data'])){
-		$sql="select pid from {myimpact_profile_status where uid=:uid and type='imls_data'";
-		$pid=db_query($sql, array('uid'=>$path[$count-2]))->fetchField();
-		
-		if(empty($pid)) drupal_set_message("The user has not submitted", 'warning');
-		else {
-			myimpact_setting_delete_status($pid);
-			drupal_set_message("Delete the status successfully.");
-		}
-	}
-		
-	if(isset($form['profile_intake_form'])){
-		$sql="select pid from {myimpact_profile_status where uid=:uid and type='intake_form'";
-		$pid=db_query($sql, array('uid'=>$path[$count-2]))->fetchField();
-		
-		if(empty($pid)) drupal_set_message("The user has not submitted", 'warning');
-		else {
-			myimpact_setting_delete_status($pid);
-			drupal_set_message("Delete the status successfully.");
-		}
-	}
+  $count=count($path);
+
+  if(isset($form['profile_imls_data'])){
+    $sql="select pid from {myimpact_profile_status where uid=:uid and type='imls_data'";
+    $pid=db_query($sql, array('uid'=>$path[$count-2]))->fetchField();
+
+    if(empty($pid)) drupal_set_message("The user has not submitted", 'warning');
+    else {
+      myimpact_setting_delete_status($pid);
+      drupal_set_message("Delete the status successfully.");
+    }
+  }
+
+  if(isset($form['profile_intake_form'])){
+    $sql="select pid from {myimpact_profile_status where uid=:uid and type='intake_form'";
+    $pid=db_query($sql, array('uid'=>$path[$count-2]))->fetchField();
+
+    if(empty($pid)) drupal_set_message("The user has not submitted", 'warning');
+    else {
+      myimpact_setting_delete_status($pid);
+      drupal_set_message("Delete the status successfully.");
+    }
+  }
 }
 
 
 /*
- * 
+ *
  * insert the status
- * 
+ *
  * if it exists, return false
- * 
+ *
  * else, insert and return true
  *
  */
-  
-function myimpact_setting_insert_status($uid, $type){
-			
-	//check if it exists
-	$sql="select pid from {myimpact_profile_status} where uid=:uid and type=:type";
-	$pid=db_query($sql, array('uid'=>$uid, 'type'=>$type))->fetchField();
-	
-	if(!empty($pid)) return FALSE;
-	
-	//get the pid from the table profile
-	$sql="select pid from {profile} where uid=:uid and type=:type";
-	$pid=db_query($sql, array('uid'=>$uid, 'type'=>$type))->fetchField();
 
-	$fields = array('pid' => $pid, 'type' => $type, 'uid' => $uid, 'status'=>'1');
-	db_insert('myimpact_profile_status')->fields($fields)->execute();	
-	
-	return TRUE;
+function myimpact_setting_insert_status($uid, $type){
+  	
+  //check if it exists
+  $sql="select pid from {myimpact_profile_status} where uid=:uid and type=:type";
+  $pid=db_query($sql, array('uid'=>$uid, 'type'=>$type))->fetchField();
+
+  if(!empty($pid)) return FALSE;
+
+  //get the pid from the table profile
+  $sql="select pid from {profile} where uid=:uid and type=:type";
+  $pid=db_query($sql, array('uid'=>$uid, 'type'=>$type))->fetchField();
+
+  $fields = array('pid' => $pid, 'type' => $type, 'uid' => $uid, 'status'=>'1');
+  db_insert('myimpact_profile_status')->fields($fields)->execute();
+
+  return TRUE;
 }
 
 /*
  * delete the record in myimpact_profile_status
  */
 function myimpact_setting_delete_status($pid){
-				
-	$delete="delete from {myimpact_profile_status} where pid=:pid";
-	$delete=db_query($delete, array('pid'=>$pid));
-	
-	return $delete;
+
+  $delete="delete from {myimpact_profile_status} where pid=:pid";
+  $delete=db_query($delete, array('pid'=>$pid));
+
+  return $delete;
 }
 
 /*
@@ -303,11 +303,11 @@ function myimpact_setting_profile2_view($profile, $view_mode, $langcode) {
 
     $i=1;
     foreach($new as $key=>$value){
-    	if(isset($go_through[$value])) {$value=$value+$i; $i++;}
+      if(isset($go_through[$value])) {$value=$value+$i; $i++;}
       $go_through[$value]=$key;
     }
 
- 
+
     foreach($go_through as $value){
       $rows[]=array(
 			'data' => array(array('data' => isset($field[$value]['label'])?$field[$value]['label']:''), array('data' => isset($profile->content[$value]['0']['#markup'])?$profile->content[$value]['0']['#markup']:'')),
@@ -316,9 +316,9 @@ function myimpact_setting_profile2_view($profile, $view_mode, $langcode) {
     }
 
     unset($profile->content);
-    
-    $table['rows'] = $rows;    
-    
+
+    $table['rows'] = $rows;
+
     $profile->content[]=array(
  	 		'#markup'=>theme('table', $table),
     );
@@ -356,9 +356,9 @@ function myimpact_setting_profile2_view($profile, $view_mode, $langcode) {
     }
 
     unset($profile->content);
-    
-    $table['rows'] = $rows;    
-    
+
+    $table['rows'] = $rows;
+
     $profile->content[]=array(
  	 		'#markup'=>theme('table', $table),
     );
