@@ -350,7 +350,7 @@ function myimpact_setting_profile2_view($profile, $view_mode, $langcode) {
 
     foreach($go_through as $value){
       $rows[]=array(
-			'data' => array(array('data' => isset($field[$value]['label'])?$field[$value]['label']:''), array('data' => isset($profile->content[$value]['0']['#markup'])?$profile->content[$value]['0']['#markup']:'')),
+			'data' => array(array('data' => isset($field[$value]['label'])?$field[$value]['label']:''), array('data' => isset($profile->content[$value]['0']['#markup'])?myimpact_setting_markup_display($profile->content[$value]):'', 'width'=>'180px')),
 			'height' => '30px',
       );
     }
@@ -363,4 +363,23 @@ function myimpact_setting_profile2_view($profile, $view_mode, $langcode) {
  	 		'#markup'=>theme('table', $table),
     );
   }
+}
+
+function myimpact_setting_markup_display($content){
+	
+	$output='';
+	if(isset($content[1]['#markup'])){
+		$i=0;
+		do{
+			if(strlen($content[$i]['#markup'])>=25) $display="<li title='".$content[$i]['#markup']."'>".substr($content[$i]['#markup'], 0, 25)."...</li>";
+			else $display="<li>".$content[$i]['#markup']."</li>";
+			$output.=$display;
+			$i++;
+		}while(isset($content[$i]['#markup']));
+		
+	}
+	else return $content[0]['#markup'];
+	
+	return $output;
+	
 }
