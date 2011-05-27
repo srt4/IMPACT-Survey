@@ -329,7 +329,7 @@ function survey_fielding_new_page() {
 	   		$onclick = "onclick=\"window.location.href='".$url."'\"";
 	   		
 	   $selected="<h3>Your survey is scheduled for:</h3>
-<h4>$field_date</h4><br><br><input type='button' value='Change Dates' $onclick ><br><br>
+<h4>$field_date</h4><br><br><input class='form-submit' type='button' value='Change Dates' $onclick ><br><br>
 <p>Ensure that your library website is ready to display the survey links, and promotional activities are coordinated.  Visit <a href='.	/codebox'>Get your links</a> for more information about survey promotion.</p>
 <p>You will not be able to edit the IMLS Data and Intake forms once the survey fielding has begun.</p>
 <p>You may extend the survey while it is running, <em>but not after it has ended.<em></p>
@@ -379,7 +379,7 @@ function survey_fielding_new_page() {
 					<br>
 					<h4>$count Completed Surveys</h4>
 					<br><br>
-					<input type='button' value='Extend Fielding' $onclick />
+					<input type='button' class='form-submit' value='Extend Fielding' $onclick />
 					<br><br>
 					<p>Please maintain the links on your website and promotional flyers during the dates below.  Visit <a href='./codebox'>Get your links</a> for more information about survey promotion.</p>
 					<p>You are no longer allowed to change information on your IMLS Data and Intake survey forms.</p>

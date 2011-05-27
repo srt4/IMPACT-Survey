@@ -61,7 +61,7 @@
 	   $edit_url = $url."/edit";
 	   
    ?>
-<input type="button" value="Edit" onclick = "window.location.href='<?php print $edit_url; ?>'"></input>
+<input type="button" class="form-submit" value="Edit" onclick = "window.location.href='<?php print $edit_url; ?>'"></input>
     <?php endif;?>
 
   </div>
