@@ -241,6 +241,11 @@ function library_registration_user_register_validate(&$form, &$form_state) {
     if($result -> rowCount() > 0)
     	form_set_error('field_library_reg_system', 'This library is already registered, if this is an error, please <a href="/contact">contact us immediately.</a>');
   }
+  
+  $phone=$form_state['values']['profile_library_registration']['field_library_reg_phone']['und'][0]['value'];
+	if(!is_numeric($phone)) form_set_error('phone number', 'The phone number should be numerical.');
+	if(strlen($phone)!=10) form_set_error('phone number2', 'The phone number should contain 10 digits.');
+
 }
 // Check answer to proof of librarianship question
 function library_registration_proof_validate($element, $form_state) {
