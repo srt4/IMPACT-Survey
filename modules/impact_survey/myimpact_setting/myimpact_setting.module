@@ -1,4 +1,5 @@
 <?php
+
 /*
  * hook_menu
  *
@@ -13,11 +14,23 @@ function myimpact_setting_menu() {
 		'page callback' => 'myimpact_setting_myimpact_page',
 		'access callback' => 'user_access',
 		'access arguments' => array('myimpact page'),
+	 	'weight' => -50,
+	 	'menu_name' => "My IMPACT",
 		'type' => MENU_NORMAL_ITEM,
+	 	
   );
 	
-	
-	
+	$items['myimpact/registration'] = array(
+		'title' => 'My IMPACT',
+		'description' => 'my impact page',
+		'page callback' => 'myimpact_setting_myimpact_registration_page',
+		'access callback' => TRUE,
+	 	'weight' => -50,
+	 	'menu_name' => "My IMPACT",
+		'type' => MENU_NORMAL_ITEM,
+	 	
+  );  
+		
   //confirm the imls_data
   $items['imls_data/%/confirm'] = array(
         'page callback' => 'drupal_get_form',
@@ -574,3 +587,7 @@ function myimpact_setting_convUri($uri="", $publicPath){
   return $publicPath."/".$position[1];
 }
 
+function myimpact_setting_myimpact_registration_page(){
+	return '<h3>Thank you for your application</h3>Your account is currently pending approval by the site administrator.
+In the meantime, a welcome message with further instructions has been sent to your e-mail address.<br><a href="/">Home</a>';
+}
