@@ -6,6 +6,18 @@
 
 function myimpact_setting_menu() {
 
+	//myimpact page
+	 $items['myimpact'] = array(
+		'title' => 'My IMPACT',
+		'description' => 'my impact page',
+		'page callback' => 'myimpact_setting_myimpact_page',
+		'access callback' => 'user_access',
+		'access arguments' => array('myimpact page'),
+		'type' => MENU_NORMAL_ITEM,
+  );
+	
+	
+	
   //confirm the imls_data
   $items['imls_data/%/confirm'] = array(
         'page callback' => 'drupal_get_form',
@@ -37,6 +49,10 @@ function myimpact_setting_permission(){
 		'imls and intake submit' => array( 
 		'title' => t('IMLS Data and intake form submit'), 
 		'description' => t('Allow users to submit the IMLS Data and intake form'),
+  ),
+  		'myimpact page' => array(
+  		'title' => t('Myimpact Page'), 
+		'description' => t('Allow users to go to the myimpact page'),
   ),
   );
 }
@@ -383,3 +399,178 @@ function myimpact_setting_markup_display($content){
 	return $output;
 	
 }
+
+/**
+ * Implements hook_theme().
+ */
+function myimpact_setting_theme() {
+
+  return array(
+    'myimpact_setting' => array(
+      'template' => 'myimpact_setting',
+    ),
+  );
+
+}
+
+
+/*
+ * myimpact page
+ */
+function myimpact_setting_myimpact_page(){
+	
+	global $user;
+	$uid = $user->uid;
+
+		//library name
+		$sql="select field_library_reg_pref_value as value from {field_data_field_library_reg_pref} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
+		$alt_name=db_query($sql, array('uid'=>$uid))->fetchField();
+
+		if(empty($alt_name)){
+  			$fscs = token_replace("[current-user:profile-library-registration:field-library-reg-system]") ? token_replace("[current-user:profile-library-registration:field-library-reg-system]") : 0;
+  			$query = "SELECT library_name FROM {library_lookup} WHERE fscs_key = '$fscs'";
+  			$system_name = db_query($query)->fetchField();
+		}
+		else $system_name=$alt_name;
+	
+		//Name
+		$sql="select field_library_reg_fname_value as value from {field_data_field_library_reg_fname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
+		$firstname=db_query($sql,array('uid'=>$uid))->fetchField();
+		
+		$sql="select field_library_reg_lname_value as value from {field_data_field_library_reg_lname} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
+		$lastname=db_query($sql,array('uid'=>$uid))->fetchField();
+		
+		//Job title
+		$sql="select field_library_reg_position_value as value from {field_data_field_library_reg_position} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
+		$jobtitle=db_query($sql,array('uid'=>$uid))->fetchField();
+		
+		//Phone number
+		$sql="select field_library_reg_phone_value as value from {field_data_field_library_reg_phone} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
+		$phonenum=db_query($sql,array('uid'=>$uid))->fetchField();
+		
+		//Phone extension
+		$sql="select field_library_reg_extension_value as value from {field_data_field_library_reg_extension} as a, {profile} as b where a.entity_id=b.pid and b.uid=:uid and b.type='library_registration'";
+		$phoneext=db_query($sql,array('uid'=>$uid))->fetchField();
+		if(!empty($phoneext)) $phoneext="-ex($phoneext)";
+		
+		//Completed Surveys
+		$fscs = token_replace('[current-user:profile-library-registration:field-library-reg-system]');
+		$result_count = db_query("SELECT COUNT( * ) AS responses FROM {survey_responses} WHERE libid = :fscs", array('fscs'=>$fscs))->fetchField();
+	
+		//Step
+			//get the forms submitted
+			$sql="select type from {myimpact_profile_status} where uid=:uid";
+			$submit=db_query($sql,array('uid'=>$uid));
+		
+			
+			
+			  $i=0;
+			  foreach($submit as $s){
+			    $user_filled[$i]=$s->type;
+			    $i++;
+			  }
+		
+			  if(isset($user_filled)){
+			  //check IMLS
+			  $flag=0;
+			  foreach($user_filled as $r){
+			    if ($r=="imls_data") $flag='1';
+			  }
+		
+			  //check Information Form
+			  if($flag=='1'){
+			    foreach($user_filled as $r){
+			      if ($r=="intake_form") $flag='2';
+			    }
+			  }
+			}
+			else $flag=0;
+			
+			//chek Dates
+			if ($flag=='2'){
+			  //get the forms filled out
+					$sql="select type from {profile} where uid=:uid and type=:type";
+					$survey_fielding=db_query($sql,array('uid'=>$uid, 'type'=>"survey_fielding"))->fetchField();
+		
+					if (!empty($survey_fielding)) $flag='3';
+			}
+		
+			//get dates
+			$sql="select field_fielding_date_value2 from {profile} as p,{field_data_field_fielding_date} as f where p.uid=:uid and p.type='survey_fielding' and f.entity_id=p.pid";
+			$date=db_query($sql,array('uid'=>$uid))->fetchField();
+			$date=strtotime($date);
+		
+			//check whether the date is expired.
+			if(isset($date)){
+			  if(empty($date)) $flag=2;
+			  elseif($date<time()) $flag=4;
+			}
+		
+			switch($flag){
+			  case 0:
+			    $step="1. Confirm your library's <a href=./profile-imls_data>IMLS Data</a>";
+			    break;
+			  case 1:
+			    $step='2. Complete the <a href=./profile-intake_form>Intake Form</a>';
+			    break;
+			  case 2:
+			    $step='3. Select your <a href=./profile-survey_fielding>survey fielding</a> dates';
+			    break;
+			  case 3:
+			    $step='4. <a href=./codebox>Get your survey links.</a>';
+			    break;
+			  case 4:
+			    $step='Your report is done, view it <a href=./reports>here</a>';
+			    break;
+			}
+		
+		//Photo and Logo
+		      $tag="Change";
+			
+			  $publicPath=variable_get('file_public_path', conf_path() . '/files');
+			  //get the path of logo
+			  $sql="select uri from {profile} as p,{field_data_field_reg_logo_pic} as f, {file_managed} as m where p.uid=:uid and p.type='photo_logo' and f.entity_id=p.pid and m.fid=f.field_reg_logo_pic_fid";
+			  $logo=db_query($sql,array('uid'=>$uid))->fetchField();
+
+			  //get the path of library pic
+  			  $sql="select uri from {profile} as p,{field_data_field_reg_library_pic} as f, {file_managed} as m where p.uid=:uid and p.type='photo_logo' and f.entity_id=p.pid and m.fid=f.field_reg_library_pic_fid";
+  			  $libPic=db_query($sql,array('uid'=>$uid))->fetchField();
+		
+  			  //default tips
+  			  if(empty($logo) or empty($libPic)) $tip='<h5 id="photo_logo_message">Please upload your library logo and a photo to use in your report.</h5>';
+  			  else $tip='';
+  			  $pic_output = $tip;
+  			  
+			  //default pictures
+			  if(empty($logo)) {$logo="public://default_images/default_logo.jpg";$tag="Upload";}
+			  if(empty($libPic)) {$libPic="public://default_images/default_library_pic.jpg";$tag="Upload";}
+  
+			  $pic_output.="<img width=100px height=100px src='".myimpact_setting_convUri($logo, $publicPath)."' alt='library logo'/>"."<br>";
+  		      $pic_output.="<img width=100px height=100px src='".myimpact_setting_convUri($libPic, $publicPath)."' alt='library photo' align=center />";
+  
+$content = array(
+	'libName' => $system_name,
+	'firstName'=>$firstname,
+	'lastName' => $lastname,
+	'jobtitle' => $jobtitle,
+	'phoneNum' => $phonenum,
+	'phoneExt' => $phoneext,
+	'surveyCount' => $result_count,
+	'step'=>$step,
+	'pic_output' =>$pic_output,
+	'tag' => $tag,
+);	
+	
+	
+	
+	
+	return theme('myimpact_setting', $content);
+}
+
+//deal with the uri from the DB
+function myimpact_setting_convUri($uri="", $publicPath){
+  $position=explode("://",$uri);
+
+  return $publicPath."/".$position[1];
+}
+
