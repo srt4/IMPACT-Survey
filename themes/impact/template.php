@@ -38,10 +38,11 @@
       }
       
       // added by Yan for IMPACT profile page 3-3-10
+      /*
       if ($_GET['q'] == 'node/51') {
           $variables['theme_hook_suggestions'][] = "page__myimpact";
           }
-          
+        */  
 //go to the Edit Myimpact page
   if ($_GET['q'] == 'node/61') {
           $variables['theme_hook_suggestions'][] = "page__myimpact__edit";
