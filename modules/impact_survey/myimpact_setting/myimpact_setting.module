@@ -117,6 +117,7 @@ function myimpact_setting_form_profile2_form_alter(&$form, &$form_state, $form_i
     unset($form['profile_library_registration']['field_library_reg_system']);
   }
 
+  //add submit button to imls data and intake form
   if($form_id=="profile2_edit_imls_data_form" or $form_id=="profile2_edit_intake_form_form")
   {
      
@@ -134,6 +135,10 @@ function myimpact_setting_form_profile2_form_alter(&$form, &$form_state, $form_i
     );
 
   }
+  
+  //change the save button to submit button
+
+  if($form_id=="profile2_edit_survey_fielding_form") $form['actions']['submit']['#value']="Submit";  
 }
 
 /*
