@@ -1,5 +1,4 @@
 <?php
-// $Id: profile2.api.php,v 1.1.2.7 2011/01/04 12:14:10 fago Exp $
 
 /**
  * @file

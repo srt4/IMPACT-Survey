@@ -1,5 +1,4 @@
 <?php
-// $Id: profile2.module,v 1.1.2.58 2011/01/04 19:29:20 fago Exp $
 
 /**
  * @file
@@ -26,13 +25,13 @@ function profile2_entity_info() {
       'entity keys' => array(
         'id' => 'pid',
         'bundle' => 'type',
-        'label' => 'label',
       ),
       'bundles' => array(),
       'bundle keys' => array(
         'bundle' => 'type',
       ),
-      'uri callback' => 'profile2_uri_callback',
+      'label callback' => 'entity_class_label',
+      'uri callback' => 'entity_class_uri',
       'access callback' => 'profile2_access',
       'module' => 'profile2',
       'metadata controller class' => 'Profile2MetadataController'
@@ -242,7 +241,7 @@ function profile2_delete_multiple(array $pids) {
 /**
  * Implements hook_user_cancel().
  */
-function profile2_user_cancel(&$edit, $account, $method) {
+function profile2_user_cancel($edit, $account, $method) {
   // Delete all profiles of the user in any case.
   foreach (profile2_load_by_user($account) as $profile) {
     profile2_delete($profile);
@@ -301,6 +300,8 @@ function profile2_profile2_type_delete($type) {
   if ($pids = array_keys(profile2_load_multiple(FALSE, array('type' => $type->type)))) {
     profile2_delete_multiple($pids);
   }
+  // Rebuild the menu as any (user-category) menu items should be gone now.
+  menu_rebuild();
 }
 
 /**
@@ -342,13 +343,6 @@ function profile2_form_user_profile_form_alter(&$form, &$form_state) {
  * Implements hook_form_FORM_ID_alter() for the registration form.
  */
 function profile2_form_user_register_form_alter(&$form, &$form_state) {
-  		global $user;
-  		$roles = $user->roles;
-  		$anon = 0;
-  		foreach ($roles as $roleid => $role) {
-  			if ($roleid == 1) $anon = 1;
-  		}
-  		if($anon == 1) {
   foreach (profile2_get_types() as $type_name => $profile_type) {
     if (!empty($profile_type->data['registration'])) {
       if (empty($form_state['profiles'][$type_name])) {
@@ -362,7 +356,6 @@ function profile2_form_user_register_form_alter(&$form, &$form_state) {
       );
     }
   }
-  		}
 }
 
 /**
@@ -394,6 +387,7 @@ function profile2_attach_form(&$form, &$form_state) {
         '#markup' => t('No fields have been associated with this profile type. Go to the <a href="!url">Profile types</a> page to add some fields.', array('!url' => url('admin/structure/profiles'))),
       );
     }
+
     // Provide a central place for modules to alter the profile forms, but
     // skip that in case the caller cares about invoking the hooks.
     // @see profile2_form().
@@ -560,12 +554,15 @@ function profile2_theme() {
 /**
  * The class used for profile entities.
  */
-class Profile extends EntityDB {
+class Profile extends Entity {
 
   public function __construct($values = array()) {
     if (isset($values['user'])) {
       $this->setUser($values['user']);
       unset($values['user']);
+    }
+    if (isset($values['type']) && is_object($values['type'])) {
+      $values['type'] = $values['type']->type;
     }
     parent::__construct($values, 'profile2');
   }
@@ -579,26 +576,25 @@ class Profile extends EntityDB {
 
   /**
    * Sets a new user owning this profile.
+   *
+   * @param $account
+   *   The user account object or the user account id (uid).
    */
   public function setUser($account) {
-    $this->uid = $account->uid;
+    $this->uid = is_object($account) ? $account->uid : $account;
   }
-
 
   /**
    * Gets the associated profile type object.
    *
    * @return ProfileType
    */
-  public function getType() {
+  public function type() {
     return profile2_get_types($this->type);
   }
 
-  /**
-   * Returns the URI for this profile. May be altered via hook_entity_info().
-   */
-  public function uri() {
-    return entity_uri('profile2', $this);
+  public function defaultLabel() {
+    return isset($this->label) ? $this->label : (isset($this->type) ? $this->type()->label : '');
   }
 
   /**
@@ -617,6 +613,13 @@ class Profile extends EntityDB {
     return $uri['path'];
   }
 
+  public function defaultUri() {
+    return array(
+      'path' => 'user/' . $this->uid,
+      'options' => array('fragment' => 'profile-' . $this->type),
+    );
+  }
+
   public function buildContent($view_mode = 'full', $langcode = NULL) {
     $content = array();
     // Assume newly create objects are still empty.
@@ -628,23 +631,10 @@ class Profile extends EntityDB {
 }
 
 /**
- * Default uri callback.
- *
- * @see Profile::uri()
- */
-function profile2_uri_callback($profile) {
-  return array(
-    'path' => 'user/' . $profile->uid,
-    'options' => array('fragment' => 'profile-' . $profile->type),
-  );
-}
-
-
-/**
  * Use a separate class for profile types so we can specify some defaults
  * modules may alter.
  */
-class ProfileType extends EntityDB {
+class ProfileType extends Entity {
 
   /**
    * Whether the profile type appears in the user categories.

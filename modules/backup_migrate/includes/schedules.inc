@@ -1,5 +1,5 @@
 <?php
-// $Id: schedules.inc,v 1.2.2.2 2010/05/10 03:53:41 ronan Exp $
+// $Id: schedules.inc,v 1.2.2.3 2011/01/24 05:37:19 ronan Exp $
 
 /**
  * @file
@@ -204,7 +204,6 @@ class backup_migrate_schedule extends backup_migrate_item {
     $form['enabled'] = array(
       "#type" => "checkbox",
       "#title" => t("Enabled"),
-      "#field_suffix" => t("Hour(s)"),
       "#default_value" => $this->get('enabled'),
     );
     $form['name'] = array(

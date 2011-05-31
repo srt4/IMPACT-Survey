@@ -1,5 +1,5 @@
 <?php
-// $Id: backup_migrate.module,v 1.4.2.8 2010/12/27 18:23:44 ronan Exp $
+// $Id: backup_migrate.module,v 1.4.2.10 2011/01/25 05:35:36 ronan Exp $
 
 
 /**
@@ -8,7 +8,8 @@
  * database with an option to exclude table data (e.g. cache_*)
  */
 
-define('BACKUP_MIGRATE_MENU_PATH', 'admin/structure/backup_migrate');
+define('BACKUP_MIGRATE_MENU_PATH', 'admin/config/system/backup_migrate');
+define('BACKUP_MIGRATE_MENU_DEPTH', 4);
 
 /* Drupal Hooks */
 
@@ -258,7 +259,7 @@ function backup_migrate_ui_manual_backup_quick() {
 function backup_migrate_ui_manual_backup_advanced() {
   backup_migrate_include('profiles');
   $out = array();
-  $profile_id = arg(5);
+  $profile_id = arg(BACKUP_MIGRATE_MENU_DEPTH + 2);
   $profile = _backup_migrate_profile_saved_default_profile($profile_id);
 
   $out[] = drupal_get_form('backup_migrate_ui_manual_backup_load_profile_form', $profile);
@@ -730,6 +731,7 @@ function backup_migrate_perform_restore($destination_id, $file, $settings = arra
       return FALSE;
     }
   }
+  $file_id = $file->file_id();
 
   // Filter the file and perform the restore.
   $file = backup_migrate_filters_restore($file, $settings);
@@ -756,7 +758,7 @@ function backup_migrate_perform_restore($destination_id, $file, $settings = arra
       '!action' => !empty($settings->performed_action) ? $settings->performed_action : '',
     );
     if ($destination && $destination->op('list files')) {
-      $params['!links'] = t('<a href="!restoreurl">Restore again</a>', array('!restoreurl' => url(BACKUP_MIGRATE_MENU_PATH . '/destination/list/restorefile/'. $destination_id ."/". $file->filename())));
+      $params['!links'] = t('<a href="!restoreurl">Restore again</a>', array('!restoreurl' => url(BACKUP_MIGRATE_MENU_PATH . '/destination/restorefile/'. $destination_id ."/". $file_id)));
     }
     backup_migrate_restore_succeed($message, $params, $settings);
   }
