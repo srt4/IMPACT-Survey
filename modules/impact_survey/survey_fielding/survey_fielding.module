@@ -19,7 +19,7 @@ function survey_fielding_trigger_info() {
 function survey_fielding_form_profile2_edit_survey_fielding_form_alter(&$form, &$form_state) {
 
   	//redirect
-  	$instruction="<h3>Select the dates that you will run the survey and click save.</h3>
+  	$instruction="<h3>Select the dates that you will run the survey and click submit.</h3>
 <p>Consider the time it will take to complete promotional tasks, including editing your library website and posting flyers.  Visit <a href='/codebox'>Get your links</a> for more information.</p>
 <p>You will not be able to edit the IMLS Data and Intake forms once the survey fielding has begun.</p>
 <p>As the survey runs, you will be informed of the number of responses, and will have the option to extend the survey.  You may extend the survey while it is running, <em>but not after it has ended.<em></p>
@@ -155,7 +155,7 @@ function survey_fielding_nameform($date1,$date2) {
 		
 	$form['submit'] = array(
 		'#type'=>'submit',
-		'#value' => t('Save')
+		'#value' => t('Submit')
 	);
 		
 	return $form;
