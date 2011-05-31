@@ -8,7 +8,7 @@
 function myimpact_setting_menu() {
 
 	//myimpact page
-	 $items['myimpact2'] = array(
+	 $items['myimpact'] = array(
 		'title' => 'My IMPACT',
 		'description' => 'my impact page',
 		'page callback' => 'myimpact_setting_myimpact_page',
