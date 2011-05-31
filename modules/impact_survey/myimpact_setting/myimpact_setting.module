@@ -85,6 +85,17 @@ function myimpact_setting_form_profile2_form_alter(&$form, &$form_state, $form_i
     //remove the delete button
     unset($form['actions']['delete']);
 
+    $path=explode("/", $_GET['q']);
+    $count=count($path);
+    
+    //remove the state and system which cause errors
+    if($path[$count-3]=="profile-library_registration"){
+    	unset($form['profile_library_registration']['field_library_reg_state']);
+    	unset($form['profile_library_registration']['field_library_reg_system']);
+    }
+    
+    //these two submit and unsubmit buttons are only for IMLS Data and Intake form
+    if($path[$count-3]=="profile-imls_data" or $path[$count-3]=="profile-intake_form"){
     $form['actions']['unsubmit']=array(
     	'#type' => 'submit',
     	'#value' => 'Unsubmit',
@@ -98,6 +109,7 @@ function myimpact_setting_form_profile2_form_alter(&$form, &$form_state, $form_i
     	'#weight' => '50',
     	'#submit' => array('myimpact_setting_status_submit_submit'),
     );
+    }
   }
 
   if(isset($form['profile_library_registration']) && $path=='admin/profiles_management'){
