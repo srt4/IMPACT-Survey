@@ -1,4 +1,11 @@
 <?php
+/*
+ * hook_init()
+ */
+function myimpact_setting_init(){
+	drupal_add_css(drupal_get_path('module', 'myimpact_setting') . 'myimpact_setting.css', array('group' => CSS_DEFAULT));
+}
+
 
 /*
  * hook_menu
@@ -448,6 +455,9 @@ function myimpact_setting_theme() {
  * myimpact page
  */
 function myimpact_setting_myimpact_page(){
+	
+	//add css to myimpact
+	drupal_add_css(drupal_get_path('module', 'myimpact_setting') . '/myimpact_setting.css');
 	
 	global $user;
 	$uid = $user->uid;
