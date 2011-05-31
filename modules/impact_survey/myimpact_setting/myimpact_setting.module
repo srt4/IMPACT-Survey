@@ -8,7 +8,7 @@
 function myimpact_setting_menu() {
 
 	//myimpact page
-	 $items['myimpact'] = array(
+	 $items['myimpact2'] = array(
 		'title' => 'My IMPACT',
 		'description' => 'my impact page',
 		'page callback' => 'myimpact_setting_myimpact_page',
@@ -16,9 +16,8 @@ function myimpact_setting_menu() {
 		'access callback' => 'user_is_logged_in',
 		//'access arguments' => array('myimpact page'),
 	 	'weight' => -50,
-	 	'menu_name' => "My IMPACT",
-		'type' => MENU_NORMAL_ITEM,
-	 	
+	 	'menu_name' => "menu-my-impact",
+		'type' => MENU_NORMAL_ITEM, 	
   );
 	
 	$items['myimpact/registration'] = array(
