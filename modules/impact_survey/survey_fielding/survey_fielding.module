@@ -178,9 +178,6 @@ form_set_error('user_name',t('Please use the date popup to select the prospectiv
 
 function survey_fielding_nameform_submit($form_id, $form_state) {
 	
-	//added the trigger
-	module_invoke_all('send_action','NULL', 'NULL');
-
 	$date=$form_state['values']['date2'];
 	$date=strtotime($date);
 	
@@ -202,6 +199,9 @@ function survey_fielding_nameform_submit($form_id, $form_state) {
   	->condition('entity_id',$result, '=')
   	->execute();
 
+  	//added the trigger
+	module_invoke_all('send_action','NULL', 'NULL');
+  	
   	drupal_goto('profile-survey_fielding');
 }	
 /**
@@ -549,7 +549,6 @@ if ($type == 'current-user'){
  * get the field date
  * 
  */
-  
 function survey_fielding_get_date(){
 	global $user;
 	$uid=$user->uid;
