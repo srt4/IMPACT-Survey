@@ -488,12 +488,6 @@ function survey_fielding_extend(){
 	
 }
 
-
-
-
-
-
-
 /** 
  * 
  * 
@@ -510,5 +504,70 @@ function survey_fielding_title() {
 function survey_fielding_edit_title(){
 	
 	drupal_set_title(t('Survey Fielding'));
+	
+}
+
+
+
+/**
+ * Implements hook_token_info().
+ */
+function survey_fielding_token_info() {
+  $user['survey_fielding'] = array(
+    'name' => t('User Survey Field'),
+    'description' => t('Get the survey field date.'),
+    'needs-data' => 'current-user',
+  );
+
+  return array(
+    'tokens' => array('current-user' => $user),
+  );
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function survey_fielding_tokens($type, $tokens, array $data = array(), array $options = array()) {
+  $sanitize = !empty($options['sanitize']);
+  $replacements = array();
+
+    //$account = $data['user'];
+if ($type == 'current-user'){
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        case 'survey_fielding':
+        	//get the field date
+          $replacements[$original] = survey_fielding_get_date();
+          break;   
+      }
+    }
+}
+  return $replacements;
+}
+
+/*
+ * get the field date
+ * 
+ */
+  
+function survey_fielding_get_date(){
+	global $user;
+	$uid=$user->uid;
+	
+	//get the fielding dates from field_data_field_fielding_date
+	   $sql="SELECT field_fielding_date_value AS from_date, 
+	   field_fielding_date_value2 AS to_date 
+	   FROM {field_data_field_fielding_date} AS a, 
+	   {profile} AS b WHERE a.entity_id=b.pid AND b.uid=:uid";
+	   $result=db_query($sql, array('uid'=>$uid));
+	
+	   $date1 = '';
+	   $date2 = '';
+	   foreach($result as $r){
+	        $date1=isset($r->from_date)? strtotime($r->from_date):time();
+	        $date2=isset($r->to_date)? strtotime($r->to_date): time();
+	   }
+	      
+	return date('D m/d/y', $date1).' - '.date('D m/d/y', $date2);
 	
 }
