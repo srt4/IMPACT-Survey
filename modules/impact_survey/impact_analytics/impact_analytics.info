@@ -1,0 +1,4 @@
+name = IMPACT Analytics
+description = Track hotlinked images and javascript
+core = 7.x
+package = IMPACT

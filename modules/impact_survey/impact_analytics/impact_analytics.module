@@ -1,0 +1,68 @@
+<?php
+/**
+ * Implements hook_menu().
+ */
+function impact_analytics_menu() {
+  $items = array();
+  $items['codebox/host/%'] = array(
+    'title' => 'hosted file',
+    // 'title callback' => '',
+    // 'title arguments' => '',
+    // 'description' => '',
+    'page callback' => 'impact_analytics_fire',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    // 'file' => '',
+    'type' => MENU_CALLBACK,
+    //'options' => '',
+  );
+  return $items;
+}
+// Fire a call to google analytics to report a hit to hotlinked javascript or images
+// And serve the image
+// Must be in the format: imagename.jpg
+function impact_analytics_fire($file) {
+  // $file[0] = filename, $file[1] = filetype
+  $file = explode('.', $file);
+  
+  $var_utmac='UA-20897184'; //enter the new urchin code
+  $var_utmhn='impactsurvey.org'; //enter your domain
+  $var_utmn=rand(1000000000,9999999999); //random request number
+  $var_cookie=rand(10000000,99999999); //random cookie number
+  $var_random=rand(1000000000,2147483647); //number under 2147483647
+  $var_today=time(); //today
+  $var_referer=$_SERVER['HTTP_REFERER']; //referer url
+  $var_utmwv='4.9.4';  //ga version
+
+  $var_uservar='-'; //enter your own user defined variable
+  //$var_utmp='tracker/'.$_GET['url'].'.'.$_GET['filetype']; //this example adds a fake file request to the (fake) tracker directory (the image/pdf filename).
+  $var_utmp='codebox/host/'.$file[0];
+  
+  $urchinUrl='http://www.google-analytics.com/__utm.gif?utmwv='.$var_utmwv.'&utmn='.$var_utmn.'&utmsr=-&utmsc=-&utmul=-&utmje=0&utmfl=-&utmdt=-&utmhn='.$var_utmhn.'&utmr='.$var_referer.'&utmp='.$var_utmp.'&utmac='.$var_utmac.'&utmcc=__utma%3D'.$var_cookie.'.'.$var_random.'.'.$var_today.'.'.$var_today.'.'.$var_today.'.2%3B%2B__utmb%3D'.$var_cookie.'%3B%2B__utmc%3D'.$var_cookie.'%3B%2B__utmz%3D'.$var_cookie.'.'.$var_today.'.2.2.utmccn%3D(direct)%7Cutmcsr%3D(direct)%7Cutmcmd%3D(none)%3B%2B__utmv%3D'.$var_cookie.'.'.$var_uservar.'%3B';
+
+  $handle = fopen ($urchinUrl, "r");
+  $test = fgets($handle);
+  fclose($handle);
+  
+  switch ($file[1]){
+    case 'jpg':
+      header('Content-Type: image/jpeg');
+      break;
+    case 'gif':
+      header('Content-type: image/gif');
+      break;
+    case 'pdf':
+      header('Content-type: application/pdf');
+      break;
+    case 'png':
+      header('Content-Type: image/png');
+      break;
+  }
+  //header('Content-Type: image/jpg');
+  $imageurl = fopen ('http://impactsurvey.org/sites/impactsurvey.org/files/codebox/images/'.$file[0].'.'.$file[1], "r"); //this is where the real file should be located
+  while (!feof ($imageurl)) {
+    $image = fgets($imageurl, 4096);
+    echo $image;
+  }
+  fclose($imageurl);
+}
