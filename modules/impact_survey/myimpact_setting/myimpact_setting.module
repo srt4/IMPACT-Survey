@@ -618,3 +618,171 @@ function myimpact_setting_myimpact_registration_page(){
 	return '<h3>Thank you for your application</h3>Your account is currently pending approval by the site administrator.
 In the meantime, a welcome message with further instructions has been sent to your e-mail address.<br><a href="/">Home</a>';
 }
+
+/*
+ * 
+ *hook_block_info() 
+ */
+function myimpact_setting_block_info() { 
+	
+	$blocks['imls_data_instruction'] = array(
+		'info' => t('IMLS Data Dynamic Instruction'),
+		'status' => TRUE,
+		'region' => 'content',
+		'weight' => -15,
+		'visible' =>1,
+	);
+	
+	$blocks['intake_form_instruction'] = array(
+		'info' => t('Intake Form Dynamic Instruction'),
+		'status' => TRUE,
+		'region' => 'content',
+		'weight' => -15,
+		'visible' =>1,
+	);
+	
+	
+	return $blocks;
+}	
+
+/*
+ * 
+ * implements hook_block_configure()
+ */
+
+function myimpact_setting_block_configure($delta){
+	
+	$form = array();
+	
+	switch($delta){
+		case 'imls_data_instruction':
+			$form['imls_data_instruction_before']=array(
+			'#type' => 'textarea',
+			'#title' => t('Instruction before submitting'),
+			'#description'=> t('Enter the text you want to show the users when they are allowed to edit'),
+			'#rows' => 10,
+			'#default_value' => variable_get('imls_data_instruction_before'),
+			);
+			
+			$form['imls_data_instruction_after']=array(
+			'#type' => 'textarea',
+			'#title' => t('Instruction after submitting'),
+			'#description'=> t('Enter the text you want to show the users when they complete the forms'),
+			'#rows' => 10,
+			'#default_value' => variable_get('imls_data_instruction_after'),
+			);
+		break;
+		
+		case 'intake_form_instruction':
+			$form['intake_form_instruction_before']=array(
+			'#type' => 'textarea',
+			'#title' => t('Instruction before submitting'),
+			'#description'=> t('Enter the text you want to show the users when they are allowed to edit'),
+			'#rows' => 10,
+			'#default_value' => variable_get('intake_form_instruction_before'),
+			);
+			
+			$form['intake_form_instruction_after']=array(
+			'#type' => 'textarea',
+			'#title' => t('Instruction after submitting'),
+			'#description'=> t('Enter the text you want to show the users when they complete the forms'),
+			'#rows' => 10,
+			'#default_value' => variable_get('intake_form_instruction_after'),
+			);
+		break;
+		
+		
+	}
+	
+	return $form;
+}
+
+/*
+ * implements hook_block_save()
+ */
+
+function myimpact_setting_block_save($delta='', $edit=array()){
+	switch($delta) {
+		case 'imls_data_instruction':
+			variable_set('imls_data_instruction_before', $edit['imls_data_instruction_before']);
+			variable_set('imls_data_instruction_after', $edit['imls_data_instruction_after']);
+			break;
+			
+		case 'intake_form_instruction':
+			variable_set('intake_form_instruction_before', $edit['intake_form_instruction_before']);
+			variable_set('intake_form_instruction_after', $edit['intake_form_instruction_after']);
+			break;	
+			
+	}
+	return;
+}
+
+/*
+ * Implements hook_block_view()
+ *
+ */
+function myimpact_setting_block_view($delta=''){
+	
+	switch ($delta){
+		case 'imls_data_instruction':
+			//$block['subject'] = t('hello world');
+			$block['content'] = myimpact_setting_block_contents($delta);
+			return $block;
+			break;
+			
+		case 'intake_form_instruction':
+			//$block['subject'] = t('hello world');
+			$block['content'] = myimpact_setting_block_contents($delta);
+			return $block;
+			break;	
+			
+	}
+}
+
+/*
+ * A module-fefined block content function
+ */
+function myimpact_setting_block_contents($delta){
+	switch($delta){
+		case 'imls_data_instruction':
+			
+			if (myimpact_setting_form_status($type='imls_data')) $output=variable_get('imls_data_instruction_before');
+			else $output=variable_get('imls_data_instruction_after');
+
+			return array('#markup'=>$output);
+		break;
+		
+		case 'intake_form_instruction':
+			
+			if (myimpact_setting_form_status($type='intake_form')) $output=variable_get('intake_form_instruction_before');
+			else $output=variable_get('intake_form_instruction_after');
+
+			return array('#markup'=>$output);
+		break;
+	}
+}
+
+
+/*
+ * to tell whether users submit the form or the date is expired or not
+ * 
+ * if the user has submitted or the date is expired, return False
+ * 
+ * if the user has not submitted or the date is not expired, return True
+ * 
+ */
+function myimpact_setting_form_status($type=''){
+	  
+	global $user;
+	
+	$sql="SELECT field_fielding_date_value2 AS from_date FROM {field_data_field_fielding_date} AS a, {profile} AS b WHERE a.entity_id=b.pid AND b.uid=:uid";
+	$date=db_query($sql, array('uid'=>$user->uid))->fetchField();
+	   
+	 //if they have submitted, the edit page will not be allowed
+     $sql="select pid from {myimpact_profile_status} where uid=:uid and type=:type";
+     $pid=db_query($sql, array('uid'=>$user->uid, 'type'=>$type))->fetchField();
+	  
+	   if((empty($date) or strtotime($date)>time()) and empty($pid)) return True;
+	   else return False;
+	
+}
