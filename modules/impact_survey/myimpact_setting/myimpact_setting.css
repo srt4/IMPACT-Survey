@@ -3,3 +3,9 @@ li a.active {
 	color: #333;
 	font-weight: normal;
 }
+
+#next_step{
+		color:#7B309B;
+		font-size: 1.33em;
+		font-weight: bold;
+	}
