@@ -74,8 +74,10 @@ function survey_fielding_validate($form, &$form_state){
  */
 function survey_fielding_submit($form, &$form_state){
 
+		drupal_set_message("Your fielding dates have been changed.  A confirmation email has been sent.");
 		module_invoke_all('send_action','NULL', 'NULL');
 
+		
 		$form_state['redirect'] = '/profile-survey_fielding';
 }
 
@@ -199,6 +201,7 @@ function survey_fielding_nameform_submit($form_id, $form_state) {
   	->condition('entity_id',$result, '=')
   	->execute();
 
+  	drupal_set_message("Your fielding dates have been changed.  A confirmation email has been sent.");
   	//added the trigger
 	module_invoke_all('send_action','NULL', 'NULL');
   	
