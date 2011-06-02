@@ -15,9 +15,9 @@
 	
 	<h3>Completed Surveys:  <span style='color:#333333'><?php if(isset($surveyCount)) print $surveyCount;?></span></h3><p>*Updated every 24 hours.</p>
 	
-	<input type="button" value="Edit" class="form-submit" onClick="window.location.href='myimpact/edit'" /> <br>
+	<input type="button" value="Edit" class="form-submit" onClick="window.location.href='myimpact/edit'" /> <br><br>
 		
-	<h4>Next Step</h4>
+	<font id="next_step">Next Step</font><br><br>
 	
 	<?php if(isset($step)) print $step;?>
 
