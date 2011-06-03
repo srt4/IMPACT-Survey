@@ -240,9 +240,6 @@ div.view-codebox-gallery td {
   margin-top:0;
 }
 /**  Profile Management  **/
-table.library_form {
-	border: 1px solid #CCC;
-}	
 
 tr.even, tr.odd {
 border-width: 0 1px 0 1px;
