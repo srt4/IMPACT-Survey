@@ -557,7 +557,7 @@ function myimpact_setting_myimpact_page(){
 			    $step='3. Select your <a href=./profile-survey_fielding>survey fielding</a> dates';
 			    break;
 			  case 3:
-			    $step='4. <a href=./codebox>Get your survey links.</a>';
+			    $step='4. <a href=./codebox>Get your survey links, and let your survey run.</a>';
 			    break;
 			  case 4:
 			    $step='Your report is done, view it <a href=./reports>here</a>';
@@ -627,18 +627,20 @@ function myimpact_setting_block_info() {
 	
 	$blocks['imls_data_instruction'] = array(
 		'info' => t('IMLS Data Dynamic Instruction'),
-		'status' => TRUE,
+		'status' => 1,
 		'region' => 'content',
+	  'pages' => 'profile-imls_data/',
 		'weight' => -15,
-		'visible' =>1,
+		'visibility' => BLOCK_VISIBILITY_LISTED,
 	);
 	
 	$blocks['intake_form_instruction'] = array(
 		'info' => t('Intake Form Dynamic Instruction'),
-		'status' => TRUE,
+		'status' => 1,
 		'region' => 'content',
+	  'pages' => 'profile-intake_form/',
 		'weight' => -15,
-		'visible' =>1,
+		'visibility' => BLOCK_VISIBILITY_LISTED,
 	);
 	
 	
@@ -653,6 +655,8 @@ function myimpact_setting_block_info() {
 function myimpact_setting_block_configure($delta){
 	
 	$form = array();
+	$imls_default = 'The following fields are pre-populated with information your library has reported to the Institute for Museum and Library Services (IMLS). Please make any necessary updates, confirm the information is correct, and click \'submit.\'';
+	variable_set('imls_data_instruction_before', $imls_default);
 	
 	switch($delta){
 		case 'imls_data_instruction':
