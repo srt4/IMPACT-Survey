@@ -1,4 +1,6 @@
 @CHARSET "UTF-8";
+
+/* myimpact page */
 li a.active {
 	color: #333;
 	font-weight: normal;
@@ -9,3 +11,20 @@ li a.active {
 		font-size: 1.33em;
 		font-weight: bold;
 	}
+	
+/* imls data and intake form */
+table.library_form {
+	border: 1px solid #CCC;
+	width: 100%;
+}	
+
+td.library_questions {
+	padding-left: 10px;	
+	
+}
+
+td.library_answers {
+	padding-left: 30px;	
+	width: 180px;
+	
+}
