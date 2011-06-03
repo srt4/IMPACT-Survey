@@ -333,6 +333,10 @@ function myimpact_setting_delete_status($pid){
  *
  */
 function myimpact_setting_profile2_view($profile, $view_mode, $langcode) {
+
+  drupal_add_css(drupal_get_path('module', 'myimpact_setting') . '/myimpact_setting.css');
+	
+	
   $table = array();
   $table['attributes'] = array('class' => array('library_form'));
 
@@ -363,7 +367,7 @@ function myimpact_setting_profile2_view($profile, $view_mode, $langcode) {
 
     foreach($go_through as $value){
       $rows[]=array(
-			'data' => array(array('data' => isset($field[$value]['label'])?$field[$value]['label']:''), array('data' => isset($profile->content[$value]['0']['#markup'])?$profile->content[$value]['0']['#markup']:'')),
+			'data' => array(array('data' => isset($field[$value]['label'])?$field[$value]['label']:'', 'class'=>'library_questions'), array('data' => isset($profile->content[$value]['0']['#markup'])?$profile->content[$value]['0']['#markup']:'', 'class'=>'library_answers')),
 			'height' => '30px',
       );
     }
@@ -371,7 +375,7 @@ function myimpact_setting_profile2_view($profile, $view_mode, $langcode) {
     unset($profile->content);
 
     $table['rows'] = $rows;
-
+    
     $profile->content[]=array(
  	 		'#markup'=>theme('table', $table),
     );
@@ -403,7 +407,7 @@ function myimpact_setting_profile2_view($profile, $view_mode, $langcode) {
 
     foreach($go_through as $value){
       $rows[]=array(
-			'data' => array(array('data' => isset($field[$value]['label'])?$field[$value]['label']:''), array('data' => isset($profile->content[$value]['0']['#markup'])?myimpact_setting_markup_display($profile->content[$value]):'', 'width'=>'180px')),
+			'data' => array(array('data' => isset($field[$value]['label'])?$field[$value]['label']:'', 'class'=>'library_questions'), array('data' => isset($profile->content[$value]['0']['#markup'])?myimpact_setting_markup_display($profile->content[$value]):'','class'=>'library_answers')),
 			'height' => '30px',
       );
     }
