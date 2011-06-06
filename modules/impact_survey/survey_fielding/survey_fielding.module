@@ -78,7 +78,7 @@ function survey_fielding_submit($form, &$form_state){
 		module_invoke_all('send_action','NULL', 'NULL');
 
 		
-		$form_state['redirect'] = '/profile-survey_fielding';
+		$form_state['redirect'] = 'profile-survey_fielding';
 }
 
 /**
