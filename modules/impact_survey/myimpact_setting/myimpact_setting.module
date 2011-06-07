@@ -631,16 +631,16 @@ function myimpact_setting_block_info() {
 	
 	//default value of the block
 	$imls_default_before = 'The following fields are pre-populated with information your library has reported to the Institute for Museum and Library Services (IMLS). Please make any necessary updates, confirm the information is correct, and click \'submit.\'';
-	variable_set('imls_data_instruction_before', $imls_default_before);
+	variable_set('imls_data_instruction_before',variable_get('imls_data_instruction_before', $imls_default_before));
 	
 	$imls_default_after = 'I am the AFTER OF IMLS';
-	variable_set('imls_data_instruction_after', $imls_default_after);
+	variable_set('imls_data_instruction_after',variable_get('imls_data_instruction_after', $imls_default_after));
 	
 	$intake_default_before = 'I am the BEFORE OF INTAKE';
-	variable_set('intake_form_instruction_before', $intake_default_before);
+	variable_set('intake_form_instruction_before',variable_get('intake_form_instruction_before', $intake_default_before));
 	
 	$intake_default_after = 'the AFTER OF INTAKE';
-	variable_set('intake_form_instruction_after', $intake_default_after);
+	variable_set('intake_form_instruction_after',variable_get('intake_form_instruction_after', $intake_default_after));
 	
 	$blocks['imls_data_instruction'] = array(
 		'info' => t('IMLS Data Dynamic Instruction'),
