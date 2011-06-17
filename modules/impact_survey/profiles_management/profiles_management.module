@@ -7,28 +7,26 @@
  * then list all the profiles the users have completed, allow the administrators to select the profile
  *
  */
-
-
 /**
  * Implementation of hook_menu().
  *
  *
  */
 function profiles_management_menu() {
+  $items = array();
 
   $items['admin/profiles_management'] = array(
 		'title' => 'Profiles Management',
 		'description' => 'Manage the Profiles',
 		'position' => 'right',
 		'weight' => -5,
-		'page callback' => 'profiles_management_list',
+		'page callback' => 'profiles_management_select_query',
 		'access callback' => 'user_access',
 		'access arguments' => array('profiles management'),
 		'file' => 'system.admin.inc',
 		'file path' => drupal_get_path('module','system'),
 		'type' => MENU_NORMAL_ITEM,
   );
-
   $items['admin/profiles_management/%profiles_management_check_type/%profiles_management_check_uid/view'] = array(
 		'title' => 'hello',
 		'title callback' => 'profiles_management_get_library_name',
@@ -58,7 +56,7 @@ function profiles_management_menu() {
   );
 
   $items['admin/profiles_management/%profiles_management_selected_users/custom'] = array(
-		'title' => 'Custom Profiles Management',
+		'title' => 'Filtered Profiles',
 		'description' => 'Manage the Selected Profiles',
 		'position' => 'right',
 		'weight' => -5,
@@ -99,78 +97,170 @@ function profiles_management_menu() {
 		'type' => MENU_NORMAL_ITEM,
   );
 
+  $items['admin/profiles_management/beta'] = array(
+		'title' => 'Beta Libraries',
+		'description' => 'View and edit beta library information',
+		'page callback' => 'profiles_management_select_query',
+    'page arguments' => array(array('105', '123', '97', '120', '115')),
+		'access callback' => 'user_access',
+		'access arguments' => array('profiles management'),	
+    'type' => MENU_NORMAL_ITEM,
+  );
+  
+  $items['admin/profiles_management/beta/default'] = array(
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'title' => 'Default primary tab',
+    'weight' => 1,
+  );
+  $items['admin/profiles_management/beta/cats'] = array(
+    'type' => MENU_LOCAL_TASK,
+    'title' => 'Default primary tab',
+    'weight' => 2,
+    'access callback' => TRUE
+  );
   return $items;
 }
+// Create an array with user data to display profiles
+function profiles_management_select_query($user_list = array()) {
 
-/*
- * this function is used to make sure that admins could go back to the search result
- *
- */
-function profiles_management_selected_users_load($arg){
-
-  global $search_libaries;
-
-  if($arg == "profile-library_registration" or $arg=="profile-imls_data" or $arg=="profile-intake_form" or $arg=="profile-survey_fielding" or $arg=="profile-photo_logo")
-  return $arg;
-
-  $GLOBALS['search_libaries']=$arg;
-  return $arg;
-
-}
-
-/*
- * check whether the type in address is correct
- */
-function profiles_management_check_type_load($type){
-
-  $type=profiles_management_convert_path_type($type);
-
-  return $type;
-}
-
-/*
- * check the uid
- *
- */
-function profiles_management_check_uid_load($uid){
-  if($uid && is_numeric($uid) && user_load($uid)) return $uid;
-  return FALSE;
-}
-
-/*
- * hook_permission
- *
- * you could change the permission under the item Manage the profiles in Admin Panel
- *
- */
-function profiles_management_permission(){
-  return array(
-		'profiles management' => array( 
-		'title' => t('Manage the profiles'), 
-		'description' => t('Allow users to manageme the profiles in Profiles Management'),
-  ),
+  $header = array(
+    array('data' => 'ID', 'field' => 'u.uid', 'sort' => 'asc'),
+    array('data' => 'Library System', 'field' => 'pref_name'),
+    array('data' => 'User', 'field' => 'username'),
+    array('data' => 'Responses', 'field' => 'survey_responses'),
+    array('data' => 'IMLS Data', 'field' => 'imls_stat'),
+    array('data' => 'Intake Form', 'field' => 'intake_stat'),
+    array('data' => 'Survey Fielding', 'field' => 'end_date'),
+    array('data' => 'Photo&Logo', 'field' => 'pl_pid')
   );
-}
+  $table_data = db_select('users', 'u')->extend('TableSort')->orderByHeader($header);
+  $table_data->addField('u', 'uid', 'uid');
+  $table_data->addField('u', 'name', 'username');
+  $table_data->addField($table_data->leftJoin('profile', 'reg', 'reg.uid = u.uid AND reg.type = :type_reg', array(':type_reg' => 'library_registration')), 'pid', 'reg_pid');
+  $table_data->addField($table_data->leftJoin('field_data_field_library_reg_pref', 'pref', 'pref.entity_id = reg.pid'), 'field_library_reg_pref_value', 'pref_name');
+  $table_data->addField($table_data->leftJoin('field_data_field_library_reg_system', 'fscs', 'fscs.entity_id = reg.pid'), 'field_library_reg_system_value', 'fscs_key');
+  $table_data->addField($table_data->leftJoin('field_data_field_library_reg_fname', 'fname', 'fname.entity_id = reg.pid'), 'field_library_reg_fname_value', 'first_name');
+  $table_data->addField($table_data->leftJoin('field_data_field_library_reg_lname', 'lname', 'lname.entity_id = reg.pid'), 'field_library_reg_lname_value', 'last_name');
+  $table_data->addField($table_data->leftJoin('library_lookup', 'll', 'll.fscs_key = fscs.field_library_reg_system_value'), 'library_name', 'lib_name');
+  $table_data->addField($table_data->leftJoin('profile', 'imls', 'imls.uid = u.uid AND imls.type = :type_imls', array(':type_imls' => 'imls_data')), 'pid', 'imls_pid');
+  $table_data->addField($table_data->leftJoin('profile', 'intake', 'intake.uid = u.uid AND intake.type = :type_intake', array(':type_intake' => 'intake_form')), 'pid', 'intake_pid');
+  $table_data->addField($table_data->leftJoin('myimpact_profile_status', 'imls_stat', 'imls_stat.uid = u.uid AND imls_stat.type = :stat_imls', array(':stat_imls' => 'imls_data')), 'status', 'imls_stat');
+  $table_data->addField($table_data->leftJoin('myimpact_profile_status', 'intake_stat', 'intake_stat.uid = u.uid AND intake_stat.type = :stat_intake', array(':stat_intake' => 'intake_form')), 'status', 'intake_stat');
+  $table_data->addField($table_data->leftJoin('profile', 'fielding', 'fielding.uid = u.uid AND fielding.type = :type_fielding', array(':type_fielding' => 'survey_fielding')), 'pid', 'fielding_pid');
+  $table_data->leftJoin('field_data_field_fielding_date', 'date', 'date.entity_id = fielding.pid');
+  $table_data->addField('date', 'field_fielding_date_value', 'start_date');
+  $table_data->addField('date', 'field_fielding_date_value2', 'end_date');
+  $table_data->addField($table_data->leftJoin('profile', 'pl', 'pl.uid = u.uid AND pl.type = :type_photo', array(':type_photo' => 'photo_logo')), 'pid', 'pl_pid');
+  $table_data->addField($table_data->leftJoin('field_data_field_reg_library_pic', 'photo', 'photo.entity_id = pl.pid'), 'field_reg_library_pic_fid', 'photo_id');
+  $table_data->addField($table_data->leftJoin('file_managed', 'photo_f', 'photo_f.fid = photo.field_reg_library_pic_fid'), 'filename', 'photo_loc');
+  $table_data->addField($table_data->leftJoin('field_data_field_reg_logo_pic', 'logo', 'logo.entity_id = pl.pid'), 'field_reg_logo_pic_fid', 'logo_id');
+  $table_data->addField($table_data->leftJoin('file_managed', 'logo_f', 'logo_f.fid = logo.field_reg_logo_pic_fid'), 'filename', 'logo_loc');
+  $table_data->leftJoin('survey_responses', 'responses', 'responses.LibId = fscs.field_library_reg_system_value');
+  $table_data->addExpression('COUNT(responses.LibId)', 'survey_responses');
+  $table_data->groupBy('u.uid');
+  if(empty($user_list))
+    $table_data = $table_data->condition('u.uid', 0, '>');
+  else
+    $table_data = $table_data->condition('u.uid', $user_list, 'IN');
 
-/*
- * hook_process_breadcrumb
- *
- * add the library name in view and edit page
- */
-function profiles_management_preprocess_breadcrumb(&$variables){
-
-  $path=explode('/',$_GET['q']);
-  $count=count($path);
-
-  if(isset($path['0']) && $path['0']=='admin' && isset($path['1']) && $path['1']=='profiles_management' && ($path[($count-1)]=="view" or $path[($count-1)]=="edit") ){
-
-    //display the library name at the breadcrumb
-    $uid=$path[($count-2)];
-    $variables['breadcrumb'][]=profiles_management_get_library_name($uid);
-
+  $table_data = $table_data->execute();
+  $rows = array();
+  foreach ($table_data as $row) {
+    $rows[] = array (
+      array('data' => $row->uid),
+      profiles_management_fix_pref_name($row->pref_name, $row->lib_name, $row->uid, $row->fscs_key),
+      profiles_management_fix_user($row->username, $row->uid, $row->first_name, $row->last_name),
+      $row->survey_responses,
+      profiles_management_fix_forms($row->uid, $row->imls_pid, $row->imls_stat, 'imls_data'),
+      profiles_management_fix_forms($row->uid, $row->intake_pid, $row->intake_stat, 'intake_form'),
+      profiles_management_fix_date($row->uid, $row->fielding_pid, $row->start_date, $row->end_date), 
+      profiles_management_fix_photo_logo($row->uid, $row->pl_pid, $row->photo_id, $row->photo_loc, $row->logo_id, $row->logo_loc),
+    );
   }
+  $variables = array(
+    'header' => $header,
+    'rows' => $rows,
+    'attributes' => array(),
+    'caption' => NULL,
+    'colgroups' => array(),
+    'sticky' => FALSE,
+    'empty' => 'empty'
+  );
+  $output = empty($user_list)
+    ? '<a href="profiles_management/beta">Beta Libraries</a>' . theme_table($variables)
+    : theme_table($variables);
+  return $output;
 }
+function profiles_management_fix_pref_name($pref_name, $lib_name, $uid, $fscs_key) {
+  $pref_name = array(
+  	'data' => array(
+    	'#markup' => isset($pref_name) ? $pref_name : (isset($lib_name) ? $lib_name : 'Library name not set'),
+      '#prefix' => "<a href='profile-library_registration/$uid/view' title='$fscs_key'>",
+      '#suffix' => '</a>'
+    )
+  );
+  return $pref_name;
+}
+function profiles_management_fix_user($username, $uid, $first_name, $last_name) {
+  global $base_url;
+  $user = array(
+    'data' => array(
+      '#markup' => $username,
+      '#prefix' => "<a href='$base_url/user/$uid'>",
+      '#suffix' => '</a>'
+    )
+  );
+  return $user;
+}
+function profiles_management_fix_forms ($uid, $pid, $status, $form_type) {
+  if(empty($pid)) return 'Empty';
+  
+  global $base_url;
+  $form = array(
+  	'data' => array(
+      '#markup' => ($status == 1) ? 'Submitted' : 'Saved',
+      '#prefix' => "<a href='$base_url/admin/profiles_management/profile-$form_type/$uid/view'>",
+      '#suffix' => '</a>'
+    )
+  );
+  return $form;
+}
+function profiles_management_fix_date($uid, $pid, $start_date, $end_date) {
+  if(empty($pid)) return 'Empty';
+  if(empty($start_date)) return 'Invalid';
+  if(empty($end_date)) return 'Invalid';
+  
+  $fix_start = isset($start_date) ? date('D m/d/y', strtotime($start_date)) : 'Empty';
+  $fix_end = isset($end_date) ? ' -<br>' . date('D m/d/y', strtotime($end_date)) : '';
+  
+  global $base_url;
+  $fielding = array(
+    'data' => array(
+      '#markup' => $fix_start . $fix_end,
+      '#prefix' => "<a href='$base_url/admin/profiles_management/profile-survey_fielding/$uid/view'>",
+      '#suffix' => '</a>'
+    )
+  );  
+  return $fielding;
+}
+function profiles_management_fix_photo_logo($uid, $pid, $photo_id, $photo_loc, $logo_id, $logo_loc) {
+  if(empty($pid)) return 'Empty';
+  global $base_url;
+  $photo_path = $base_url .'/'. variable_get('file_public_path', conf_path() . '/files') . "/styles/table-thumb/public/photo_logo/photos/$photo_loc";
+  $logo_path = $base_url .'/'. variable_get('file_public_path', conf_path() . '/files') . "/styles/table-thumb/public/photo_logo/logos/$logo_loc";
 
+  $logo_id = isset($logo_id) ? $logo_id : 'X';
+  
+  global $base_url;
+  $pl = array(
+    'data' => array(
+      '#markup' => "<img src='$photo_path'><img src='$logo_path'>",
+      '#prefix' => "<a href='$base_url/admin/profiles_management/profile-photo_logo/$uid/view'>",
+      '#suffix' => '</a>'
+    )
+  );
+  return $pl;
+}
 /*
  * The View page of the forms
  */
@@ -233,6 +323,113 @@ function profiles_management_get_library_name($uid=NULL){
 }
 
 /*
+ * display all the users in one table
+ *
+ */
+function profiles_management_list(){
+
+
+  $output="<br><a href='profiles_management/AACPL_WA0064_ebaker_karenp_King County Library System/custom'>Five Selected Libraries</a><br><br>";
+
+  $output.=profiles_management_display();
+
+  return $output;
+
+}
+
+
+// Assemble the table array
+function profiles_management_display($library_list = array()){
+  $profile_data = profiles_management_table_data($library_list);
+
+  $header = array(
+  array('data' => 'Library System'),
+  array('data' => 'User'),
+  array('data' => 'Result Count'),
+  array('data' => 'IMLS Data'),
+  array('data' => 'Intake Form'),
+  array('data' => 'Survey Fielding'),
+  array('data' => 'Photo&Logo'),
+  );
+
+  $rows = array();
+  foreach($profile_data as $user_data) {
+    _profiles_management_complete_data_fields($user_data);
+    $rows[] = array(
+    array('data' => $user_data->system_pref, 'title' => $user_data->fscs_key),
+    array('data' => $user_data->username, 'title' => $user_data->first_name.' '.$user_data->last_name),
+    array('data' => $user_data->responses),
+    array('data' => isset($user_data->imls_pid) ? "<a href='profiles_management/profile-imls_data/$user_data->uid/view'>Yes</a>" : 'No'),
+    array('data' => isset($user_data->intake_pid) ? "<a href='profiles_management/profile-intake_form/$user_data->uid/view'>Yes</a>" : 'No'),
+    array('data' => isset($user_data->start_date) ? "<a href='profiles_management/profile-photo_logo/$user_data->uid/view'>$user_data->start_date$user_data->end_date</a>" : $user_data->start_date.$user_data->end_date),
+    array('data' => (isset($user_data->photo_id) || isset($user->logo_id)) ? "<a href='profiles_management/profile-photo_logo/$user_data->uid/view'>view</a>" : 'No Photo/Logo')
+    );
+  }
+
+  $output = '';
+  if(empty($library_list))
+  $output .= '<br><a href="profiles_management/AACPL_WA0064_ebaker_karenp_King County Library System/custom">Five Selected Libraries</a><br><br>';
+  $output .= theme('table', array('header' => $header, 'rows' => $rows));
+  return $output;
+}
+// helper method to fill in fields
+function _profiles_management_complete_data_fields(&$user_data) {
+  $user_data->system_pref = isset($user_data->system_pref) ? "<a href='profiles_management/profile-library_registration/$user_data->uid/view'>$user_data->system_pref</a>" : 'No Preferred Name';
+  $user_data->username = isset($user_data->username) ? $user_data->username : 'No Username';
+  $user_data->start_date = isset($user_data->start_date) ? date('D m/d/y', strtotime($user_data->start_date)) : 'Empty';
+  $user_data->end_date = isset($user_data->end_date) ? ' - ' . date('D m/d/y', strtotime($user_data->end_date)) : '';
+  /*
+   $rows[] = array(
+   array('data' => isset($value['System'])?(is_numeric($value['System']) ? (isset($lib_sys[$value['System']])?$lib_sys[$value['System']]:" ") : $value['System']):' ', 'title'=>isset($value['fscs'])?$value['fscs']:'No FSCS'),
+   array('data' => isset($value['name'])? $value['name']:" ", 'title'=>(isset($value['fullName']))?$value['fullName']:"empty"),
+   array('data' => $result_count),
+   array('data' => isset($value['library_registration'])?$value['library_registration']:"<font color='grey'>NO</font>",'align'=>'center'),
+   array('data' => isset($value['imls_data'])?$value['imls_data']:"<font color='grey'>NO</font>",'align'=>'center'),
+   array('data' => isset($value['intake_form'])?$value['intake_form']:"<font color='grey'>NO</font>",'align'=>'center'),
+   array('data' => isset($value['survey_fielding'])?$value['survey_fielding']:"<font color='grey'>NO</font>",'align'=>'center'),
+   array('data' => isset($value['photo_logo'])?$value['photo_logo']:"<font color='grey'>NO</font>",'align'=>'center')
+   );*/
+}
+
+// Add a permission to access profile management
+function profiles_management_permission(){
+  return array(
+		'profiles management' => array ( 
+			'title' => t('Manage the profiles'), 
+			'description' => t('Allow users to manageme the profiles in Profiles Management'),
+    ),
+  );
+}
+
+/*
+ * hook_process_breadcrumb
+ *
+ * add the library name in view and edit page
+ */
+function profiles_management_preprocess_breadcrumb(&$variables){
+
+  $path=explode('/',$_GET['q']);
+  $count=count($path);
+
+  if(isset($path['0']) && $path['0']=='admin' && isset($path['1']) && $path['1']=='profiles_management' && ($path[($count-1)]=="view" or $path[($count-1)]=="edit") ){
+
+    //display the library name at the breadcrumb
+    $uid=$path[($count-2)];
+    $variables['breadcrumb'][]=profiles_management_get_library_name($uid);
+
+  }
+}
+/*
+ * check whether the type in address is correct
+ */
+function profiles_management_check_type_load($type){
+
+  $type=profiles_management_convert_path_type($type);
+
+  return $type;
+}
+
+/*
  * convert the path to the real type
  */
 function profiles_management_convert_path_type($path){
@@ -252,230 +449,32 @@ function profiles_management_convert_path_type($path){
   return FALSE;
 
 }
-
 /*
- * display the selected libraries
- *
- * $profile[uid]['System']  means library name
- * $profile[uid]['name'] means user name
- * $profile[uid]['library_registration']
- * $profile[uid]['imls_data']
- * $profile[uid]['intake_form']
- * $profile[uid]['survey_fielding']
- * $profile[uid]['photo_logo']
+ * check the uid
  *
  */
-function profiles_management_list_custom($users){
-
-  $path=$users;
-  $users=explode('_',$users);
-
-  $user_name='';
-  foreach($users as $u){
-    $user_name.="'".$u."',";
-  }
-
-  $user_name=rtrim($user_name,",");
-
-  //get uid
-  $sql = "select uid,name from {users} where name in ($user_name)";
-  $results = db_query($sql);
-
-  $profile=array();
-  $query_uid='';
-  foreach($results as $r){
-    $profile[$r->uid]['name']=$r->name;
-    $profile[$r->uid]['System']=profiles_management_get_library_name($r->uid);
-    $query_uid.=$r->uid.",";
-  }
-
-  if(empty($query_uid)) return t("Sorry! Can NOT fine the library!");
-
-  $query_uid=rtrim($query_uid,",");
-
-  //get the pid and type
-  $sql="select uid, type, pid from {profile} where uid in ($query_uid)";
-  $types=db_query($sql);
-
-  foreach($types as $t){
-    $profile[$t->uid][$t->type]="<a href='./custom/profile-".$t->type."/".$t->uid."/view'>YES</a>";
-    if($t->type=='library_registration')
-    {
-      $profile[$t->uid]['fscs']=profiles_management_get_fscs($t->pid);
-      $profile[$t->uid]['fullName']=profiles_management_get_name($t->pid);
-    }
-  }
-
-  $output=profiles_management_display($profile);
-  return $output;
-
+function profiles_management_check_uid_load($uid){
+  if($uid && is_numeric($uid) && user_load($uid)) return $uid;
+  return FALSE;
 }
-
-/*
- * display all the users in one table
- *
+/**
+ * Implements hook_image_default_styles().
  */
-function profiles_management_list(){
-
-  $sql="select uid, name from {users} where uid>0 order by uid Asc";
-  $users=db_query($sql);
-
-  $profile = array();
-  //get the name and uid
-  foreach($users as $u){
-    $profile[$u->uid]['name']=$u->name;
-  }
-
-  $sql="select uid, type, pid from {profile} order by uid Asc";
-  $types=db_query($sql);
-
-  $sql="select entity_id, field_library_reg_pref_value as system from {field_data_field_library_reg_pref}";
-  $result=db_query($sql);
-
-  foreach($result as $s){
-    $system[$s->entity_id]=$s->system;
-  }
-
-  $no_pid='';
-
-
-  //get lib fscs
-  $fscs=profiles_management_get_fscs();
-
-  $fullName = profiles_management_get_name();
-
-
-  //set the types
-  foreach($types as $t){
-    $profile[$t->uid][$t->type]="<a href='profiles_management/profile-".$t->type."/".$t->uid."/view'>YES</a>";
-    if ($t->type=="library_registration") {
-       
-
-      if(isset($fullName[$t->pid])) $profile[$t->uid]['fullName']=$fullName[$t->pid];
-       
-      if(isset($system[$t->pid])) $profile[$t->uid]['System']=$system[$t->pid];
-      else  {$profile[$t->uid]['System']=$t->pid; $no_pid.=$t->pid.",";} //find out the pids which do not have the prefered name
-      $profile[$t->uid]['fscs']=isset($fscs[$t->pid])?$fscs[$t->pid]:'';
-    }
-  }
-
-  $no_pid=rtrim($no_pid,",");
-
-  //get the library name if they do not have the prefered name
-  $sql = "select s.entity_id, library_name from {library_lookup} as l, {field_data_field_library_reg_system} as s where l.fscs_key =s.field_library_reg_system_value  and s.entity_id in ($no_pid)";
-  $result=db_query($sql);
-
-  foreach($result as $r){
-    $lib_sys[$r->entity_id]=$r->library_name;
-  }
-
-  $output="<br><a href='profiles_management/AACPL_WA0064_ebaker_karenp_King County Library System/custom'>Five Selected Libraries</a><br><br>";
-
-  $output.=profiles_management_display($profile, $lib_sys);
-
-  return $output;
-
-}
-
-/*
- * the table of the user
- *
- * $profile[uid][type]
- * $profile[uid]['System']  -> library name
- * $profile[uid]['name'] -> user name
- * $profile[uid]['library_registration']
- * $profile[uid]['imls_data']
- * $profile[uid]['intake_form']
- * $profile[uid]['survey_fielding']
- * $profile[uid]['photo_logo']
- *
- */
-
-function profiles_management_display($profile, $lib_sys=array()){
-  $header=array(
-  array('data' => 'Library System'),
-  array('data' => 'User'),
-  array('data' => 'Result Count'),
-  array('data' => 'Registration Form'),
-  array('data' => 'IMLS Data'),
-  array('data' => 'Intake Form'),
-  array('data' => 'Survey Fielding'),
-  array('data' => 'Photo&Logo'),
+function profiles_management_image_default_styles() {
+  $styles = array();
+  
+  $styles['table-thumb'] = array(
+    'effects' => array(
+      array(
+        'name' => 'image_scale', 
+        'data' => array(
+          'width' => 50,
+          'height' => 50,
+          'upscale' => 0,), 
+        'weight' => 0,
+      ),
+    ),
   );
 
-  $result_count_sql = 'SELECT COUNT( * ) AS responses FROM {survey_responses} WHERE libid = :fscs';
-  foreach($profile as $key => $value){
-    if (!empty($value['fscs'])) {
-      $result_count = db_query($result_count_sql, array('fscs'=>$value['fscs']))->fetchField();
-    } else $result_count = 0;
-    $rows[] = array(
-    array('data' => isset($value['System'])?(is_numeric($value['System']) ? (isset($lib_sys[$value['System']])?$lib_sys[$value['System']]:" ") : $value['System']):' ', 'title'=>isset($value['fscs'])?$value['fscs']:'No FSCS'),
-    array('data' => isset($value['name'])? $value['name']:" ", 'title'=>(isset($value['fullName']))?$value['fullName']:"empty"),
-    array('data' => $result_count),
-    array('data' => isset($value['library_registration'])?$value['library_registration']:"<font color='grey'>NO</font>",'align'=>'center'),
-    array('data' => isset($value['imls_data'])?$value['imls_data']:"<font color='grey'>NO</font>",'align'=>'center'),
-    array('data' => isset($value['intake_form'])?$value['intake_form']:"<font color='grey'>NO</font>",'align'=>'center'),
-    array('data' => isset($value['survey_fielding'])?$value['survey_fielding']:"<font color='grey'>NO</font>",'align'=>'center'),
-    array('data' => isset($value['photo_logo'])?$value['photo_logo']:"<font color='grey'>NO</font>",'align'=>'center')
-    );
-  }
-
-  $output = theme('table', array('header' => $header, 'rows' => $rows));
-  return $output;
-
-}
-
-
-/*
- * get the fscs key based on the condition
- */
-function profiles_management_get_fscs($condition="ALL"){
-
-  if($condition=='ALL'){
-
-    $sql = "select entity_id, field_library_reg_system_value as fscs from {field_data_field_library_reg_system}";
-    $fscs=db_query($sql);
-
-    foreach($fscs as $f){
-      $lib_fscs[$f->entity_id]=$f->fscs;
-    }
-    return $lib_fscs;
-  }
-
-  else {
-
-    $sql = "select field_library_reg_system_value as fscs from {field_data_field_library_reg_system} where entity_id=$condition";
-    $fscs = db_query($sql)->fetchField();
-
-    return $fscs;
-
-
-  }
-}
-
-/*
- * get the library name based on the condision
- */
-function profiles_management_get_name($condition="ALL"){
-
-  if($condition=="ALL"){
-    $sql = "select l.entity_id as id, field_library_reg_fname_value as fname, field_library_reg_lname_value as lname from {field_data_field_library_reg_fname} as f, {field_data_field_library_reg_lname} as l where f.entity_id=l.entity_id";
-    $result = db_query($sql);
-
-    foreach($result as $n){
-      $name[$n->id] = $n->fname." ".$n->lname;
-    }
-    return $name;
-  }
-
-  else{
-    $sql = "select l.entity_id as id, field_library_reg_fname_value as fname, field_library_reg_lname_value as lname from {field_data_field_library_reg_fname} as f, {field_data_field_library_reg_lname} as l where f.entity_id=l.entity_id and f.entity_id=:pid";
-    $result = db_query($sql, array('pid'=>$condition));
-
-    foreach($result as $n){
-      $name= $n->fname." ".$n->lname;
-    }
-
-    return $name;
-  }
+  return $styles;
 }
