@@ -1,0 +1,4 @@
+name = Manage Libraries
+description = "Allows the Administrators to manage registered library information."
+package = IMPACT
+core = 7.x
