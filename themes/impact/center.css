@@ -42,3 +42,9 @@
 #center p {
     font-size: 1em
 }
+#center p.code {
+    background-color:#333;
+    color:#ccc;
+    width:600px;
+    padding:5px;
+}
