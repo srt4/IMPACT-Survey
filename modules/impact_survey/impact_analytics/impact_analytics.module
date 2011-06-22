@@ -56,7 +56,7 @@ function impact_analytics_javascript($file) {
 // Fire a call to google analytics to report a hit to hotlinked javascript or images
 // Must be in the format: imagename.jpg
 function impact_analytics_fire($file) {
-  $var_utmac='UA-20897184-1'; //enter the new urchin code
+  $var_utmac='UA-20897184-1'; //enter your account string
   $var_utmhn='impactsurvey.org'; //enter your domain
   $var_utmn=rand(1000000000,9999999999); //random request number
   $var_cookie=rand(10000000,99999999); //random cookie number
@@ -64,6 +64,7 @@ function impact_analytics_fire($file) {
   $var_today=time(); //today
   $var_referer=$_SERVER['HTTP_REFERER']; //referer url
   $var_utmwv='4.9.4';  //ga version
+  $var_utme=rawurlencode("5(codebox*view*$file)(value):");
 
   $var_uservar='-'; //enter your own user defined variable
   //$var_utmp='tracker/'.$_GET['url'].'.'.$_GET['filetype']; //this example adds a fake file request to the (fake) tracker directory (the image/pdf filename).
