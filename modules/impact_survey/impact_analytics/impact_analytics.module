@@ -70,7 +70,7 @@ function impact_analytics_fire($file) {
   //$var_utmp='tracker/'.$_GET['url'].'.'.$_GET['filetype']; //this example adds a fake file request to the (fake) tracker directory (the image/pdf filename).
   $var_utmp= 'codebox/host/'.$file;
   
-  $urchinUrl='http://www.google-analytics.com/__utm.gif?utmwv='.$var_utmwv.'&utmn='.$var_utmn.'&utmsr=-&utmsc=-&utmul=-&utmje=0&utmfl=-&utmdt=-&utmhn='.$var_utmhn.'&utmr='.$var_referer.'&utmp='.$var_utmp.'&utmac='.$var_utmac.'&utmt=event&utmcc=__utma%3D'.$var_cookie.'.'.$var_random.'.'.$var_today.'.'.$var_today.'.'.$var_today.'.2%3B%2B__utmb%3D'.$var_cookie.'%3B%2B__utmc%3D'.$var_cookie.'%3B%2B__utmz%3D'.$var_cookie.'.'.$var_today.'.2.2.utmccn%3Dpre-pilot-c%7Cutmcsr%3Dcodebox-c%7Cutmcmd%3Dimage/javascript-c%3B%2B__utmv%3D'.$var_cookie.'.'.$var_uservar.'%3B';
+  $urchinUrl='http://www.google-analytics.com/__utm.gif?utmwv='.$var_utmwv.'&utmn='.$var_utmn.'&utmsr=-&utmsc=-&utmul=-&utmje=0&utmfl=-&utmdt=-&utmhn='.$var_utmhn.'&utmr='.$var_referer.'&utmp='.$var_utmp.'&utmac='.$var_utmac.'&utmt=event&utme='.$var_utme.'&utmcc=__utma%3D'.$var_cookie.'.'.$var_random.'.'.$var_today.'.'.$var_today.'.'.$var_today.'.2%3B%2B__utmb%3D'.$var_cookie.'%3B%2B__utmc%3D'.$var_cookie.'%3B%2B__utmz%3D'.$var_cookie.'.'.$var_today.'.2.2.utmccn%3Dpre-pilot-c%7Cutmcsr%3Dcodebox-c%7Cutmcmd%3Dimage/javascript-c%3B%2B__utmv%3D'.$var_cookie.'.'.$var_uservar.'%3B';
 
   $handle = fopen ($urchinUrl, "r");
   $test = fgets($handle);
