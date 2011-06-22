@@ -1,7 +1,0 @@
-name = Profiles Management
-description = "Allows the Administrators to manage all the profiles." 
-package = Pro Drupal Development core = 7.x 
-files[] = profiles_management.module 
-files[] = profiles_management.admin.inc 
-package = IMPACT
-core = 7.x
