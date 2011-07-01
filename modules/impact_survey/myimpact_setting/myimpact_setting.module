@@ -253,7 +253,7 @@ function myimpact_setting_profile_management_submit($form, &$form_state){
  */
 function myimpact_setting_profile2_user_submit($form, &$form_state){
   //$form_state['redirect']="myimpact";
-  drupal_set_message('Your data has been saved but not submitted. We encorage you to complete that as soon as possible!');
+  drupal_set_message('Your data has been submitted but not submitted. We encourage you to complete and submit this form as soon as possible.');
 }
 
 /*
