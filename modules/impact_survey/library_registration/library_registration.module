@@ -157,7 +157,7 @@ function library_registration_name_and_website(&$form, &$form_state) {
 }
 function library_registration_redirect(&$form, &$form_state) {
   drupal_get_messages();
-  $form_state['redirect'] = array('myimpact/registration');
+  $form_state['redirect'] = array('thank-you');
 }
 // use library_lookup table in the database to collect available states
 function _library_registration_library_states() {
